@@ -8,6 +8,7 @@ import {normalizeSnapshot} from '../run-bun/input.mjs';
 import {startBridge} from './bridge.mjs';
 import {integrationScript} from './integration.mjs';
 import {BattleRecorder} from './battle-recorder.mjs';
+import {historyDocument} from './history-view.mjs';
 import {annotateEntryTurns} from './move-history.mjs';
 import {createHash} from 'node:crypto';
 const root = resolve('.');
@@ -18,6 +19,7 @@ engineFiles.push('analysis/passive-endgame.mjs','analysis/position-features.mjs'
 engineFiles.push('analysis/observation-key.mjs');
 engineFiles.push('analysis/mechanics-contract.mjs');
 engineFiles.push('analysis/result-contract.mjs','run-bun/battle-state.mjs');
+engineFiles.push('run-bun/battle-recorder.mjs','run-bun/battle-history.mjs','run-bun/history-view.mjs','run-bun/history-app.mjs');
 const hashes=Object.fromEntries(await Promise.all(engineFiles.map(async file=>[file,createHash('sha256').update(await readFile(file)).digest('hex')])));
 const recorder=new BattleRecorder({directory:reportsDirectory,metadata:{engine_hashes:hashes,node:process.version,game:'Run & Bun 1.07',search_slices_ms:[150,250]}});
 let recordedTracking='';
@@ -41,6 +43,7 @@ await mkdir(bridgeDirectory,{recursive:true});
 const optimizerPath=join(bridgeDirectory,'optimizer-settings.json');
 let optimizer='minimax';
 try{const saved=JSON.parse(await readFile(optimizerPath,'utf8'));if(saved.opponent_model==='npc-ai')optimizer='npc-ai';}catch(error){if(error.code!=='ENOENT')console.warn('Could not read optimizer settings:',error.message);}
+recorder.append('optimizer',{opponent_model:optimizer});
 searchService.preload({opponentModel:optimizer}).catch(error=>console.warn('Search worker preload failed:',error.message));
 let latestSnapshot=null,latestWarnings=[];
 const lua=integrationScript(bridgeDirectory);
@@ -145,6 +148,11 @@ function json(res,code,obj) {res.writeHead(code,{'Content-Type':'application/jso
 const server = http.createServer(async (req,res) => {
   try {
     const url = new URL(req.url,'http://localhost');
+    if(url.pathname==='/api/history'&&req.method==='GET')return json(res,200,recorder.history());
+    if(url.pathname==='/history'&&req.method==='GET'){
+      res.writeHead(200,{'Content-Type':'text/html; charset=utf-8','Cache-Control':'no-store'});
+      return res.end(historyDocument(recorder.history(),{live:true}));
+    }
     if(url.pathname==='/api/optimizer'&&req.method==='GET')return json(res,200,{opponent_model:optimizer});
     if(url.pathname==='/api/optimizer'&&req.method==='POST'){
       if(req.headers.origin&&req.headers.origin!==`http://${req.headers.host}`)return json(res,403,{error:'Use the local application.'});
@@ -203,9 +211,9 @@ const server = http.createServer(async (req,res) => {
     if (url.pathname === '/api/state' && req.method === 'GET') return json(res,200,state(url.searchParams.get('compact') === '1'));
     if (url.pathname === '/api/state' && req.method === 'POST') return json(res,409,{error:'Automatic tracking controls the battle. Use the separate simple app for manual matchups.'});
     if (req.method !== 'GET') return json(res,405,{error:'Method not allowed.'});
-    const allowed = new Set(['/','/index.html','/style.css','/app.mjs','/engine.mjs','/snapshot.mjs']);
+    const allowed = new Set(['/','/index.html','/style.css','/app.mjs','/engine.mjs','/snapshot.mjs','/history-app.mjs','/history-view.mjs']);
     if (!allowed.has(url.pathname)) return json(res,404,{error:'Not found.'});
-    const file = resolve(root,url.pathname === '/' || url.pathname === '/index.html' ? 'run-bun/live.html' : url.pathname === '/app.mjs' ? 'run-bun/live-app.mjs' : url.pathname === '/snapshot.mjs' ? 'run-bun/snapshot.mjs' : url.pathname.slice(1));
+    const file = resolve(root,url.pathname === '/' || url.pathname === '/index.html' ? 'run-bun/live.html' : url.pathname === '/app.mjs' ? 'run-bun/live-app.mjs' : ['/snapshot.mjs','/history-app.mjs','/history-view.mjs'].includes(url.pathname) ? 'run-bun'+url.pathname : url.pathname.slice(1));
     if (!file.startsWith(root + sep)) throw Error('Invalid path.');
     const contents = await readFile(file);
     res.writeHead(200,{'Content-Type':({'.html':'text/html','.css':'text/css','.mjs':'text/javascript'})[extname(file)],'Cache-Control':'no-store'});res.end(contents);

@@ -23,6 +23,11 @@ test('Optimizer API validates and persists the menu selection',async()=>{
  const post=body=>fetch(url+'/api/optimizer',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
  try{
   await start();assert.deepEqual(await (await fetch(url+'/api/optimizer')).json(),{opponent_model:'minimax'});
+  const historyResponse=await fetch(url+'/api/history');assert.equal(historyResponse.status,200);assert.equal(historyResponse.headers.get('cache-control'),'no-store');
+  assert.deepEqual((await historyResponse.json()).entries,[]);
+  const historyPage=await fetch(url+'/history');assert.equal(historyPage.status,200);assert.match(await historyPage.text(),/Recent battle history/);
+  for(const path of ['/history-app.mjs','/history-view.mjs']){const asset=await fetch(url+path);assert.equal(asset.status,200);assert.match(asset.headers.get('content-type'),/javascript/);}
+  assert.match(await (await fetch(url+'/')).text(),/href="\/history"/);
   const invalid=await post({opponent_model:'garbage'});assert.equal(invalid.status,400);
   const wrongOrigin=await fetch(url+'/api/optimizer',{method:'POST',headers:{Origin:'https://example.com','Content-Type':'application/json'},body:JSON.stringify({opponent_model:'npc-ai'})});assert.equal(wrongOrigin.status,403);
   assert.equal((await post({opponent_model:'npc-ai'})).status,200);

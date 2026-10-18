@@ -1,12 +1,15 @@
 import {mkdir,writeFile} from 'node:fs/promises';
 import {join} from 'node:path';
 import {randomUUID} from 'node:crypto';
+import {BattleHistory} from './battle-history.mjs';
+import {historyDocument} from './history-view.mjs';
 
 export class BattleRecorder {
  constructor({directory,now=Date.now,maxAgeMs=600000,maxBytes=16*1024*1024,maxEvents=15000,metadata={}}){
   Object.assign(this,{directory,now,maxAgeMs,maxBytes,maxEvents,metadata});
   this.events=[];this.bytes=0;this.stateId=0;this.eventId=0;this.previous=null;this.previousResult=null;this.lastReport=null;
   this.stateContexts=new Map();
+  this.historyReviewer=new BattleHistory();
  }
  append(kind,data){
   const event={id:++this.eventId,at:this.now(),state_id:this.stateId,kind,...structuredClone(data)};
@@ -44,13 +47,18 @@ export class BattleRecorder {
  }
  recordDisplay(display){this.append('display',{state_id:Number.isInteger(display.state_id)&&display.state_id>=0&&display.state_id<=this.stateId?display.state_id:this.stateId,display});}
  status(){this.prune();return {retained_events:this.events.length,retained_bytes:this.bytes,window_seconds:this.maxAgeMs/1000,current_state_id:this.stateId,last_report:this.lastReport};}
- async save({note='',source='api'}={}){
+ retainedEvents({clone=true}={}){
   this.prune();
-  const events=this.events.map(e=>structuredClone(e.event));
+  const events=this.events.map(e=>clone?structuredClone(e.event):e.event);
   const states=new Set(events.filter(e=>e.kind==='battle-state').map(e=>e.state_id));
   const referenced=new Set(events.map(e=>e.state_id));referenced.add(this.stateId);
-  for(const id of referenced){const context=this.stateContexts.get(id);if(context&&!states.has(id))events.push({...structuredClone(context),context_only:true});}
+  for(const id of referenced){const context=this.stateContexts.get(id);if(context&&!states.has(id))events.push({...clone?structuredClone(context):context,context_only:true});}
   events.sort((a,b)=>a.id-b.id);
+  return events;
+ }
+ history(){return this.historyReviewer.review(this.retainedEvents({clone:false}),{windowSeconds:this.maxAgeMs/1000});}
+ async save({note='',source='api'}={}){
+  const events=this.retainedEvents();
   const id=new Date(this.now()).toISOString().replace(/[:.]/g,'-')+'-'+randomUUID().slice(0,8);
   const directory=join(this.directory,id);await mkdir(directory,{recursive:true});
   const report={schema_version:1,saved_at:this.now(),source,note,metadata:this.metadata,
@@ -58,6 +66,9 @@ export class BattleRecorder {
    retention:{max_age_ms:this.maxAgeMs,max_bytes:this.maxBytes},events};
   const reportPath=join(directory,'report.json');
   await writeFile(reportPath,JSON.stringify(report,null,2),{flag:'wx'});
+  const history=this.historyReviewer.review(events,{windowSeconds:this.maxAgeMs/1000});
+  await writeFile(join(directory,'review.json'),JSON.stringify(history,null,2),{flag:'wx'});
+  await writeFile(join(directory,'review.html'),historyDocument(history),{flag:'wx'});
   await writeFile(join(directory,'note.txt'),note||'Describe what looked wrong here.\n');
   const escape=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const rows=events.filter(e=>e.kind!=='display').map(e=>{

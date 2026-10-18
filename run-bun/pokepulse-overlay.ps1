@@ -580,6 +580,8 @@ $signalItem = $secondaryItem.DropDownItems.Add('Bar, pulse & controls opacity…
 $signalItem.Add_Click({ Show-AppearancePicker 'signal' })
 $secondaryItem.DropDown.Renderer = New-Object PokePulseMenuRenderer
 $secondaryItem.DropDown.ShowImageMargin = $false
+$historyItem = $moreMenu.Items.Add('Recent battle history')
+$historyItem.Add_Click({ Start-Process "http://127.0.0.1:$port/history" })
 $reportItem = $moreMenu.Items.Add('Report bug')
 $reportItem.ShortcutKeyDisplayString = 'Ctrl+Shift+B'
 $reportItem.Add_Click({ Save-BugReport 'menu' })
