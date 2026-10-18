@@ -64,3 +64,5 @@ parentPort.on('message',async({version,request,budgets,modelContext})=>{
     trim(retained.cache,80000);
   }});
 });
+
+parentPort.postMessage({type:'ready'});

@@ -26,9 +26,9 @@ export class SearchService {
   this.generation=new Int32Array(new SharedArrayBuffer(4));this.exactHalt=new Int32Array(new SharedArrayBuffer(4));
   this.hybridHalt=new Int32Array(new SharedArrayBuffer(4));this.settleMs=settleMs;this.timer=null;
  }
- cancel(){
+ cancel({keepWorkers=false}={}){
   Atomics.store(this.generation,0,++this.version);clearTimeout(this.timer);
-  for(const name of ['worker','hybridWorker']){this[name]?.terminate();this[name]=null;}
+  if(!keepWorkers)for(const name of ['worker','hybridWorker']){this[name]?.terminate();this[name]=null;}
   this.context=null;this.display=null;this.provenance=null;this.results={};this.lastSelected=null;
  }
  receive(engine,{version,result}){
@@ -55,20 +55,32 @@ export class SearchService {
   result.refining=refining??(!result.outlook.complete&&!result.outlook.input_blocked&&!result.outlook.sampling_complete&&!result.outlook.search_paused);
   this.display=estimate.score;this.onResult(result);
  }
+ async preload({opponentModel='minimax'}={}){
+  const parallel=this.parallel&&opponentModel!=='npc-ai';
+  if(this.runningParallel!==parallel)this.cancel();
+  this.runningParallel=parallel;
+  if(!this.worker)this.makeWorker('exact');
+  if(parallel&&!this.hybridWorker)this.makeWorker('hybrid');
+  await Promise.all([this.worker.ready,...(parallel?[this.hybridWorker.ready]:[])]);
+ }
  makeWorker(engine){
   const name=engine==='hybrid'?'hybridWorker':'worker';
   const halt=engine==='hybrid'?this.hybridHalt:this.exactHalt;
   const worker=new Worker(new URL('./search-worker.mjs',import.meta.url),{workerData:{generation:this.generation.buffer,
    halt:halt.buffer,engineMode:this.runningParallel?engine:'auto',exactProbeMs:this.exactProbeMs}});
   this[name]=worker;
-  worker.on('message',message=>{if(this[name]===worker)this.receive(engine,message);});
-  worker.on('error',error=>{if(this[name]!==worker)return;
-   if(!this.runningParallel){this.onError(error);return;}
+  let ready=false,resolveReady,rejectReady;
+  worker.ready=new Promise((resolve,reject)=>{resolveReady=resolve;rejectReady=reject;});
+  // Lazy start callers need not await readiness; preload callers can observe failures.
+  worker.ready.catch(()=>{});
+  worker.on('message',message=>{if(message.type==='ready'){ready=true;resolveReady();return;}if(this[name]===worker)this.receive(engine,message);});
+  worker.on('error',error=>{rejectReady(error);if(this[name]!==worker)return;
+   if(!this.runningParallel){this.onError?.(error);return;}
    this.errors[engine]=error;
-   if(this.errors.exact&&this.errors.hybrid)this.onError(new Error('Both search engines failed',{cause:error}));
+   if(this.errors.exact&&this.errors.hybrid)this.onError?.(new Error('Both search engines failed',{cause:error}));
    else {const other=engine==='exact'?'hybrid':'exact';if(this.results[other])this.receive(other,{version:this.version,result:this.results[other]});}
   });
-  worker.on('exit',()=>{if(this[name]===worker)this[name]=null;});worker.unref();
+  worker.on('exit',()=>{if(!ready)rejectReady(new Error('Search worker closed before readiness'));if(this[name]===worker)this[name]=null;});worker.unref();
  }
  start(args,onResult,onError=()=>{},budgets){
   const runningParallel=this.parallel&&args[7]?.opponent_model!=='npc-ai';

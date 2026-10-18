@@ -41,6 +41,7 @@ await mkdir(bridgeDirectory,{recursive:true});
 const optimizerPath=join(bridgeDirectory,'optimizer-settings.json');
 let optimizer='minimax';
 try{const saved=JSON.parse(await readFile(optimizerPath,'utf8'));if(saved.opponent_model==='npc-ai')optimizer='npc-ai';}catch(error){if(error.code!=='ENOENT')console.warn('Could not read optimizer settings:',error.message);}
+searchService.preload({opponentModel:optimizer}).catch(error=>console.warn('Search worker preload failed:',error.message));
 let latestSnapshot=null,latestWarnings=[];
 const lua=integrationScript(bridgeDirectory);
 await writeFile(resolve(process.env.POKETHREAT_SCRIPT_PATH||'run-bun/PokeThreat.lua'),lua);
@@ -59,7 +60,7 @@ function resetPrediction() {
   predictionError=null;
   latestSnapshot=null;latestWarnings=[];
   entryHistory={};
-  searchService.cancel();
+  searchService.cancel({keepWorkers:true});
   lastBattle='';
   lastObservation='';
   cachedResult=null;
@@ -110,7 +111,7 @@ function observeBattle(snapshot,warnings) {
   // A resolved old matchup cannot describe a newly entering opponent. RAM
   // can briefly combine the new identity with the fainted Pokémon's zero HP.
   if(battle_phase?.kind!=='selection'&&predictionActors!==null&&actorsOf(snapshot)!==predictionActors){
-    searchService.cancel();cachedResult=null;lastBattle='';analysisStateId=0;
+    searchService.cancel({keepWorkers:true});cachedResult=null;lastBattle='';analysisStateId=0;
     return;
   }
   const terminal=snapshot.player.current_hp===0||snapshot.opponent.current_hp===0;
@@ -153,7 +154,7 @@ const server = http.createServer(async (req,res) => {
       if(!['minimax','npc-ai'].includes(model))throw Error('Unknown opponent model.');
       await writeFile(optimizerPath,JSON.stringify({opponent_model:model})+'\n');
       if(model!==optimizer){
-        optimizer=model;searchService.cancel();cachedResult=null;lastBattle='';
+        optimizer=model;searchService.cancel({keepWorkers:true});cachedResult=null;lastBattle='';
         recorder.append('optimizer',{opponent_model:optimizer});
         if(latestSnapshot&&tracking.status==='battle')observeBattle(structuredClone(latestSnapshot),latestWarnings);
         broadcast();
@@ -189,7 +190,7 @@ const server = http.createServer(async (req,res) => {
       if(req.headers.origin && req.headers.origin !== `http://${req.headers.host}`)return json(res,403,{error:'Use the local application.'});
       let body='';for await(const chunk of req){body+=chunk;if(Buffer.byteLength(body)>2500000)throw Error('Snapshot too large.');}
       const next=normalizeSnapshot(JSON.parse(body),pack,catalog(),{source:'diagnostic'});
-      searchService.cancel();
+      searchService.cancel({keepWorkers:true});
       cachedResult=scoreBattle(...searchArgs(next),optimizer==='npc-ai'?{opponentModel:'npc-ai',forceNativeForecast:true,approximateCompleteMoves:true}:{});lastBattle='';
       ({player,opponent,battle,builds,field,effects,live}=next);
       tracking={status:'battle',message:'Diagnostic snapshot · not emulator data',received_at:Date.now(),warnings:['This snapshot was submitted manually for diagnostics.']};

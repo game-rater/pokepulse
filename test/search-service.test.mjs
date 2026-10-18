@@ -150,3 +150,15 @@ test('A broad unresolved exact matchup falls back to retained native estimates',
   assert.equal(result.outlook.certified,false);assert.ok(Number.isFinite(result.display_score));
  }finally{service.cancel();}
 });
+
+test('Preloading imports the worker without publishing a prediction and reuses it',async()=>{
+ const service=new SearchService({parallel:false});let published=0;
+ service.onResult=()=>published++;
+ try{
+  await service.preload();const worker=service.worker;assert.ok(worker);assert.equal(published,0);
+  await service.preload();assert.equal(service.worker,worker);
+  service.cancel({keepWorkers:true});assert.equal(service.worker,worker);
+  const result=await run(service,winningArgs());assert.ok(Number.isFinite(result.display_score));assert.equal(service.worker,worker);
+ }finally{service.cancel();}
+ assert.equal(service.worker,null);
+});
