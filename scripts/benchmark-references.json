@@ -1,0 +1,308 @@
+{
+  "schema_version": 1,
+  "scope": "Active-pair Run & Bun battles; no switch-ins. Analytic controls share calculator damage mechanics but do not use production search.",
+  "references": [
+    {
+      "id": "drednaw-lunatone-initial",
+      "input_sha256": "0edddd16a74a418e4ffaf6a9eb740a97fb45b701b1ea4b73ce16a176add65852",
+      "models": {
+        "minimax": {
+          "status": "unresolved",
+          "reason": "No independent full-game probability proof yet; timing-only case."
+        },
+        "npc-ai": {
+          "status": "unresolved",
+          "reason": "No independent full-game probability proof yet; timing-only case."
+        }
+      }
+    },
+    {
+      "id": "drednaw-lunatone-triggered",
+      "input_sha256": "778e9a68f9a072741f5dad8852a491d48a33cf54a34eb14e19c124aa22af9686",
+      "models": {
+        "minimax": {
+          "status": "analytic",
+          "expected_percent": 0,
+          "fraction": "0/1",
+          "proof": "Lunatone Speed 34 > Drednaw 30; Stored Power minimum 76 > current HP 51. No player move acts first or protects.",
+          "opponent_model": "minimax",
+          "scope": "calculated Run & Bun model; not the NPC policy"
+        },
+        "npc-ai": {
+          "status": "unresolved",
+          "reason": "No independent full-game probability proof yet; timing-only case."
+        }
+      }
+    },
+    {
+      "id": "drednaw-lunatone-asleep",
+      "input_sha256": "d44b4159968851631b9f0c6a93b89325e596904c6da52b5e4e4befd1efab8284",
+      "models": {
+        "minimax": {
+          "status": "analytic",
+          "expected_percent": 0,
+          "fraction": "0/1",
+          "proof": "Lunatone Speed 34 > Drednaw 30; Stored Power minimum 76 > current HP 51. No player move acts first or protects.",
+          "opponent_model": "minimax",
+          "scope": "calculated Run & Bun model; not the NPC policy"
+        },
+        "npc-ai": {
+          "status": "unresolved",
+          "reason": "No independent full-game probability proof yet; timing-only case."
+        }
+      }
+    },
+    {
+      "id": "monferno-scraggy-initial",
+      "input_sha256": "f5f2189a0f1fe6111a7d719c2c2cf52ba8f3e05645b111fc3d15628413d73f9b",
+      "models": {
+        "minimax": {
+          "status": "unresolved",
+          "reason": "No independent full-game probability proof yet; timing-only case."
+        },
+        "npc-ai": {
+          "status": "unresolved",
+          "reason": "No independent full-game probability proof yet; timing-only case."
+        }
+      }
+    },
+    {
+      "id": "monferno-scraggy-boosted",
+      "input_sha256": "3a4bf2bbe386c5bf503931d064160ade506290b9771e99265cc37576eeddea10",
+      "models": {
+        "minimax": {
+          "status": "unresolved",
+          "reason": "No independent full-game probability proof yet; timing-only case."
+        },
+        "npc-ai": {
+          "status": "unresolved",
+          "reason": "No independent full-game probability proof yet; timing-only case."
+        }
+      }
+    },
+    {
+      "id": "monferno-scraggy-resting",
+      "input_sha256": "6316c4ef402df0c4678346110cd8519bd25fdd49838b7eb842bbf495b6423eb8",
+      "models": {
+        "minimax": {
+          "status": "unresolved",
+          "reason": "No independent full-game probability proof yet; timing-only case."
+        },
+        "npc-ai": {
+          "status": "unresolved",
+          "reason": "No independent full-game probability proof yet; timing-only case."
+        }
+      }
+    },
+    {
+      "id": "hariyama-porygon2-initial",
+      "input_sha256": "aab7cf7edcfc50002fa2da0c28b41b574d4e7d11958ed829dc43eec29bd0c069",
+      "models": {
+        "minimax": {
+          "status": "unresolved",
+          "reason": "No independent full-game probability proof yet; timing-only case."
+        },
+        "npc-ai": {
+          "status": "unresolved",
+          "reason": "No independent full-game probability proof yet; timing-only case."
+        }
+      }
+    },
+    {
+      "id": "hariyama-porygon2-paralyzed",
+      "input_sha256": "7f41d99f063b962eb549cb84ae185b2b76c07a01c4df89a24736452b8fbaa603",
+      "models": {
+        "minimax": {
+          "status": "unresolved",
+          "reason": "No independent full-game probability proof yet; timing-only case."
+        },
+        "npc-ai": {
+          "status": "unresolved",
+          "reason": "No independent full-game probability proof yet; timing-only case."
+        }
+      }
+    },
+    {
+      "id": "hariyama-porygon2-pressure",
+      "input_sha256": "94195f2a8029760de41c024509122d8b90b33cbf41f7915573d8a299c43289f6",
+      "models": {
+        "minimax": {
+          "status": "unresolved",
+          "reason": "No independent full-game probability proof yet; timing-only case."
+        },
+        "npc-ai": {
+          "status": "unresolved",
+          "reason": "No independent full-game probability proof yet; timing-only case."
+        }
+      }
+    },
+    {
+      "id": "togedemaru-cinccino-initial",
+      "input_sha256": "e2730c2885264a51102b25be0890705015efc39776a6b2346ad30b4706d28e46",
+      "models": {
+        "minimax": {
+          "status": "unresolved",
+          "reason": "No independent full-game probability proof yet; timing-only case."
+        },
+        "npc-ai": {
+          "status": "unresolved",
+          "reason": "No independent full-game probability proof yet; timing-only case."
+        }
+      }
+    },
+    {
+      "id": "togedemaru-cinccino-chipped",
+      "input_sha256": "302c5a81ef5d49d7f3232a628ab3475d322abe45ff72474681aee6f884620cb7",
+      "models": {
+        "minimax": {
+          "status": "unresolved",
+          "reason": "No independent full-game probability proof yet; timing-only case."
+        },
+        "npc-ai": {
+          "status": "unresolved",
+          "reason": "No independent full-game probability proof yet; timing-only case."
+        }
+      }
+    },
+    {
+      "id": "togedemaru-cinccino-protected",
+      "input_sha256": "c590bb083a2b68ad9f86b4c926cdaffa95f8895624012953a7e9b97596fa4f6d",
+      "models": {
+        "minimax": {
+          "status": "unresolved",
+          "reason": "No independent full-game probability proof yet; timing-only case."
+        },
+        "npc-ai": {
+          "status": "unresolved",
+          "reason": "No independent full-game probability proof yet; timing-only case."
+        }
+      }
+    },
+    {
+      "id": "oracle-fixed-win",
+      "input_sha256": "79d54bd3f16629c488ac5af41599105aa57b0420c19976af6564ee641c875a62",
+      "models": {
+        "minimax": {
+          "status": "analytic",
+          "expected_percent": 100,
+          "fraction": "1/1",
+          "proof": "5 level-damage hits; Splash cannot damage, switch or change the outcome."
+        },
+        "npc-ai": {
+          "status": "analytic",
+          "expected_percent": 100,
+          "fraction": "1/1",
+          "proof": "5 level-damage hits; Splash cannot damage, switch or change the outcome."
+        }
+      }
+    },
+    {
+      "id": "oracle-fixed-loss",
+      "input_sha256": "e40ebbbd4dd3124214b106937a165cbbe26207adb706b18b1a1bd03d23093412",
+      "models": {
+        "minimax": {
+          "status": "analytic",
+          "expected_percent": 0,
+          "fraction": "0/1",
+          "proof": "5 level-damage hits; Splash cannot damage, switch or change the outcome."
+        },
+        "npc-ai": {
+          "status": "analytic",
+          "expected_percent": 0,
+          "fraction": "0/1",
+          "proof": "5 level-damage hits; Splash cannot damage, switch or change the outcome."
+        }
+      }
+    },
+    {
+      "id": "oracle-speed-tie",
+      "input_sha256": "f96d3dc8ed5dbc1c54a6c1bd1045565eac7f9bfbb178df834cf4dcad1795056c",
+      "models": {
+        "minimax": {
+          "status": "analytic",
+          "expected_percent": 50,
+          "fraction": "1/2",
+          "proof": "The first actor KOs; the fair Speed tie decides the battle."
+        },
+        "npc-ai": {
+          "status": "analytic",
+          "expected_percent": 50,
+          "fraction": "1/2",
+          "proof": "The first actor KOs; the fair Speed tie decides the battle."
+        }
+      }
+    },
+    {
+      "id": "oracle-focus-blast",
+      "input_sha256": "5334ddd42ee78fdf4f52f529003a699a79ff3c630538af4f0055d31a1c2bfeda",
+      "models": {
+        "minimax": {
+          "status": "analytic",
+          "expected_percent": 80,
+          "fraction": "4/5",
+          "proof": "The sole winning event is hitting Run & Bun Focus Blast (80%)."
+        },
+        "npc-ai": {
+          "status": "analytic",
+          "expected_percent": 80,
+          "fraction": "4/5",
+          "proof": "The sole winning event is hitting Run & Bun Focus Blast (80%)."
+        }
+      }
+    },
+    {
+      "id": "oracle-paralysis",
+      "input_sha256": "70876faec7d8d199761bc276200742b37aecde1646e71bcf774e6e6b8b87a287",
+      "models": {
+        "minimax": {
+          "status": "analytic",
+          "expected_percent": 75,
+          "fraction": "3/4",
+          "proof": "Quick Attack precedes Seismic Toss; the only failure event is full paralysis (1/4)."
+        },
+        "npc-ai": {
+          "status": "analytic",
+          "expected_percent": 75,
+          "fraction": "3/4",
+          "proof": "Quick Attack precedes Seismic Toss; the only failure event is full paralysis (1/4)."
+        }
+      }
+    },
+    {
+      "id": "oracle-triple-axel",
+      "input_sha256": "5d3c52222231ad53d7707385374498d1971ac93afb9d163cc5e4538f2993e0d6",
+      "models": {
+        "minimax": {
+          "status": "analytic",
+          "expected_percent": 72.9,
+          "fraction": "729/1000",
+          "proof": "Max two critical hits 564 < HP 600 <= min three normal hits 635; accuracy (9/10)^3."
+        },
+        "npc-ai": {
+          "status": "analytic",
+          "expected_percent": 72.9,
+          "fraction": "729/1000",
+          "proof": "Max two critical hits 564 < HP 600 <= min three normal hits 635; accuracy (9/10)^3."
+        }
+      }
+    },
+    {
+      "id": "oracle-skill-link-axel",
+      "input_sha256": "c940dc593e561061071c4355a100001a393f620387df470245057af566032a6f",
+      "models": {
+        "minimax": {
+          "status": "analytic",
+          "expected_percent": 90,
+          "fraction": "9/10",
+          "proof": "Max two critical hits 308 < HP 330 <= min three normal hits 348; accuracy 9/10 with Skill Link."
+        },
+        "npc-ai": {
+          "status": "analytic",
+          "expected_percent": 90,
+          "fraction": "9/10",
+          "proof": "Max two critical hits 308 < HP 330 <= min three normal hits 348; accuracy 9/10 with Skill Link."
+        }
+      }
+    }
+  ]
+}

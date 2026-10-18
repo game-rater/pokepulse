@@ -1,0 +1,1039 @@
+{
+  "created_at": "2026-10-18T09:13:32.819Z",
+  "node": "v24.19.0",
+  "seconds": 3,
+  "trials": 1,
+  "opponent_model": "npc-ai",
+  "source_hashes": {
+    "analysis/sampled-moves.mjs": "db4a7706215f1f1656d73885385461e3e1f69a77110c55a04a0e2bf867eebb24",
+    "analysis/retained-turn.mjs": "0c19617e6701d098426698abd28a0007321622eebebf21cfd175be628b0598c6",
+    "analysis/complete-moves.mjs": "1fb19ef46f21bf6725be0820eea197667c052219ad5518f402fca4bd2a962615",
+    "analysis/search.mjs": "0758c9ec608cb5241a2bfa7eb0d16525886e7b5bd6b6fd43b03fcf00bada709f",
+    "analysis/result-contract.mjs": "d495ee9c3731e3e795c6cc56e6db2301846fbaecc899a6983bb7ebbbacc2e2b3",
+    "analysis/continuation-policy.mjs": "10b112b98acaa092fa742f92b5a08f96825756c93857655102b5081e192cf4ab",
+    "scripts/search-benchmark-fixtures.mjs": "49acd5e19f3f41de2790e3b30f94c5f253ebcca1b612e80c3922e319e3cfa0a9",
+    "scripts/real-battle-fixtures.mjs": "be6f5d6f5afe59a2caefe4e7c159ea80f2f0a442e80aff33e568a4134fefb236",
+    "scripts/accuracy-benchmark-fixtures.mjs": "99fb2cc7269d2e4507554584f76488479c05a6847824691654f7f23c44eba2f2",
+    "scripts/benchmark-oracles.mjs": "b046bcfbeb90f60efa90e6fd3e2f0f240fd54d9c2fb151ddbe14054b5de75270",
+    "scripts/benchmark-references.json": "4f54c54255ae86628923915ef0efdf46202acbe757c0c4fcc913e7faa160123f",
+    "vendor/showdown/dist/sim/battle-actions.js": "15132d6f3347c56604b2dfb6e0e249d3b2fb4c1a223ae52c4c03f5f38979084d"
+  },
+  "method": "Isolated processes; engine initialization excluded; fixed native RNG seeds; alternating mode order; identical per-pass and sample budgets.",
+  "summary": [
+    {
+      "case": "oracle-fixed-win",
+      "mode": "hybrid",
+      "opponent_model": "npc-ai",
+      "first_estimate_ms": 108.0702,
+      "elapsed_ms": 1066.0495,
+      "reroot_first_estimate_ms": null,
+      "reuse_hits": 0,
+      "first_second_usable": 1,
+      "first_second_error_pp": 1,
+      "first_second_goal_met": 1,
+      "accuracy_reference_available": true,
+      "score_at_1s": 99,
+      "score_at_3s": 99,
+      "score_at_10s": 99,
+      "max_slice_ms": 107.94280000000003,
+      "samples": 128,
+      "peak_rss_mb": 166.19140625,
+      "completed": 1
+    },
+    {
+      "case": "oracle-fixed-loss",
+      "mode": "hybrid",
+      "opponent_model": "npc-ai",
+      "first_estimate_ms": 110.99810000000002,
+      "elapsed_ms": 1176.5494,
+      "reroot_first_estimate_ms": null,
+      "reuse_hits": 0,
+      "first_second_usable": 1,
+      "first_second_error_pp": 1,
+      "first_second_goal_met": 1,
+      "accuracy_reference_available": true,
+      "score_at_1s": 1,
+      "score_at_3s": 1,
+      "score_at_10s": 1,
+      "max_slice_ms": 110.91910000000007,
+      "samples": 128,
+      "peak_rss_mb": 165.71875,
+      "completed": 1
+    },
+    {
+      "case": "oracle-speed-tie",
+      "mode": "hybrid",
+      "opponent_model": "npc-ai",
+      "first_estimate_ms": 108.9645999999999,
+      "elapsed_ms": 218.58079999999984,
+      "reroot_first_estimate_ms": null,
+      "reuse_hits": 0,
+      "first_second_usable": 1,
+      "first_second_error_pp": 1.5625,
+      "first_second_goal_met": 1,
+      "accuracy_reference_available": true,
+      "score_at_1s": 51.5625,
+      "score_at_3s": 51.5625,
+      "score_at_10s": 51.5625,
+      "max_slice_ms": 108.87660000000005,
+      "samples": 128,
+      "peak_rss_mb": 159.6875,
+      "completed": 1
+    },
+    {
+      "case": "oracle-focus-blast",
+      "mode": "hybrid",
+      "opponent_model": "npc-ai",
+      "first_estimate_ms": 108.06799999999998,
+      "elapsed_ms": 241.77139999999997,
+      "reroot_first_estimate_ms": null,
+      "reuse_hits": 0,
+      "first_second_usable": 1,
+      "first_second_error_pp": 0,
+      "first_second_goal_met": 1,
+      "accuracy_reference_available": true,
+      "score_at_1s": 80,
+      "score_at_3s": 80,
+      "score_at_10s": 80,
+      "max_slice_ms": 107.97019999999998,
+      "samples": 128,
+      "peak_rss_mb": 162.01171875,
+      "completed": 1
+    },
+    {
+      "case": "oracle-paralysis",
+      "mode": "hybrid",
+      "opponent_model": "npc-ai",
+      "first_estimate_ms": 109.1445,
+      "elapsed_ms": 311.14570000000003,
+      "reroot_first_estimate_ms": null,
+      "reuse_hits": 0,
+      "first_second_usable": 1,
+      "first_second_error_pp": 0,
+      "first_second_goal_met": 1,
+      "accuracy_reference_available": true,
+      "score_at_1s": 75,
+      "score_at_3s": 75,
+      "score_at_10s": 75,
+      "max_slice_ms": 109.0548,
+      "samples": 128,
+      "peak_rss_mb": 163.24609375,
+      "completed": 1
+    },
+    {
+      "case": "oracle-triple-axel",
+      "mode": "hybrid",
+      "opponent_model": "npc-ai",
+      "first_estimate_ms": 111.1988,
+      "elapsed_ms": 450.0991,
+      "reroot_first_estimate_ms": null,
+      "reuse_hits": 0,
+      "first_second_usable": 1,
+      "first_second_error_pp": 8.212500000000006,
+      "first_second_goal_met": 1,
+      "accuracy_reference_available": true,
+      "score_at_1s": 64.6875,
+      "score_at_3s": 64.6875,
+      "score_at_10s": 64.6875,
+      "max_slice_ms": 111.06460000000004,
+      "samples": 128,
+      "peak_rss_mb": 162.98828125,
+      "completed": 1
+    },
+    {
+      "case": "oracle-skill-link-axel",
+      "mode": "hybrid",
+      "opponent_model": "npc-ai",
+      "first_estimate_ms": 109.58050000000003,
+      "elapsed_ms": 282.7083,
+      "reroot_first_estimate_ms": null,
+      "reuse_hits": 0,
+      "first_second_usable": 1,
+      "first_second_error_pp": 0,
+      "first_second_goal_met": 1,
+      "accuracy_reference_available": true,
+      "score_at_1s": 90,
+      "score_at_3s": 90,
+      "score_at_10s": 90,
+      "max_slice_ms": 109.50440000000003,
+      "samples": 128,
+      "peak_rss_mb": 162.80859375,
+      "completed": 1
+    }
+  ],
+  "rows": [
+    {
+      "trial": 0,
+      "reference": {
+        "status": "analytic",
+        "expected_percent": 100,
+        "fraction": "1/1",
+        "proof": "5 level-damage hits; Splash cannot damage, switch or change the outcome.",
+        "input_sha256": "79d54bd3f16629c488ac5af41599105aa57b0420c19976af6564ee641c875a62"
+      },
+      "case": "oracle-fixed-win",
+      "mode": "hybrid",
+      "opponent_model": "npc-ai",
+      "fixture_hash": "79d54bd3f16629c488ac5af41599105aa57b0420c19976af6564ee641c875a62",
+      "provenance": {
+        "kind": "analytic-control",
+        "sources": [
+          "https://github.com/smogon/damage-calc/blob/master/calc/src/test/calc.test.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/moves.ts"
+        ],
+        "notes": "Mechanics-test-inspired Run & Bun controls, not reproductions of recorded battles."
+      },
+      "checkpoints": {
+        "1000": {
+          "measured": true,
+          "score": 99,
+          "available_at_ms": 922.5545999999999
+        },
+        "3000": {
+          "measured": true,
+          "score": 99,
+          "available_at_ms": 1065.8595
+        },
+        "10000": {
+          "measured": true,
+          "score": 99,
+          "available_at_ms": 1065.8595
+        }
+      },
+      "input_blocked": false,
+      "unresolved_reasons": [],
+      "first_estimate_ms": 108.0702,
+      "elapsed_ms": 1066.0495,
+      "cpu_ms": 1390,
+      "max_slice_ms": 107.94280000000003,
+      "peak_rss_mb": 166.19140625,
+      "score": 99,
+      "absolute_error_pp": 1,
+      "samples": 128,
+      "done": true,
+      "retained_states": 5,
+      "total_native_rollouts": 128,
+      "exact_next_turn": false,
+      "next_turn_expansions": 0,
+      "merged_states": 0,
+      "first_second": {
+        "score": 99,
+        "available_at_ms": 922.5545999999999,
+        "absolute_error_pp": 1,
+        "reference": 100,
+        "reference_kind": "analytic",
+        "goal_met": true
+      },
+      "prediction": {
+        "schema_version": 1,
+        "kind": "estimate",
+        "certificate": null,
+        "search": {
+          "status": "sample-budget-finished",
+          "resolved": false
+        },
+        "reasons": [],
+        "estimate": {
+          "score": 99,
+          "basis": "simulation-estimate"
+        }
+      },
+      "readings": [
+        {
+          "elapsed_ms": 108.0702,
+          "score": 99,
+          "samples": 6,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 210.75589999999988,
+          "score": 99,
+          "samples": 16,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 314.2207000000001,
+          "score": 99,
+          "samples": 26,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 416.0293999999999,
+          "score": 99,
+          "samples": 38,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 517.3062,
+          "score": 99,
+          "samples": 51,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 618.6052999999999,
+          "score": 99,
+          "samples": 64,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 720.9757999999999,
+          "score": 99,
+          "samples": 78,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 821.7524000000001,
+          "score": 99,
+          "samples": 93,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 922.5545999999999,
+          "score": 99,
+          "samples": 107,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1023.7117000000001,
+          "score": 99,
+          "samples": 122,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1065.8595,
+          "score": 99,
+          "samples": 128,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        }
+      ]
+    },
+    {
+      "trial": 0,
+      "reference": {
+        "status": "analytic",
+        "expected_percent": 0,
+        "fraction": "0/1",
+        "proof": "5 level-damage hits; Splash cannot damage, switch or change the outcome.",
+        "input_sha256": "e40ebbbd4dd3124214b106937a165cbbe26207adb706b18b1a1bd03d23093412"
+      },
+      "case": "oracle-fixed-loss",
+      "mode": "hybrid",
+      "opponent_model": "npc-ai",
+      "fixture_hash": "e40ebbbd4dd3124214b106937a165cbbe26207adb706b18b1a1bd03d23093412",
+      "provenance": {
+        "kind": "analytic-control",
+        "sources": [
+          "https://github.com/smogon/damage-calc/blob/master/calc/src/test/calc.test.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/moves.ts"
+        ],
+        "notes": "Mechanics-test-inspired Run & Bun controls, not reproductions of recorded battles."
+      },
+      "checkpoints": {
+        "1000": {
+          "measured": true,
+          "score": 1,
+          "available_at_ms": 929.2589
+        },
+        "3000": {
+          "measured": true,
+          "score": 1,
+          "available_at_ms": 1176.4194
+        },
+        "10000": {
+          "measured": true,
+          "score": 1,
+          "available_at_ms": 1176.4194
+        }
+      },
+      "input_blocked": false,
+      "unresolved_reasons": [],
+      "first_estimate_ms": 110.99810000000002,
+      "elapsed_ms": 1176.5494,
+      "cpu_ms": 1547,
+      "max_slice_ms": 110.91910000000007,
+      "peak_rss_mb": 165.71875,
+      "score": 1,
+      "absolute_error_pp": 1,
+      "samples": 128,
+      "done": true,
+      "retained_states": 5,
+      "total_native_rollouts": 128,
+      "exact_next_turn": false,
+      "next_turn_expansions": 0,
+      "merged_states": 0,
+      "first_second": {
+        "score": 1,
+        "available_at_ms": 929.2589,
+        "absolute_error_pp": 1,
+        "reference": 0,
+        "reference_kind": "analytic",
+        "goal_met": true
+      },
+      "prediction": {
+        "schema_version": 1,
+        "kind": "estimate",
+        "certificate": null,
+        "search": {
+          "status": "sample-budget-finished",
+          "resolved": false
+        },
+        "reasons": [],
+        "estimate": {
+          "score": 1,
+          "basis": "simulation-estimate"
+        }
+      },
+      "readings": [
+        {
+          "elapsed_ms": 110.99810000000002,
+          "score": 1,
+          "samples": 6,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 214.4115999999999,
+          "score": 1,
+          "samples": 16,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 316.3608999999999,
+          "score": 1,
+          "samples": 26,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 418.1733999999999,
+          "score": 1,
+          "samples": 36,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 519.5613000000001,
+          "score": 1,
+          "samples": 46,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 621.4504,
+          "score": 1,
+          "samples": 58,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 722.9846,
+          "score": 1,
+          "samples": 70,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 827.1496999999999,
+          "score": 1,
+          "samples": 81,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 929.2589,
+          "score": 1,
+          "samples": 93,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1030.4183999999998,
+          "score": 1,
+          "samples": 108,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1131.7729000000002,
+          "score": 1,
+          "samples": 122,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1176.4194,
+          "score": 1,
+          "samples": 128,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        }
+      ]
+    },
+    {
+      "trial": 0,
+      "reference": {
+        "status": "analytic",
+        "expected_percent": 50,
+        "fraction": "1/2",
+        "proof": "The first actor KOs; the fair Speed tie decides the battle.",
+        "input_sha256": "f96d3dc8ed5dbc1c54a6c1bd1045565eac7f9bfbb178df834cf4dcad1795056c"
+      },
+      "case": "oracle-speed-tie",
+      "mode": "hybrid",
+      "opponent_model": "npc-ai",
+      "fixture_hash": "f96d3dc8ed5dbc1c54a6c1bd1045565eac7f9bfbb178df834cf4dcad1795056c",
+      "provenance": {
+        "kind": "analytic-control",
+        "sources": [
+          "https://github.com/smogon/damage-calc/blob/master/calc/src/test/calc.test.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/moves.ts"
+        ],
+        "notes": "Mechanics-test-inspired Run & Bun controls, not reproductions of recorded battles."
+      },
+      "checkpoints": {
+        "1000": {
+          "measured": true,
+          "score": 51.5625,
+          "available_at_ms": 217.66469999999993
+        },
+        "3000": {
+          "measured": true,
+          "score": 51.5625,
+          "available_at_ms": 217.66469999999993
+        },
+        "10000": {
+          "measured": true,
+          "score": 51.5625,
+          "available_at_ms": 217.66469999999993
+        }
+      },
+      "input_blocked": false,
+      "unresolved_reasons": [],
+      "first_estimate_ms": 108.9645999999999,
+      "elapsed_ms": 218.58079999999984,
+      "cpu_ms": 343,
+      "max_slice_ms": 108.87660000000005,
+      "peak_rss_mb": 159.6875,
+      "score": 51.5625,
+      "absolute_error_pp": 1.5625,
+      "samples": 128,
+      "done": true,
+      "retained_states": 1,
+      "total_native_rollouts": 128,
+      "exact_next_turn": false,
+      "next_turn_expansions": 0,
+      "merged_states": 0,
+      "first_second": {
+        "score": 51.5625,
+        "available_at_ms": 217.66469999999993,
+        "absolute_error_pp": 1.5625,
+        "reference": 50,
+        "reference_kind": "analytic",
+        "goal_met": true
+      },
+      "prediction": {
+        "schema_version": 1,
+        "kind": "estimate",
+        "certificate": null,
+        "search": {
+          "status": "sample-budget-finished",
+          "resolved": false
+        },
+        "reasons": [],
+        "estimate": {
+          "score": 51.5625,
+          "basis": "simulation-estimate"
+        }
+      },
+      "readings": [
+        {
+          "elapsed_ms": 108.9645999999999,
+          "score": 50.92592592592593,
+          "samples": 53,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 212.0062999999999,
+          "score": 50.44802867383513,
+          "samples": 125,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 217.66469999999993,
+          "score": 51.5625,
+          "samples": 128,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        }
+      ]
+    },
+    {
+      "trial": 0,
+      "reference": {
+        "status": "analytic",
+        "expected_percent": 80,
+        "fraction": "4/5",
+        "proof": "The sole winning event is hitting Run & Bun Focus Blast (80%).",
+        "input_sha256": "5334ddd42ee78fdf4f52f529003a699a79ff3c630538af4f0055d31a1c2bfeda"
+      },
+      "case": "oracle-focus-blast",
+      "mode": "hybrid",
+      "opponent_model": "npc-ai",
+      "fixture_hash": "5334ddd42ee78fdf4f52f529003a699a79ff3c630538af4f0055d31a1c2bfeda",
+      "provenance": {
+        "kind": "analytic-control",
+        "sources": [
+          "https://github.com/smogon/damage-calc/blob/master/calc/src/test/calc.test.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/moves.ts"
+        ],
+        "notes": "Mechanics-test-inspired Run & Bun controls, not reproductions of recorded battles."
+      },
+      "checkpoints": {
+        "1000": {
+          "measured": true,
+          "score": 80,
+          "available_at_ms": 241.58069999999987
+        },
+        "3000": {
+          "measured": true,
+          "score": 80,
+          "available_at_ms": 241.58069999999987
+        },
+        "10000": {
+          "measured": true,
+          "score": 80,
+          "available_at_ms": 241.58069999999987
+        }
+      },
+      "input_blocked": false,
+      "unresolved_reasons": [],
+      "first_estimate_ms": 108.06799999999998,
+      "elapsed_ms": 241.77139999999997,
+      "cpu_ms": 313,
+      "max_slice_ms": 107.97019999999998,
+      "peak_rss_mb": 162.01171875,
+      "score": 80,
+      "absolute_error_pp": 0,
+      "samples": 128,
+      "done": true,
+      "retained_states": 1,
+      "total_native_rollouts": 128,
+      "exact_next_turn": false,
+      "next_turn_expansions": 0,
+      "merged_states": 0,
+      "first_second": {
+        "score": 80,
+        "available_at_ms": 241.58069999999987,
+        "absolute_error_pp": 0,
+        "reference": 80,
+        "reference_kind": "analytic",
+        "goal_met": true
+      },
+      "prediction": {
+        "schema_version": 1,
+        "kind": "estimate",
+        "certificate": null,
+        "search": {
+          "status": "sample-budget-finished",
+          "resolved": false
+        },
+        "reasons": [],
+        "estimate": {
+          "score": 80,
+          "basis": "simulation-estimate"
+        }
+      },
+      "readings": [
+        {
+          "elapsed_ms": 108.06799999999998,
+          "score": 80,
+          "samples": 45,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 210.99850000000004,
+          "score": 80,
+          "samples": 109,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 241.58069999999987,
+          "score": 80,
+          "samples": 128,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        }
+      ]
+    },
+    {
+      "trial": 0,
+      "reference": {
+        "status": "analytic",
+        "expected_percent": 75,
+        "fraction": "3/4",
+        "proof": "Quick Attack precedes Seismic Toss; the only failure event is full paralysis (1/4).",
+        "input_sha256": "70876faec7d8d199761bc276200742b37aecde1646e71bcf774e6e6b8b87a287"
+      },
+      "case": "oracle-paralysis",
+      "mode": "hybrid",
+      "opponent_model": "npc-ai",
+      "fixture_hash": "70876faec7d8d199761bc276200742b37aecde1646e71bcf774e6e6b8b87a287",
+      "provenance": {
+        "kind": "analytic-control",
+        "sources": [
+          "https://github.com/smogon/damage-calc/blob/master/calc/src/test/calc.test.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/moves.ts"
+        ],
+        "notes": "Mechanics-test-inspired Run & Bun controls, not reproductions of recorded battles."
+      },
+      "checkpoints": {
+        "1000": {
+          "measured": true,
+          "score": 75,
+          "available_at_ms": 310.9923000000001
+        },
+        "3000": {
+          "measured": true,
+          "score": 75,
+          "available_at_ms": 310.9923000000001
+        },
+        "10000": {
+          "measured": true,
+          "score": 75,
+          "available_at_ms": 310.9923000000001
+        }
+      },
+      "input_blocked": false,
+      "unresolved_reasons": [],
+      "first_estimate_ms": 109.1445,
+      "elapsed_ms": 311.14570000000003,
+      "cpu_ms": 532,
+      "max_slice_ms": 109.0548,
+      "peak_rss_mb": 163.24609375,
+      "score": 75,
+      "absolute_error_pp": 0,
+      "samples": 128,
+      "done": true,
+      "retained_states": 1,
+      "total_native_rollouts": 128,
+      "exact_next_turn": false,
+      "next_turn_expansions": 0,
+      "merged_states": 0,
+      "first_second": {
+        "score": 75,
+        "available_at_ms": 310.9923000000001,
+        "absolute_error_pp": 0,
+        "reference": 75,
+        "reference_kind": "analytic",
+        "goal_met": true
+      },
+      "prediction": {
+        "schema_version": 1,
+        "kind": "estimate",
+        "certificate": null,
+        "search": {
+          "status": "sample-budget-finished",
+          "resolved": false
+        },
+        "reasons": [],
+        "estimate": {
+          "score": 75,
+          "basis": "simulation-estimate"
+        }
+      },
+      "readings": [
+        {
+          "elapsed_ms": 109.1445,
+          "score": 75,
+          "samples": 34,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 212.14750000000004,
+          "score": 75,
+          "samples": 79,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 310.9923000000001,
+          "score": 75,
+          "samples": 128,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        }
+      ]
+    },
+    {
+      "trial": 0,
+      "reference": {
+        "status": "analytic",
+        "expected_percent": 72.9,
+        "fraction": "729/1000",
+        "proof": "Max two critical hits 564 < HP 600 <= min three normal hits 635; accuracy (9/10)^3.",
+        "input_sha256": "5d3c52222231ad53d7707385374498d1971ac93afb9d163cc5e4538f2993e0d6"
+      },
+      "case": "oracle-triple-axel",
+      "mode": "hybrid",
+      "opponent_model": "npc-ai",
+      "fixture_hash": "5d3c52222231ad53d7707385374498d1971ac93afb9d163cc5e4538f2993e0d6",
+      "provenance": {
+        "kind": "analytic-control",
+        "sources": [
+          "https://github.com/smogon/damage-calc/blob/master/calc/src/test/calc.test.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/moves.ts"
+        ],
+        "notes": "Mechanics-test-inspired Run & Bun controls, not reproductions of recorded battles."
+      },
+      "checkpoints": {
+        "1000": {
+          "measured": true,
+          "score": 64.6875,
+          "available_at_ms": 449.08450000000005
+        },
+        "3000": {
+          "measured": true,
+          "score": 64.6875,
+          "available_at_ms": 449.08450000000005
+        },
+        "10000": {
+          "measured": true,
+          "score": 64.6875,
+          "available_at_ms": 449.08450000000005
+        }
+      },
+      "input_blocked": false,
+      "unresolved_reasons": [],
+      "first_estimate_ms": 111.1988,
+      "elapsed_ms": 450.0991,
+      "cpu_ms": 766,
+      "max_slice_ms": 111.06460000000004,
+      "peak_rss_mb": 162.98828125,
+      "score": 64.6875,
+      "absolute_error_pp": 8.212500000000006,
+      "samples": 128,
+      "done": true,
+      "retained_states": 1,
+      "total_native_rollouts": 128,
+      "exact_next_turn": false,
+      "next_turn_expansions": 0,
+      "merged_states": 0,
+      "first_second": {
+        "score": 64.6875,
+        "available_at_ms": 449.08450000000005,
+        "absolute_error_pp": 8.212500000000006,
+        "reference": 72.9,
+        "reference_kind": "analytic",
+        "goal_met": true
+      },
+      "prediction": {
+        "schema_version": 1,
+        "kind": "estimate",
+        "certificate": null,
+        "search": {
+          "status": "sample-budget-finished",
+          "resolved": false
+        },
+        "reasons": [],
+        "estimate": {
+          "score": 64.6875,
+          "basis": "simulation-estimate"
+        }
+      },
+      "readings": [
+        {
+          "elapsed_ms": 111.1988,
+          "score": 72.00000000000001,
+          "samples": 29,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 218.65639999999996,
+          "score": 72.00000000000001,
+          "samples": 59,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 320.7681000000001,
+          "score": 67.02127659574468,
+          "samples": 94,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 423.73580000000004,
+          "score": 64.5,
+          "samples": 120,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 449.08450000000005,
+          "score": 64.6875,
+          "samples": 128,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        }
+      ]
+    },
+    {
+      "trial": 0,
+      "reference": {
+        "status": "analytic",
+        "expected_percent": 90,
+        "fraction": "9/10",
+        "proof": "Max two critical hits 308 < HP 330 <= min three normal hits 348; accuracy 9/10 with Skill Link.",
+        "input_sha256": "c940dc593e561061071c4355a100001a393f620387df470245057af566032a6f"
+      },
+      "case": "oracle-skill-link-axel",
+      "mode": "hybrid",
+      "opponent_model": "npc-ai",
+      "fixture_hash": "c940dc593e561061071c4355a100001a393f620387df470245057af566032a6f",
+      "provenance": {
+        "kind": "analytic-control",
+        "sources": [
+          "https://github.com/smogon/damage-calc/blob/master/calc/src/test/calc.test.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/moves.ts"
+        ],
+        "notes": "Mechanics-test-inspired Run & Bun controls, not reproductions of recorded battles."
+      },
+      "checkpoints": {
+        "1000": {
+          "measured": true,
+          "score": 90,
+          "available_at_ms": 282.5851
+        },
+        "3000": {
+          "measured": true,
+          "score": 90,
+          "available_at_ms": 282.5851
+        },
+        "10000": {
+          "measured": true,
+          "score": 90,
+          "available_at_ms": 282.5851
+        }
+      },
+      "input_blocked": false,
+      "unresolved_reasons": [],
+      "first_estimate_ms": 109.58050000000003,
+      "elapsed_ms": 282.7083,
+      "cpu_ms": 453,
+      "max_slice_ms": 109.50440000000003,
+      "peak_rss_mb": 162.80859375,
+      "score": 90,
+      "absolute_error_pp": 0,
+      "samples": 128,
+      "done": true,
+      "retained_states": 1,
+      "total_native_rollouts": 128,
+      "exact_next_turn": false,
+      "next_turn_expansions": 0,
+      "merged_states": 0,
+      "first_second": {
+        "score": 90,
+        "available_at_ms": 282.5851,
+        "absolute_error_pp": 0,
+        "reference": 90,
+        "reference_kind": "analytic",
+        "goal_met": true
+      },
+      "prediction": {
+        "schema_version": 1,
+        "kind": "estimate",
+        "certificate": null,
+        "search": {
+          "status": "sample-budget-finished",
+          "resolved": false
+        },
+        "reasons": [],
+        "estimate": {
+          "score": 90,
+          "basis": "simulation-estimate"
+        }
+      },
+      "readings": [
+        {
+          "elapsed_ms": 109.58050000000003,
+          "score": 90,
+          "samples": 41,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 212.63440000000014,
+          "score": 90,
+          "samples": 96,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 282.5851,
+          "score": 90,
+          "samples": 128,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        }
+      ]
+    }
+  ]
+}

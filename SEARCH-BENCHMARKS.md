@@ -129,3 +129,7 @@ Initial report: `.local-tools/search-benchmarks/bound-pruning-baseline.json`.
 The native matchup's median first reading was approximately 328 ms disabled and 331 ms enabled. This fixture did not demonstrate an overall speedup. Controlled games demonstrate skipped work with unchanged answers; additional real-shaped cases are needed to measure how often the pruning helps.
 
 `test/bound-pruning.test.mjs` independently checks 625 small matrix-game values, preservation of mixed strategies, chance-tail mass, threshold proof reuse, confidence epoch resets and native state identity safeguards.
+
+## Independent accuracy references
+
+See [accuracy references](analysis/ACCURACY-BENCHMARK-REFERENCES.md) for exact controls, all twelve existing-case assessments, and the required reference policy for future accuracy fixtures. Use `--group=accuracy --require-reference` to reject unsolved cases. Legacy `expected` fields no longer establish an accuracy reference.

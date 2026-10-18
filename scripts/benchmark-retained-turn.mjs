@@ -1,3 +1,4 @@
+import {benchmarkReference} from './benchmark-oracles.mjs';
 // Run isolated, repeatable A/B cases. No ROM, save file or live capture needed.
 import {spawnSync} from 'node:child_process';
 import {mkdirSync,writeFileSync,readFileSync} from 'node:fs';
@@ -14,9 +15,10 @@ const modes=arg('mode')?[arg('mode')]:['baseline','hybrid'];
 if(modes.some(m=>!['baseline','hybrid'].includes(m)))throw Error('Unknown benchmark mode');
 const cases=searchFixtures.filter(f=>(!arg('case')||f.id===arg('case'))&&(!arg('group')||f.group===arg('group'))&&(!arg('variant')||f.variant===arg('variant'))&&(!arg('family')||f.family===arg('family')));
 if(!cases.length)throw Error('Unknown benchmark case');
+for(const fixture of cases){const r=benchmarkReference(fixture,opponentModel);if(process.argv.includes('--require-reference')&&r.status==='unresolved')throw Error(`No accuracy reference: ${fixture.id}/${opponentModel}`);}
 const root=fileURLToPath(new URL('../',import.meta.url)),worker=fileURLToPath(new URL('./benchmark-retained-turn-worker.mjs',import.meta.url));
 const sourceHashes=Object.fromEntries(['analysis/sampled-moves.mjs','analysis/retained-turn.mjs','analysis/complete-moves.mjs',
- 'analysis/search.mjs','analysis/result-contract.mjs','analysis/continuation-policy.mjs','scripts/search-benchmark-fixtures.mjs','scripts/real-battle-fixtures.mjs',
+ 'analysis/search.mjs','analysis/result-contract.mjs','analysis/continuation-policy.mjs','scripts/search-benchmark-fixtures.mjs','scripts/real-battle-fixtures.mjs','scripts/accuracy-benchmark-fixtures.mjs','scripts/benchmark-oracles.mjs','scripts/benchmark-references.json',
  'vendor/showdown/dist/sim/battle-actions.js'].map(path=>[path,createHash('sha256').update(readFileSync(resolve(root,path))).digest('hex')]));
 const rows=[];
 for(let trial=0;trial<trials;trial++)for(const fixture of cases)for(const mode of trial%2?[...modes].reverse():modes){
@@ -33,7 +35,7 @@ const summary=cases.flatMap(f=>modes.map(mode=>{
   first_second_usable:r.filter(x=>x.first_second.score!==null).length,
   first_second_error_pp:median(r.map(x=>x.first_second.absolute_error_pp)),
   first_second_goal_met:r.filter(x=>x.first_second.goal_met===true).length,
-  accuracy_reference_available:f.expected!==undefined,
+  accuracy_reference_available:benchmarkReference(f,opponentModel).status!=='unresolved',
   score_at_1s:median(r.map(x=>x.checkpoints['1000'].score)),score_at_3s:median(r.map(x=>x.checkpoints['3000'].score)),
   score_at_10s:median(r.map(x=>x.checkpoints['10000'].score)),max_slice_ms:Math.max(...r.map(x=>x.max_slice_ms)),
   samples:median(r.map(x=>x.samples)),peak_rss_mb:median(r.map(x=>x.peak_rss_mb)),completed:r.filter(x=>x.done).length};

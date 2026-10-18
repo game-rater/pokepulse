@@ -1,0 +1,206 @@
+{
+  "created_at": "2026-10-18T09:14:46.329Z",
+  "node": "v24.19.0",
+  "seconds": 1,
+  "trials": 1,
+  "opponent_model": "minimax",
+  "source_hashes": {
+    "analysis/sampled-moves.mjs": "db4a7706215f1f1656d73885385461e3e1f69a77110c55a04a0e2bf867eebb24",
+    "analysis/retained-turn.mjs": "0c19617e6701d098426698abd28a0007321622eebebf21cfd175be628b0598c6",
+    "analysis/complete-moves.mjs": "1fb19ef46f21bf6725be0820eea197667c052219ad5518f402fca4bd2a962615",
+    "analysis/search.mjs": "0758c9ec608cb5241a2bfa7eb0d16525886e7b5bd6b6fd43b03fcf00bada709f",
+    "analysis/result-contract.mjs": "d495ee9c3731e3e795c6cc56e6db2301846fbaecc899a6983bb7ebbbacc2e2b3",
+    "analysis/continuation-policy.mjs": "10b112b98acaa092fa742f92b5a08f96825756c93857655102b5081e192cf4ab",
+    "scripts/search-benchmark-fixtures.mjs": "49acd5e19f3f41de2790e3b30f94c5f253ebcca1b612e80c3922e319e3cfa0a9",
+    "scripts/real-battle-fixtures.mjs": "be6f5d6f5afe59a2caefe4e7c159ea80f2f0a442e80aff33e568a4134fefb236",
+    "scripts/accuracy-benchmark-fixtures.mjs": "99fb2cc7269d2e4507554584f76488479c05a6847824691654f7f23c44eba2f2",
+    "scripts/benchmark-oracles.mjs": "b046bcfbeb90f60efa90e6fd3e2f0f240fd54d9c2fb151ddbe14054b5de75270",
+    "scripts/benchmark-references.json": "4f54c54255ae86628923915ef0efdf46202acbe757c0c4fcc913e7faa160123f",
+    "vendor/showdown/dist/sim/battle-actions.js": "15132d6f3347c56604b2dfb6e0e249d3b2fb4c1a223ae52c4c03f5f38979084d"
+  },
+  "method": "Isolated processes; engine initialization excluded; fixed native RNG seeds; alternating mode order; identical per-pass and sample budgets.",
+  "summary": [
+    {
+      "case": "drednaw-lunatone-triggered",
+      "mode": "hybrid",
+      "opponent_model": "minimax",
+      "first_estimate_ms": 727.9570999999999,
+      "elapsed_ms": 1032.4316,
+      "reroot_first_estimate_ms": null,
+      "reuse_hits": 0,
+      "first_second_usable": 1,
+      "first_second_error_pp": 1,
+      "first_second_goal_met": 1,
+      "accuracy_reference_available": true,
+      "score_at_1s": 1,
+      "score_at_3s": null,
+      "score_at_10s": null,
+      "max_slice_ms": 134.52970000000005,
+      "samples": 55,
+      "peak_rss_mb": 177.3984375,
+      "completed": 0
+    }
+  ],
+  "rows": [
+    {
+      "trial": 0,
+      "reference": {
+        "status": "analytic",
+        "expected_percent": 0,
+        "fraction": "0/1",
+        "proof": "Lunatone Speed 34 > Drednaw 30; Stored Power minimum 76 > current HP 51. No player move acts first or protects.",
+        "opponent_model": "minimax",
+        "scope": "calculated Run & Bun model; not the NPC policy",
+        "input_sha256": "778e9a68f9a072741f5dad8852a491d48a33cf54a34eb14e19c124aa22af9686"
+      },
+      "case": "drednaw-lunatone-triggered",
+      "mode": "hybrid",
+      "opponent_model": "minimax",
+      "fixture_hash": "778e9a68f9a072741f5dad8852a491d48a33cf54a34eb14e19c124aa22af9686",
+      "provenance": {
+        "kind": "synthetic-reconstruction",
+        "report": "https://www.reddit.com/r/nuzlocke/comments/1nbdd25/",
+        "trainer_source": "https://github.com/SynchEleven/rnb-calc-ultimate/blob/15a0ea580604595786e0f81d965e68afc66279e4/src/js/data/sets/gen8.js",
+        "documented": [
+          "Drednaw level, nature, IVs, ability, item and moves.",
+          "Both sides have one Speed drop; Lunatone initially full HP."
+        ],
+        "assumptions": [
+          "HP, PP, history and phase variants are constructed, not extracted from video.",
+          "Player builds are illustrative unless explicitly documented; ROM learnset legality is not established.",
+          "Unspecified player IVs 20; opponent IVs 31; zero EVs; male or genderless.",
+          "Community opponent sets are not ROM verification. No switches are simulated."
+        ]
+      },
+      "checkpoints": {
+        "1000": {
+          "measured": true,
+          "score": 1,
+          "available_at_ms": 928.1152999999999
+        },
+        "3000": {
+          "measured": false,
+          "score": null,
+          "available_at_ms": null
+        },
+        "10000": {
+          "measured": false,
+          "score": null,
+          "available_at_ms": null
+        }
+      },
+      "input_blocked": false,
+      "unresolved_reasons": [],
+      "first_estimate_ms": 727.9570999999999,
+      "elapsed_ms": 1032.4316,
+      "cpu_ms": 1500,
+      "max_slice_ms": 134.52970000000005,
+      "peak_rss_mb": 177.3984375,
+      "score": 1,
+      "absolute_error_pp": 1,
+      "samples": 55,
+      "done": false,
+      "retained_states": 23,
+      "total_native_rollouts": 55,
+      "exact_next_turn": false,
+      "next_turn_expansions": 24,
+      "merged_states": 0,
+      "first_second": {
+        "score": 1,
+        "available_at_ms": 928.1152999999999,
+        "absolute_error_pp": 1,
+        "reference": 0,
+        "reference_kind": "analytic",
+        "goal_met": true
+      },
+      "prediction": {
+        "schema_version": 1,
+        "kind": "estimate",
+        "certificate": null,
+        "search": {
+          "status": "searching",
+          "resolved": false
+        },
+        "reasons": [],
+        "estimate": {
+          "score": 1,
+          "basis": "simulation-estimate"
+        }
+      },
+      "readings": [
+        {
+          "elapsed_ms": 117.26350000000002,
+          "score": null,
+          "samples": 3,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 252.10259999999994,
+          "score": null,
+          "samples": 8,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 357.9402,
+          "score": null,
+          "samples": 16,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 481.51779999999985,
+          "score": null,
+          "samples": 20,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 593.7983999999999,
+          "score": null,
+          "samples": 24,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 727.9570999999999,
+          "score": 1,
+          "samples": 35,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 832.0573999999999,
+          "score": 1,
+          "samples": 47,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 928.1152999999999,
+          "score": 1,
+          "samples": 51,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1032.1794999999997,
+          "score": 1,
+          "samples": 55,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        }
+      ]
+    }
+  ]
+}
