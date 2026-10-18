@@ -17,12 +17,23 @@ save a review or bug report to keep it.
   captures merge; animations do not create extra turns.
 * The next decision or a terminal HP observation closes it. Tracking gaps,
   changed Pokémon and skipped/unknown turn counters prevent action blame.
-* PP decreases identify candidate moves. A decision flag additionally requires
+* Native game messages establish captured move uses. When unavailable, PP
+  decreases identify candidate moves. A decision flag additionally requires
   matching previous-move evidence and excludes known PP-draining ambiguity.
   This is inference from state, not a recording of controller input.
 * The existing state-only continuation flags explain clearly ineffective actions
   and suggest other available moves to compare. Useful waiting is preserved.
   No trainer AI or counterfactual search is invoked by this review.
+* The review includes captured critical hits, misses, paralysis, flinches,
+  confusion, sleep, freezing, poison and burn damage, and survival effects.
+  These are observed game events; some are deterministic rather than bad luck.
+* A knockout explanation identifies a captured lethal critical, confusion hit,
+  ordinary attack, poison or burn. Ordinary damage attribution requires a
+  contiguous native operation with matching turn, phase and action index;
+  unknown messages and buffer gaps block attribution. Otherwise the cause is
+  explicitly unknown. Earlier unfavorable events are listed as context.
+  A different roll or move is not assumed to guarantee a win. A fainted active
+  Pokémon does not establish that the entire team lost.
 * HP, status, stat, item and ability changes are observations. Damage alone
   cannot identify a critical hit, miss, recoil or every residual effect.
 * Outlook values come from matching state/model records before execution.
@@ -51,3 +62,23 @@ missed turns, switches, terminal observations, reconnects, state/model estimate
 alignment, bounded/read-only caching, escaping, saved files and HTTP routing.
 The browser UI was also inspected with explicitly synthetic data; this does not
 constitute a new live-emulator verification.
+
+## Native outcome capture
+
+The read-only mGBA integration observes print-controller messages and HP changes
+every emulated frame, retaining 128 events. A numbered sidecar journal is paired
+with each existing RAM capture every fifteen frames. The bridge consumes each
+event once and reports overflow gaps. This preserves events across skipped
+captures at fast-forward without running additional prediction searches.
+Controller buffers are located through the game resource pointer.
+
+Reload the updated generated `PokeThreat.lua` integration to enable buffered
+outcomes in an already open emulator. Older scripts still support limited
+message sampling from RAM captures, but short messages can be missed. Historical
+reports without these events cannot be retroactively assigned a damage source.
+
+Numeric fixtures were captured from isolated Run & Bun 1.07 engine replays for
+critical hits, a missed Hypnosis, full paralysis, an ordinary lethal attack and
+a poison knockout. Test-only RNG/HP/move/status changes affected only that
+isolated core. No user emulator, ROM or save was modified. Other message kinds
+use the game string mapping and have not all been individually replay-verified.

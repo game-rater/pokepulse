@@ -1,5 +1,6 @@
 import {createCompleteBattle,restoreCompleteBattle} from '../analysis/native-battle.mjs';
 import {selectContinuationChoices} from '../analysis/action-usefulness.mjs';
+import {outcomeEvidence,explainKnockout} from './loss-explanation.mjs';
 const id=s=>String(s||'').toLowerCase().replace(/[^a-z0-9]/g,'');
 const actors=s=>JSON.stringify(['player','opponent'].map(k=>[s[k]?.species,s[k]?.effects?.personality??null]));
 const turn=s=>Number.isInteger(s.battle_phase?.turn)?s.battle_phase.turn:null;
@@ -48,8 +49,17 @@ export class BattleHistory {
   const groups=[];let current=null,battle=1,model='minimax';
   const estimates=new Map();
   for(const e of events){
+   if(e.kind==='battle-message'){
+    const matches=g=>e.message?.actor&&id(e.message.actor_species)===id(g.before.snapshot[e.message.actor]?.species)&&id(e.message.target_species)===id(g.before.snapshot[e.message.target]?.species);
+    const group=e.message?.kind==='capture-gap'?(current||groups.at(-1)):groups.findLast(g=>(g.battle===battle||!current&&g===groups.at(-1)&&g.complete)&&g.turn===e.message?.turn&&matches(g));
+    if(group&&!group.gap&&!group.messagesClosed&&e.message){
+     group.messages.push(e.message);group.execution??=e.id;
+    }
+    continue;
+   }
    if(e.kind==='optimizer'){model=e.opponent_model;if(current&&!current.execution)current.model=model;continue;}
    if(e.kind==='tracking'&&e.tracking?.status!=='battle'){
+    if(groups.length)groups.at(-1).messagesClosed=true;
     if(current){current.gap=true;current=null;battle++;}continue;
    }
    if(e.kind==='estimate'){
@@ -65,7 +75,7 @@ export class BattleHistory {
     if(ended(s)){if(current){current.after=e;current.complete=true;current=null;battle++;}continue;}
     if(current&&current.turn===turn(s)&&current.actors===actors(s)&&!current.execution){current.before=e;continue;}
     const previous=current;if(previous){previous.after=e;previous.complete=true;}
-    current={before:e,turn:turn(s),actors:actors(s),battle,model,execution:null,after:null,complete:false};groups.push(current);
+    current={before:e,turn:turn(s),actors:actors(s),battle,model,execution:null,after:null,complete:false,messages:[]};groups.push(current);
     if(previous)previous.next=current;
    }else if(current){
     current.execution??=e.id;current.after=e;
@@ -76,7 +86,10 @@ export class BattleHistory {
    const a=g.before,b=g.next?.before||g.after,p=a.snapshot,q=b?.snapshot,same=q&&actors(q)===g.actors;
    const distance=q&&g.turn!==null&&turn(q)!==null?(turn(q)-g.turn+256)%256:null;
    const adjacent=same&&g.complete&&(ended(q)&&[0,1].includes(distance)||distance===1);
-   const playerMoves=same?spent(p.player,q.player):[],opponentMoves=same?spent(p.opponent,q.opponent):[];
+   const battleEvents=outcomeEvidence(g.messages);
+   const observedMoves=side=>g.messages.filter(m=>m.kind==='move-used'&&m.actor===side).map(m=>({move:m.move,evidence:'native-game-message',matches_last_move:true}));
+   const playerMoves=observedMoves('player').length?observedMoves('player'):same?spent(p.player,q.player):[];
+   const opponentMoves=observedMoves('opponent').length?observedMoves('opponent'):same?spent(p.opponent,q.opponent):[];
    const observationChanges=same?changes(p,q):q?['player','opponent'].filter(k=>p[k]?.species!==q[k]?.species)
     .map(side=>({side,kind:'species',label:'Active Pokémon',before:p[side]?.species,after:q[side]?.species})):[];
    const notes=[];let assessment='observed',review=null;
@@ -94,7 +107,7 @@ export class BattleHistory {
     if(flags.unavailable)notes.push('Move mechanics could not be assessed from this capture.');
     else if(ppAmbiguous)notes.push('PP loss may include a PP-draining effect; a chosen move is not established.');
     else if(flags.filtered&&move.matches_last_move){
-     assessment='review-decision';review={move:move.move,reasons:flags.reasons.map(r=>explanations[r]||r),alternatives:flags.alternatives||[],evidence:'PP decreased and the recorded previous move matches. This is inferred, not an input recording.'};
+     assessment='review-decision';review={move:move.move,reasons:flags.reasons.map(r=>explanations[r]||r),alternatives:flags.alternatives||[],evidence:move.evidence==='native-game-message'?'The game reported this move being used.':'PP decreased and the recorded previous move matches. This is inferred, not an input recording.'};
     }else if(flags.reasons.length&&flags.waiting)notes.push('This move has no direct effect here, but waiting could be useful; it is not marked as a mistake.');
     else if(flags.filtered)notes.push('PP decreased on a potentially ineffective move, but the previous-move record does not confirm its use.');
    }
@@ -107,11 +120,14 @@ export class BattleHistory {
    // different optimizer models. A missing estimate is an honest gap.
    const beforeScore=pre?.score??null,afterScore=g.complete?post?.score??null:null;
    if(beforeScore!==null&&afterScore!==null&&beforeScore-afterScore>=10&&!review)notes.push('The estimate fell, but these observations do not establish a worse choice. Outcomes and search refinement can also change it.');
-   return {id:a.state_id,battle:g.battle,turn:g.turn,at:a.at,complete:g.complete,assessment,
+   const knockout=same?explainKnockout(p,q,battleEvents,{complete:g.complete,consecutive:adjacent}):null;
+   if(knockout)knockout.earlier_unfavorable_events=groups.filter(old=>old.battle===g.battle&&old.before.id<a.id)
+    .flatMap(old=>outcomeEvidence(old.messages)).filter(m=>m.unfavorable).slice(-5).map(m=>m.text);
+   return {id:a.state_id,battle:g.battle,turn:g.turn,at:a.at,complete:g.complete,assessment,battle_events:battleEvents,knockout,
     player:p.player.species,opponent:p.opponent.species,player_moves:playerMoves,opponent_moves:opponentMoves,
     changes:observationChanges,before_score:beforeScore,after_score:afterScore,review,notes};
   }).reverse();
   return {schema_version:1,window_seconds:windowSeconds,total_decisions:groups.length,omitted_decisions:Math.max(0,groups.length-entries.length),entries,
-   explanation:'Moves are inferred from PP and previous-move observations. A probability drop alone is not a mistake. Misses and critical hits are not individually recorded.'};
+   explanation:'Game messages identify captured misses, critical hits and other battle effects. PP-only move identification is inferred. A probability drop alone is not a mistake; missing events are not guessed.'};
  }
 }

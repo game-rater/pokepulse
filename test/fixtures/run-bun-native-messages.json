@@ -1,0 +1,601 @@
+{
+  "provenance": "Run & Bun 1.07 engine in the isolated Athena libretro harness. Critical: seeded native replay; miss/paralysis/lethal: test-only RAM changes in that isolated core. No live game or save changes. Numeric event facts only; no ROM or raw RAM included.",
+  "cases": [
+    {
+      "case": "critical",
+      "seed_test_only": 6,
+      "events": [
+        {
+          "id": 1,
+          "code": 4,
+          "move": 158,
+          "attacker": 1,
+          "target": 0,
+          "turn": 0,
+          "player_index": 0,
+          "hp": [
+            58,
+            48
+          ],
+          "species": [
+            194,
+            19
+          ],
+          "phase": 134472561,
+          "action_index": 0
+        },
+        {
+          "id": 2,
+          "code": -1,
+          "move": 158,
+          "attacker": 1,
+          "target": 0,
+          "turn": 0,
+          "player_index": 0,
+          "hp": [
+            21,
+            48
+          ],
+          "species": [
+            194,
+            19
+          ],
+          "phase": 134472561,
+          "action_index": 0,
+          "before_hp": 58
+        },
+        {
+          "id": 3,
+          "code": 217,
+          "move": 158,
+          "attacker": 1,
+          "target": 0,
+          "turn": 0,
+          "player_index": 0,
+          "hp": [
+            21,
+            48
+          ],
+          "species": [
+            194,
+            19
+          ],
+          "phase": 134472561,
+          "action_index": 0
+        },
+        {
+          "id": 4,
+          "code": 4,
+          "move": 89,
+          "attacker": 0,
+          "target": 1,
+          "turn": 0,
+          "player_index": 0,
+          "hp": [
+            21,
+            48
+          ],
+          "species": [
+            194,
+            19
+          ],
+          "phase": 134472561,
+          "action_index": 1
+        },
+        {
+          "id": 5,
+          "code": -1,
+          "move": 89,
+          "attacker": 0,
+          "target": 1,
+          "turn": 0,
+          "player_index": 0,
+          "hp": [
+            21,
+            12
+          ],
+          "species": [
+            194,
+            19
+          ],
+          "phase": 134472561,
+          "action_index": 1,
+          "before_hp": 48
+        }
+      ]
+    },
+    {
+      "case": "lethal-attack",
+      "seed_test_only": 4,
+      "events": [
+        {
+          "id": 1,
+          "code": 4,
+          "move": 158,
+          "attacker": 1,
+          "target": 0,
+          "turn": 0,
+          "player_index": 0,
+          "hp": [
+            20,
+            48
+          ],
+          "species": [
+            194,
+            19
+          ],
+          "phase": 134472561,
+          "action_index": 0
+        },
+        {
+          "id": 2,
+          "code": -1,
+          "move": 158,
+          "attacker": 1,
+          "target": 0,
+          "turn": 0,
+          "player_index": 0,
+          "hp": [
+            0,
+            48
+          ],
+          "species": [
+            194,
+            19
+          ],
+          "phase": 134472561,
+          "action_index": 0,
+          "before_hp": 20
+        },
+        {
+          "id": 3,
+          "code": 29,
+          "move": 158,
+          "attacker": 1,
+          "target": 0,
+          "turn": 0,
+          "player_index": 0,
+          "hp": [
+            0,
+            48
+          ],
+          "species": [
+            194,
+            19
+          ],
+          "phase": 134472561,
+          "action_index": 0
+        },
+        {
+          "id": 4,
+          "code": 31,
+          "move": 0,
+          "attacker": 1,
+          "target": 0,
+          "turn": 0,
+          "player_index": 0,
+          "hp": [
+            0,
+            48
+          ],
+          "species": [
+            194,
+            19
+          ],
+          "phase": 134473833,
+          "action_index": 2
+        },
+        {
+          "id": 5,
+          "code": 32,
+          "move": 0,
+          "attacker": 1,
+          "target": 0,
+          "turn": 0,
+          "player_index": 0,
+          "hp": [
+            0,
+            48
+          ],
+          "species": [
+            194,
+            19
+          ],
+          "phase": 134473833,
+          "action_index": 2
+        }
+      ]
+    },
+    {
+      "case": "poison",
+      "seed_test_only": 1,
+      "events": [
+        {
+          "id": 1,
+          "code": 4,
+          "move": 158,
+          "attacker": 1,
+          "target": 0,
+          "turn": 0,
+          "player_index": 0,
+          "hp": [
+            32,
+            48
+          ],
+          "species": [
+            194,
+            19
+          ],
+          "phase": 134472561,
+          "action_index": 0
+        },
+        {
+          "id": 2,
+          "code": -1,
+          "move": 158,
+          "attacker": 1,
+          "target": 0,
+          "turn": 0,
+          "player_index": 0,
+          "hp": [
+            4,
+            48
+          ],
+          "species": [
+            194,
+            19
+          ],
+          "phase": 134472561,
+          "action_index": 0,
+          "before_hp": 32
+        },
+        {
+          "id": 3,
+          "code": 4,
+          "move": 89,
+          "attacker": 0,
+          "target": 1,
+          "turn": 0,
+          "player_index": 0,
+          "hp": [
+            4,
+            48
+          ],
+          "species": [
+            194,
+            19
+          ],
+          "phase": 134472561,
+          "action_index": 1
+        },
+        {
+          "id": 4,
+          "code": -1,
+          "move": 89,
+          "attacker": 0,
+          "target": 1,
+          "turn": 0,
+          "player_index": 0,
+          "hp": [
+            4,
+            12
+          ],
+          "species": [
+            194,
+            19
+          ],
+          "phase": 134472561,
+          "action_index": 1,
+          "before_hp": 48
+        },
+        {
+          "id": 5,
+          "code": 42,
+          "move": 0,
+          "attacker": 0,
+          "target": 0,
+          "turn": 0,
+          "player_index": 0,
+          "hp": [
+            4,
+            12
+          ],
+          "species": [
+            194,
+            19
+          ],
+          "phase": 134474925,
+          "action_index": 2
+        },
+        {
+          "id": 6,
+          "code": -1,
+          "move": 0,
+          "attacker": 0,
+          "target": 0,
+          "turn": 0,
+          "player_index": 0,
+          "hp": [
+            0,
+            12
+          ],
+          "species": [
+            194,
+            19
+          ],
+          "phase": 134474925,
+          "action_index": 2,
+          "before_hp": 4
+        },
+        {
+          "id": 7,
+          "code": 28,
+          "move": 0,
+          "attacker": 0,
+          "target": 0,
+          "turn": 0,
+          "player_index": 0,
+          "hp": [
+            0,
+            12
+          ],
+          "species": [
+            194,
+            19
+          ],
+          "phase": 134474925,
+          "action_index": 2
+        },
+        {
+          "id": 8,
+          "code": 31,
+          "move": 0,
+          "attacker": 0,
+          "target": 1,
+          "turn": 0,
+          "player_index": 0,
+          "hp": [
+            0,
+            12
+          ],
+          "species": [
+            194,
+            19
+          ],
+          "phase": 134473833,
+          "action_index": 3
+        },
+        {
+          "id": 9,
+          "code": 32,
+          "move": 0,
+          "attacker": 0,
+          "target": 1,
+          "turn": 0,
+          "player_index": 0,
+          "hp": [
+            0,
+            12
+          ],
+          "species": [
+            194,
+            19
+          ],
+          "phase": 134473833,
+          "action_index": 3
+        }
+      ]
+    },
+    {
+      "case": "lethal-critical",
+      "seed_test_only": 6,
+      "events": [
+        {
+          "id": 1,
+          "code": 4,
+          "move": 158,
+          "attacker": 1,
+          "target": 0,
+          "turn": 0,
+          "player_index": 0,
+          "hp": [
+            35,
+            48
+          ],
+          "species": [
+            194,
+            19
+          ],
+          "phase": 134472561,
+          "action_index": 0
+        },
+        {
+          "id": 2,
+          "code": -1,
+          "move": 158,
+          "attacker": 1,
+          "target": 0,
+          "turn": 0,
+          "player_index": 0,
+          "hp": [
+            0,
+            48
+          ],
+          "species": [
+            194,
+            19
+          ],
+          "phase": 134472561,
+          "action_index": 0,
+          "before_hp": 35
+        },
+        {
+          "id": 3,
+          "code": 217,
+          "move": 158,
+          "attacker": 1,
+          "target": 0,
+          "turn": 0,
+          "player_index": 0,
+          "hp": [
+            0,
+            48
+          ],
+          "species": [
+            194,
+            19
+          ],
+          "phase": 134472561,
+          "action_index": 0
+        }
+      ]
+    },
+    {
+      "case": "miss",
+      "seed_test_only": 4,
+      "events": [
+        {
+          "id": 1,
+          "code": 4,
+          "move": 158,
+          "attacker": 1,
+          "target": 0,
+          "turn": 0,
+          "player_index": 0,
+          "hp": [
+            58,
+            48
+          ],
+          "species": [
+            194,
+            19
+          ],
+          "phase": 134472561,
+          "action_index": 0
+        },
+        {
+          "id": 2,
+          "code": -1,
+          "move": 158,
+          "attacker": 1,
+          "target": 0,
+          "turn": 0,
+          "player_index": 0,
+          "hp": [
+            30,
+            48
+          ],
+          "species": [
+            194,
+            19
+          ],
+          "phase": 134472561,
+          "action_index": 0,
+          "before_hp": 58
+        },
+        {
+          "id": 3,
+          "code": 4,
+          "move": 95,
+          "attacker": 0,
+          "target": 1,
+          "turn": 0,
+          "player_index": 0,
+          "hp": [
+            30,
+            48
+          ],
+          "species": [
+            194,
+            19
+          ],
+          "phase": 134472561,
+          "action_index": 1
+        },
+        {
+          "id": 4,
+          "code": 23,
+          "move": 95,
+          "attacker": 0,
+          "target": 1,
+          "turn": 0,
+          "player_index": 0,
+          "hp": [
+            30,
+            48
+          ],
+          "species": [
+            194,
+            19
+          ],
+          "phase": 134472561,
+          "action_index": 1
+        }
+      ]
+    },
+    {
+      "case": "paralysis",
+      "seed_test_only": 1,
+      "events": [
+        {
+          "id": 1,
+          "code": 4,
+          "move": 158,
+          "attacker": 1,
+          "target": 0,
+          "turn": 0,
+          "player_index": 0,
+          "hp": [
+            58,
+            48
+          ],
+          "species": [
+            194,
+            19
+          ],
+          "phase": 134472561,
+          "action_index": 0
+        },
+        {
+          "id": 2,
+          "code": -1,
+          "move": 158,
+          "attacker": 1,
+          "target": 0,
+          "turn": 0,
+          "player_index": 0,
+          "hp": [
+            30,
+            48
+          ],
+          "species": [
+            194,
+            19
+          ],
+          "phase": 134472561,
+          "action_index": 0,
+          "before_hp": 58
+        },
+        {
+          "id": 3,
+          "code": 57,
+          "move": 89,
+          "attacker": 0,
+          "target": 1,
+          "turn": 0,
+          "player_index": 0,
+          "hp": [
+            30,
+            48
+          ],
+          "species": [
+            194,
+            19
+          ],
+          "phase": 134472561,
+          "action_index": 1
+        }
+      ]
+    }
+  ]
+}

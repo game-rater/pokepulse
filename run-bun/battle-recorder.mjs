@@ -46,6 +46,7 @@ export class BattleRecorder {
   this.append('estimate',{state_id:stateId,estimate});this.previousResult=structuredClone(estimate);
  }
  recordDisplay(display){this.append('display',{state_id:Number.isInteger(display.state_id)&&display.state_id>=0&&display.state_id<=this.stateId?display.state_id:this.stateId,display});}
+ recordMessages(messages){for(const message of messages||[])this.append('battle-message',{message});}
  status(){this.prune();return {retained_events:this.events.length,retained_bytes:this.bytes,window_seconds:this.maxAgeMs/1000,current_state_id:this.stateId,last_report:this.lastReport};}
  retainedEvents({clone=true}={}){
   this.prune();

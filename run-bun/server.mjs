@@ -20,6 +20,7 @@ engineFiles.push('analysis/observation-key.mjs');
 engineFiles.push('analysis/mechanics-contract.mjs');
 engineFiles.push('analysis/result-contract.mjs','run-bun/battle-state.mjs');
 engineFiles.push('run-bun/battle-recorder.mjs','run-bun/battle-history.mjs','run-bun/history-view.mjs','run-bun/history-app.mjs');
+engineFiles.push('run-bun/battle-messages.mjs','run-bun/loss-explanation.mjs','run-bun/integration.mjs','run-bun/bridge.mjs');
 const hashes=Object.fromEntries(await Promise.all(engineFiles.map(async file=>[file,createHash('sha256').update(await readFile(file)).digest('hex')])));
 const recorder=new BattleRecorder({directory:reportsDirectory,metadata:{engine_hashes:hashes,node:process.version,game:'Run & Bun 1.07',search_slices_ms:[150,250]}});
 let recordedTracking='';
@@ -129,6 +130,7 @@ function observeBattle(snapshot,warnings) {
 
 const bridge=await startBridge(bridgeDirectory,maps,{species:new Set(pack.species.map(p=>p.id)),moves:new Set(c.moves.map(m=>m.name)),abilities:new Set(c.abilities),items:new Set(c.items)},update=>{
   try {
+    recorder.recordMessages(update.battle_messages);
     if(update.status!=='battle')resetPrediction();
     else if(update.snapshot)observeBattle(update.snapshot,update.warnings||[]);
     tracking={

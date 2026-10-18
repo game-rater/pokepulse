@@ -2,13 +2,15 @@ const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&
 const score=n=>Number.isFinite(n)?`${Math.round(n)}%`:'Not recorded';
 const status={slp:'Asleep',psn:'Poisoned',tox:'Badly poisoned',brn:'Burned',par:'Paralyzed',frz:'Frozen'};
 const stat={atk:'Attack',def:'Defense',spa:'Sp. Attack',spd:'Sp. Defense',spe:'Speed',accuracy:'Accuracy',evasion:'Evasion'};
-const moveLine=(label,moves)=>`${esc(label)}: ${moves.length?moves.map(m=>`${esc(m.move)} (${m.matches_last_move?'inferred move':'PP decreased'})`).join(', '):'Move not established'}`;
+const moveLine=(label,moves)=>`${esc(label)}: ${moves.length?moves.map(m=>`${esc(m.move)} (${m.evidence==='native-game-message'?'game message':m.matches_last_move?'inferred move':'PP decreased'})`).join(', '):'Move not established'}`;
 export function historyMarkup(history){
  if(!history.entries.length)return '<div class="empty"><h2>No recent battle decisions yet</h2><p>Keep PokéPulse running during a battle, then return here.</p></div>';
  return history.entries.slice().sort((a,b)=>Number(b.complete)-Number(a.complete)).map(e=>`<article class="entry ${e.review?'review':''}">
  <header><div><span class="eyebrow">BATTLE ${esc(e.battle)} · ${e.turn===null?'OBSERVATION':`TURN ${esc(e.turn+1)}`}</span><h2>${esc(e.player)} vs ${esc(e.opponent)}</h2></div><time>${esc(new Date(e.at).toLocaleTimeString())}</time></header>
  <p class="moves">${moveLine('You',e.player_moves)}<br>${moveLine('Opponent',e.opponent_moves)}</p>
  <p class="odds">Recorded outlook: <strong>${score(e.before_score)}</strong> → <strong>${score(e.after_score)}</strong></p>
+ ${e.knockout?`<section class="finding"><h3>${esc(e.knockout.headline)}</h3><p>${esc(e.knockout.cause)}</p>${e.knockout.earlier_unfavorable_events?.length?`<p>Earlier unfavorable outcomes:</p><ul>${e.knockout.earlier_unfavorable_events.map(text=>`<li>${esc(text)}</li>`).join('')}</ul>`:''}<p class="small">${esc(e.knockout.evidence)}</p></section>`:''}
+ ${e.battle_events?.some(m=>!m.hidden)?`<section><h3>Luck and battle effects</h3><ul>${e.battle_events.filter(m=>!m.hidden).map(m=>`<li>${esc(m.text)}</li>`).join('')}</ul></section>`:''}
  ${e.review?`<section class="finding"><h3>Review this decision: ${esc(e.review.move)}</h3><ul>${e.review.reasons.map(r=>`<li>${esc(r)}</li>`).join('')}</ul>${e.review.alternatives?.length?`<p>Other available moves to compare: ${e.review.alternatives.map(esc).join(', ')}.</p>`:''}<p class="small">${esc(e.review.evidence)}</p></section>`:''}
  ${e.changes.length?`<details open><summary>What changed</summary><ul>${e.changes.map(c=>`<li>${c.side==='player'?'Your':'Opponent’s'} ${esc(stat[c.label]||c.label)}: ${esc(status[c.before]||c.before)} → ${esc(status[c.after]||c.after)}</li>`).join('')}</ul></details>`:''}
  ${e.notes.map(n=>`<p class="note">${esc(n)}</p>`).join('')}
