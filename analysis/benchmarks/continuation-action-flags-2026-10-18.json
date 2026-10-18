@@ -1,0 +1,1404 @@
+{
+  "created_at": "2026-10-18T17:02:01.286Z",
+  "scope": "Alternating warm policy construction with fresh policy caches; shared temporal features are warmed. All timings exclude initialization. No full-battle latency or accuracy claim.",
+  "source_hashes": {
+    "analysis/action-usefulness.mjs": "190a3966c87af1fe992d8c97e0ba123a1f8320fe97219b4052347657ac5666e4",
+    "analysis/continuation-policy.mjs": "6c7fc2aab89fb132807b2ccaa47413383a86d41ca47cef8ff831cb091f29a86e",
+    "analysis/position-features.mjs": "e98588bcac7f3fc13a99487a4d0e37e90127f1a9f31a0d1fdc88410e4be5b862",
+    "analysis/native-battle.mjs": "4772246187212a6282a89efa5d682e69ba07daf1ab3e0df07626047b94a475e1",
+    "scripts/benchmark-continuation-choices.mjs": "170ffee616f423f435cb55c6c009a43851732183d9e4f0e8d5e531e4b794fe62"
+  },
+  "rows": [
+    {
+      "case": "capped-setup",
+      "summary": {
+        "enabled": {
+          "median_ms": 1.098600000000033,
+          "p95_ms": 4.98720000000003,
+          "native_turn_probes": 0,
+          "actions": [
+            [
+              2
+            ],
+            [
+              1
+            ]
+          ],
+          "filtered": [
+            [
+              1
+            ],
+            []
+          ]
+        },
+        "disabled": {
+          "median_ms": 15.995100000000093,
+          "p95_ms": 29.728300000000218,
+          "native_turn_probes": 4,
+          "actions": [
+            [
+              1,
+              2
+            ],
+            [
+              1
+            ]
+          ],
+          "filtered": [
+            [],
+            []
+          ]
+        }
+      },
+      "readings": {
+        "enabled": [
+          {
+            "ms": 1.9972000000000207,
+            "actions": [
+              [
+                2
+              ],
+              [
+                1
+              ]
+            ],
+            "filtered": [
+              [
+                1
+              ],
+              []
+            ],
+            "native_turn_probes": 0
+          },
+          {
+            "ms": 1.927699999999959,
+            "actions": [
+              [
+                2
+              ],
+              [
+                1
+              ]
+            ],
+            "filtered": [
+              [
+                1
+              ],
+              []
+            ],
+            "native_turn_probes": 0
+          },
+          {
+            "ms": 0.8869999999999436,
+            "actions": [
+              [
+                2
+              ],
+              [
+                1
+              ]
+            ],
+            "filtered": [
+              [
+                1
+              ],
+              []
+            ],
+            "native_turn_probes": 0
+          },
+          {
+            "ms": 2.360400000000027,
+            "actions": [
+              [
+                2
+              ],
+              [
+                1
+              ]
+            ],
+            "filtered": [
+              [
+                1
+              ],
+              []
+            ],
+            "native_turn_probes": 0
+          },
+          {
+            "ms": 0.7399000000000342,
+            "actions": [
+              [
+                2
+              ],
+              [
+                1
+              ]
+            ],
+            "filtered": [
+              [
+                1
+              ],
+              []
+            ],
+            "native_turn_probes": 0
+          },
+          {
+            "ms": 0.7145000000000437,
+            "actions": [
+              [
+                2
+              ],
+              [
+                1
+              ]
+            ],
+            "filtered": [
+              [
+                1
+              ],
+              []
+            ],
+            "native_turn_probes": 0
+          },
+          {
+            "ms": 1.5105000000000928,
+            "actions": [
+              [
+                2
+              ],
+              [
+                1
+              ]
+            ],
+            "filtered": [
+              [
+                1
+              ],
+              []
+            ],
+            "native_turn_probes": 0
+          },
+          {
+            "ms": 4.98720000000003,
+            "actions": [
+              [
+                2
+              ],
+              [
+                1
+              ]
+            ],
+            "filtered": [
+              [
+                1
+              ],
+              []
+            ],
+            "native_turn_probes": 0
+          },
+          {
+            "ms": 0.86850000000004,
+            "actions": [
+              [
+                2
+              ],
+              [
+                1
+              ]
+            ],
+            "filtered": [
+              [
+                1
+              ],
+              []
+            ],
+            "native_turn_probes": 0
+          },
+          {
+            "ms": 0.8945000000001073,
+            "actions": [
+              [
+                2
+              ],
+              [
+                1
+              ]
+            ],
+            "filtered": [
+              [
+                1
+              ],
+              []
+            ],
+            "native_turn_probes": 0
+          },
+          {
+            "ms": 1.0704999999998108,
+            "actions": [
+              [
+                2
+              ],
+              [
+                1
+              ]
+            ],
+            "filtered": [
+              [
+                1
+              ],
+              []
+            ],
+            "native_turn_probes": 0
+          },
+          {
+            "ms": 1.098600000000033,
+            "actions": [
+              [
+                2
+              ],
+              [
+                1
+              ]
+            ],
+            "filtered": [
+              [
+                1
+              ],
+              []
+            ],
+            "native_turn_probes": 0
+          }
+        ],
+        "disabled": [
+          {
+            "ms": 29.728300000000218,
+            "actions": [
+              [
+                1,
+                2
+              ],
+              [
+                1
+              ]
+            ],
+            "filtered": [
+              [],
+              []
+            ],
+            "native_turn_probes": 4
+          },
+          {
+            "ms": 15.614500000000135,
+            "actions": [
+              [
+                1,
+                2
+              ],
+              [
+                1
+              ]
+            ],
+            "filtered": [
+              [],
+              []
+            ],
+            "native_turn_probes": 4
+          },
+          {
+            "ms": 14.083000000000084,
+            "actions": [
+              [
+                1,
+                2
+              ],
+              [
+                1
+              ]
+            ],
+            "filtered": [
+              [],
+              []
+            ],
+            "native_turn_probes": 4
+          },
+          {
+            "ms": 14.718999999999824,
+            "actions": [
+              [
+                1,
+                2
+              ],
+              [
+                1
+              ]
+            ],
+            "filtered": [
+              [],
+              []
+            ],
+            "native_turn_probes": 4
+          },
+          {
+            "ms": 16.39110000000005,
+            "actions": [
+              [
+                1,
+                2
+              ],
+              [
+                1
+              ]
+            ],
+            "filtered": [
+              [],
+              []
+            ],
+            "native_turn_probes": 4
+          },
+          {
+            "ms": 13.127199999999903,
+            "actions": [
+              [
+                1,
+                2
+              ],
+              [
+                1
+              ]
+            ],
+            "filtered": [
+              [],
+              []
+            ],
+            "native_turn_probes": 4
+          },
+          {
+            "ms": 17.35010000000011,
+            "actions": [
+              [
+                1,
+                2
+              ],
+              [
+                1
+              ]
+            ],
+            "filtered": [
+              [],
+              []
+            ],
+            "native_turn_probes": 4
+          },
+          {
+            "ms": 23.885600000000068,
+            "actions": [
+              [
+                1,
+                2
+              ],
+              [
+                1
+              ]
+            ],
+            "filtered": [
+              [],
+              []
+            ],
+            "native_turn_probes": 4
+          },
+          {
+            "ms": 15.995100000000093,
+            "actions": [
+              [
+                1,
+                2
+              ],
+              [
+                1
+              ]
+            ],
+            "filtered": [
+              [],
+              []
+            ],
+            "native_turn_probes": 4
+          },
+          {
+            "ms": 15.75389999999993,
+            "actions": [
+              [
+                1,
+                2
+              ],
+              [
+                1
+              ]
+            ],
+            "filtered": [
+              [],
+              []
+            ],
+            "native_turn_probes": 4
+          },
+          {
+            "ms": 14.31730000000016,
+            "actions": [
+              [
+                1,
+                2
+              ],
+              [
+                1
+              ]
+            ],
+            "filtered": [
+              [],
+              []
+            ],
+            "native_turn_probes": 4
+          },
+          {
+            "ms": 18.338899999999967,
+            "actions": [
+              [
+                1,
+                2
+              ],
+              [
+                1
+              ]
+            ],
+            "filtered": [
+              [],
+              []
+            ],
+            "native_turn_probes": 4
+          }
+        ]
+      }
+    },
+    {
+      "case": "full-hp-fast-recovery",
+      "summary": {
+        "enabled": {
+          "median_ms": 1.1900000000000546,
+          "p95_ms": 1.4061000000001513,
+          "native_turn_probes": 0,
+          "actions": [
+            [
+              2
+            ],
+            [
+              1
+            ]
+          ],
+          "filtered": [
+            [
+              1
+            ],
+            []
+          ]
+        },
+        "disabled": {
+          "median_ms": 16.33620000000019,
+          "p95_ms": 19.442299999999932,
+          "native_turn_probes": 4,
+          "actions": [
+            [
+              1,
+              2
+            ],
+            [
+              1
+            ]
+          ],
+          "filtered": [
+            [],
+            []
+          ]
+        }
+      },
+      "readings": {
+        "enabled": [
+          {
+            "ms": 1.384999999999991,
+            "actions": [
+              [
+                2
+              ],
+              [
+                1
+              ]
+            ],
+            "filtered": [
+              [
+                1
+              ],
+              []
+            ],
+            "native_turn_probes": 0
+          },
+          {
+            "ms": 1.1900000000000546,
+            "actions": [
+              [
+                2
+              ],
+              [
+                1
+              ]
+            ],
+            "filtered": [
+              [
+                1
+              ],
+              []
+            ],
+            "native_turn_probes": 0
+          },
+          {
+            "ms": 1.2601000000001932,
+            "actions": [
+              [
+                2
+              ],
+              [
+                1
+              ]
+            ],
+            "filtered": [
+              [
+                1
+              ],
+              []
+            ],
+            "native_turn_probes": 0
+          },
+          {
+            "ms": 1.4061000000001513,
+            "actions": [
+              [
+                2
+              ],
+              [
+                1
+              ]
+            ],
+            "filtered": [
+              [
+                1
+              ],
+              []
+            ],
+            "native_turn_probes": 0
+          },
+          {
+            "ms": 1.2218000000000302,
+            "actions": [
+              [
+                2
+              ],
+              [
+                1
+              ]
+            ],
+            "filtered": [
+              [
+                1
+              ],
+              []
+            ],
+            "native_turn_probes": 0
+          },
+          {
+            "ms": 0.7498000000000502,
+            "actions": [
+              [
+                2
+              ],
+              [
+                1
+              ]
+            ],
+            "filtered": [
+              [
+                1
+              ],
+              []
+            ],
+            "native_turn_probes": 0
+          },
+          {
+            "ms": 0.7473999999999705,
+            "actions": [
+              [
+                2
+              ],
+              [
+                1
+              ]
+            ],
+            "filtered": [
+              [
+                1
+              ],
+              []
+            ],
+            "native_turn_probes": 0
+          },
+          {
+            "ms": 0.819400000000087,
+            "actions": [
+              [
+                2
+              ],
+              [
+                1
+              ]
+            ],
+            "filtered": [
+              [
+                1
+              ],
+              []
+            ],
+            "native_turn_probes": 0
+          },
+          {
+            "ms": 0.9530999999999494,
+            "actions": [
+              [
+                2
+              ],
+              [
+                1
+              ]
+            ],
+            "filtered": [
+              [
+                1
+              ],
+              []
+            ],
+            "native_turn_probes": 0
+          },
+          {
+            "ms": 1.249599999999873,
+            "actions": [
+              [
+                2
+              ],
+              [
+                1
+              ]
+            ],
+            "filtered": [
+              [
+                1
+              ],
+              []
+            ],
+            "native_turn_probes": 0
+          },
+          {
+            "ms": 0.7101999999999862,
+            "actions": [
+              [
+                2
+              ],
+              [
+                1
+              ]
+            ],
+            "filtered": [
+              [
+                1
+              ],
+              []
+            ],
+            "native_turn_probes": 0
+          },
+          {
+            "ms": 0.6721000000000004,
+            "actions": [
+              [
+                2
+              ],
+              [
+                1
+              ]
+            ],
+            "filtered": [
+              [
+                1
+              ],
+              []
+            ],
+            "native_turn_probes": 0
+          }
+        ],
+        "disabled": [
+          {
+            "ms": 15.320099999999911,
+            "actions": [
+              [
+                1,
+                2
+              ],
+              [
+                1
+              ]
+            ],
+            "filtered": [
+              [],
+              []
+            ],
+            "native_turn_probes": 4
+          },
+          {
+            "ms": 14.936400000000049,
+            "actions": [
+              [
+                1,
+                2
+              ],
+              [
+                1
+              ]
+            ],
+            "filtered": [
+              [],
+              []
+            ],
+            "native_turn_probes": 4
+          },
+          {
+            "ms": 19.442299999999932,
+            "actions": [
+              [
+                1,
+                2
+              ],
+              [
+                1
+              ]
+            ],
+            "filtered": [
+              [],
+              []
+            ],
+            "native_turn_probes": 4
+          },
+          {
+            "ms": 19.100800000000163,
+            "actions": [
+              [
+                1,
+                2
+              ],
+              [
+                1
+              ]
+            ],
+            "filtered": [
+              [],
+              []
+            ],
+            "native_turn_probes": 4
+          },
+          {
+            "ms": 19.401099999999815,
+            "actions": [
+              [
+                1,
+                2
+              ],
+              [
+                1
+              ]
+            ],
+            "filtered": [
+              [],
+              []
+            ],
+            "native_turn_probes": 4
+          },
+          {
+            "ms": 17.065399999999954,
+            "actions": [
+              [
+                1,
+                2
+              ],
+              [
+                1
+              ]
+            ],
+            "filtered": [
+              [],
+              []
+            ],
+            "native_turn_probes": 4
+          },
+          {
+            "ms": 13.178499999999985,
+            "actions": [
+              [
+                1,
+                2
+              ],
+              [
+                1
+              ]
+            ],
+            "filtered": [
+              [],
+              []
+            ],
+            "native_turn_probes": 4
+          },
+          {
+            "ms": 15.582300000000032,
+            "actions": [
+              [
+                1,
+                2
+              ],
+              [
+                1
+              ]
+            ],
+            "filtered": [
+              [],
+              []
+            ],
+            "native_turn_probes": 4
+          },
+          {
+            "ms": 16.98349999999982,
+            "actions": [
+              [
+                1,
+                2
+              ],
+              [
+                1
+              ]
+            ],
+            "filtered": [
+              [],
+              []
+            ],
+            "native_turn_probes": 4
+          },
+          {
+            "ms": 16.33620000000019,
+            "actions": [
+              [
+                1,
+                2
+              ],
+              [
+                1
+              ]
+            ],
+            "filtered": [
+              [],
+              []
+            ],
+            "native_turn_probes": 4
+          },
+          {
+            "ms": 15.045900000000074,
+            "actions": [
+              [
+                1,
+                2
+              ],
+              [
+                1
+              ]
+            ],
+            "filtered": [
+              [],
+              []
+            ],
+            "native_turn_probes": 4
+          },
+          {
+            "ms": 9.797600000000102,
+            "actions": [
+              [
+                1,
+                2
+              ],
+              [
+                1
+              ]
+            ],
+            "filtered": [
+              [],
+              []
+            ],
+            "native_turn_probes": 4
+          }
+        ]
+      }
+    },
+    {
+      "case": "sleep-immunity",
+      "summary": {
+        "enabled": {
+          "median_ms": 15.74409999999989,
+          "p95_ms": 21.717499999999973,
+          "native_turn_probes": 4,
+          "actions": [
+            [
+              1,
+              2
+            ],
+            [
+              1
+            ]
+          ],
+          "filtered": [
+            [],
+            []
+          ]
+        },
+        "disabled": {
+          "median_ms": 15.904999999999973,
+          "p95_ms": 19.330799999999726,
+          "native_turn_probes": 4,
+          "actions": [
+            [
+              1,
+              2
+            ],
+            [
+              1
+            ]
+          ],
+          "filtered": [
+            [],
+            []
+          ]
+        }
+      },
+      "readings": {
+        "enabled": [
+          {
+            "ms": 13.162199999999984,
+            "actions": [
+              [
+                1,
+                2
+              ],
+              [
+                1
+              ]
+            ],
+            "filtered": [
+              [],
+              []
+            ],
+            "native_turn_probes": 4
+          },
+          {
+            "ms": 18.263300000000072,
+            "actions": [
+              [
+                1,
+                2
+              ],
+              [
+                1
+              ]
+            ],
+            "filtered": [
+              [],
+              []
+            ],
+            "native_turn_probes": 4
+          },
+          {
+            "ms": 16.921800000000076,
+            "actions": [
+              [
+                1,
+                2
+              ],
+              [
+                1
+              ]
+            ],
+            "filtered": [
+              [],
+              []
+            ],
+            "native_turn_probes": 4
+          },
+          {
+            "ms": 19.14300000000003,
+            "actions": [
+              [
+                1,
+                2
+              ],
+              [
+                1
+              ]
+            ],
+            "filtered": [
+              [],
+              []
+            ],
+            "native_turn_probes": 4
+          },
+          {
+            "ms": 13.734500000000025,
+            "actions": [
+              [
+                1,
+                2
+              ],
+              [
+                1
+              ]
+            ],
+            "filtered": [
+              [],
+              []
+            ],
+            "native_turn_probes": 4
+          },
+          {
+            "ms": 17.149900000000116,
+            "actions": [
+              [
+                1,
+                2
+              ],
+              [
+                1
+              ]
+            ],
+            "filtered": [
+              [],
+              []
+            ],
+            "native_turn_probes": 4
+          },
+          {
+            "ms": 21.717499999999973,
+            "actions": [
+              [
+                1,
+                2
+              ],
+              [
+                1
+              ]
+            ],
+            "filtered": [
+              [],
+              []
+            ],
+            "native_turn_probes": 4
+          },
+          {
+            "ms": 15.74409999999989,
+            "actions": [
+              [
+                1,
+                2
+              ],
+              [
+                1
+              ]
+            ],
+            "filtered": [
+              [],
+              []
+            ],
+            "native_turn_probes": 4
+          },
+          {
+            "ms": 8.252500000000055,
+            "actions": [
+              [
+                1,
+                2
+              ],
+              [
+                1
+              ]
+            ],
+            "filtered": [
+              [],
+              []
+            ],
+            "native_turn_probes": 4
+          },
+          {
+            "ms": 11.868400000000292,
+            "actions": [
+              [
+                1,
+                2
+              ],
+              [
+                1
+              ]
+            ],
+            "filtered": [
+              [],
+              []
+            ],
+            "native_turn_probes": 4
+          },
+          {
+            "ms": 13.117400000000089,
+            "actions": [
+              [
+                1,
+                2
+              ],
+              [
+                1
+              ]
+            ],
+            "filtered": [
+              [],
+              []
+            ],
+            "native_turn_probes": 4
+          },
+          {
+            "ms": 12.352100000000064,
+            "actions": [
+              [
+                1,
+                2
+              ],
+              [
+                1
+              ]
+            ],
+            "filtered": [
+              [],
+              []
+            ],
+            "native_turn_probes": 4
+          }
+        ],
+        "disabled": [
+          {
+            "ms": 16.794399999999996,
+            "actions": [
+              [
+                1,
+                2
+              ],
+              [
+                1
+              ]
+            ],
+            "filtered": [
+              [],
+              []
+            ],
+            "native_turn_probes": 4
+          },
+          {
+            "ms": 18.3753999999999,
+            "actions": [
+              [
+                1,
+                2
+              ],
+              [
+                1
+              ]
+            ],
+            "filtered": [
+              [],
+              []
+            ],
+            "native_turn_probes": 4
+          },
+          {
+            "ms": 11.389200000000073,
+            "actions": [
+              [
+                1,
+                2
+              ],
+              [
+                1
+              ]
+            ],
+            "filtered": [
+              [],
+              []
+            ],
+            "native_turn_probes": 4
+          },
+          {
+            "ms": 19.070200000000114,
+            "actions": [
+              [
+                1,
+                2
+              ],
+              [
+                1
+              ]
+            ],
+            "filtered": [
+              [],
+              []
+            ],
+            "native_turn_probes": 4
+          },
+          {
+            "ms": 15.904999999999973,
+            "actions": [
+              [
+                1,
+                2
+              ],
+              [
+                1
+              ]
+            ],
+            "filtered": [
+              [],
+              []
+            ],
+            "native_turn_probes": 4
+          },
+          {
+            "ms": 14.451900000000023,
+            "actions": [
+              [
+                1,
+                2
+              ],
+              [
+                1
+              ]
+            ],
+            "filtered": [
+              [],
+              []
+            ],
+            "native_turn_probes": 4
+          },
+          {
+            "ms": 18.672900000000027,
+            "actions": [
+              [
+                1,
+                2
+              ],
+              [
+                1
+              ]
+            ],
+            "filtered": [
+              [],
+              []
+            ],
+            "native_turn_probes": 4
+          },
+          {
+            "ms": 12.587799999999788,
+            "actions": [
+              [
+                1,
+                2
+              ],
+              [
+                1
+              ]
+            ],
+            "filtered": [
+              [],
+              []
+            ],
+            "native_turn_probes": 4
+          },
+          {
+            "ms": 11.74539999999979,
+            "actions": [
+              [
+                1,
+                2
+              ],
+              [
+                1
+              ]
+            ],
+            "filtered": [
+              [],
+              []
+            ],
+            "native_turn_probes": 4
+          },
+          {
+            "ms": 10.586499999999887,
+            "actions": [
+              [
+                1,
+                2
+              ],
+              [
+                1
+              ]
+            ],
+            "filtered": [
+              [],
+              []
+            ],
+            "native_turn_probes": 4
+          },
+          {
+            "ms": 9.334600000000137,
+            "actions": [
+              [
+                1,
+                2
+              ],
+              [
+                1
+              ]
+            ],
+            "filtered": [
+              [],
+              []
+            ],
+            "native_turn_probes": 4
+          },
+          {
+            "ms": 19.330799999999726,
+            "actions": [
+              [
+                1,
+                2
+              ],
+              [
+                1
+              ]
+            ],
+            "filtered": [
+              [],
+              []
+            ],
+            "native_turn_probes": 4
+          }
+        ]
+      }
+    }
+  ]
+}
