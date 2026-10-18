@@ -50,7 +50,7 @@ if(process.argv.includes('--native-worker')){
   const row={trial,...JSON.parse(result.stdout)};native.push(row);
   console.log(`native pruning ${enabled?'on':'off'}: first ${row.first_estimate_ms?.toFixed(0)??'none'} ms; root samples ${row.samples}; total ${row.total_rollouts}`);
  }
- const source_hashes=Object.fromEntries(['analysis/search.mjs','analysis/passive-endgame.mjs','analysis/position-features.mjs','analysis/continuation-policy.mjs','analysis/position-evaluator.mjs','analysis/native-battle.mjs','analysis/native-search.mjs','analysis/sampled-search.mjs','analysis/sampled-moves.mjs','analysis/retained-turn.mjs'].map(path=>[path,createHash('sha256').update(readFileSync(resolve(root,path))).digest('hex')]));
+ const source_hashes=Object.fromEntries(['analysis/search.mjs','analysis/passive-endgame.mjs','analysis/position-features.mjs','analysis/continuation-policy.mjs','analysis/action-usefulness.mjs','analysis/position-evaluator.mjs','analysis/native-battle.mjs','analysis/native-search.mjs','analysis/sampled-search.mjs','analysis/sampled-moves.mjs','analysis/retained-turn.mjs'].map(path=>[path,createHash('sha256').update(readFileSync(resolve(root,path))).digest('hex')]));
  const destination=resolve(root,arg('out')||`.local-tools/search-benchmarks/pruning-${new Date().toISOString().replace(/[:.]/g,'-')}.json`);
  mkdirSync(dirname(destination),{recursive:true});writeFileSync(destination,JSON.stringify({created_at:new Date().toISOString(),source_hashes,seconds,trials,
   method:'Abstract games compare equal solved values and actual transition callbacks. Native pruning on/off uses isolated processes, alternating order and equal wall budgets; native startup initialization is excluded. Scores remain estimates.',abstract,native},null,2));

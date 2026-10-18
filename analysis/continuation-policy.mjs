@@ -1,14 +1,11 @@
 // Continuation strategies are approximate. Candidate moves execute a complete
 // native turn; this module never substitutes a made-up effect for a callback.
-import {restoreCompleteBattle,installChanceTape,nativeMoveChoices} from './native-battle.mjs';
+import {restoreCompleteBattle,installChanceTape} from './native-battle.mjs';
 import {observationKey} from './observation-key.mjs';
+import {selectContinuationChoices} from './action-usefulness.mjs';
 
-export const CONTINUATION_VERSION=3;
-const firstOnly=new Set(['fakeout','firstimpression','matblock']);
-export function continuationChoices(p){
- const moves=nativeMoveChoices(p),useful=moves.filter(m=>!firstOnly.has(m.id)||p.activeMoveActions===0);
- return useful.length?useful:moves.length?moves:[{slot:1,id:'struggle'}];
-}
+export const CONTINUATION_VERSION=4;
+export function continuationChoices(p,options){return selectContinuationChoices(p,options).choices;}
 function random(seed){let x=seed>>>0||1;return ()=>{x^=x<<13;x^=x>>>17;x^=x<<5;return (x>>>0)/4294967296;};}
 function terminal(b){const [p,q]=b.sides.map(s=>s.active[0]);return p.hp<=0?0:q.hp<=0?1:b.ended?(b.winner==='Player'?1:0):null;}
 
@@ -32,12 +29,13 @@ function strategies(matrix,weights){
 }
 export function nativeContinuationPolicy(state,cache,options={}){
  const observed=observationKey(state);
- const key=observed+'|policy-v'+CONTINUATION_VERSION+'|'+JSON.stringify(options.npcWeights||null);
+ const key=observed+'|policy-v'+CONTINUATION_VERSION+'|'+JSON.stringify(options.npcWeights||null)+'|filter:'+Number(options.filterUselessTurns!==false);
  let entry=cache.get(key);
  if(!entry){
-  const b=restoreCompleteBattle(state),actions=b.sides.map(s=>continuationChoices(s.active[0]).map(m=>m.slot));
-  entry={actions,cursor:0,matrix:actions[0].map(()=>actions[1].map(()=>0)),samples:2};
-  if(actions.every(a=>a.length===1))entry.policy={actions,probabilities:[[1],[1]],matrix:null};
+  const b=restoreCompleteBattle(state),selection=b.sides.map((s,i)=>selectContinuationChoices(s.active[0],{filterUselessTurns:options.filterUselessTurns!==false&&!(i===1&&options.npcWeights)}));
+  const actions=selection.map(s=>s.choices.map(m=>m.slot)),actionFlags=selection.map(s=>({flags:s.flags,filtered:s.filtered,waiting:s.waiting}));
+  entry={actions,actionFlags,cursor:0,matrix:actions[0].map(()=>actions[1].map(()=>0)),samples:2};
+  if(actions.every(a=>a.length===1))entry.policy={actions,probabilities:[[1],[1]],matrix:null,actionFlags};
   cache.set(key,entry);while(cache.size>2048)cache.delete(cache.keys().next().value);
  }
  if(entry.policy)return entry.policy;
@@ -65,7 +63,7 @@ export function nativeContinuationPolicy(state,cache,options={}){
   entry.matrix[i][j]+=value*weight;entry.cursor++;
  }
  const weights=options.npcWeights&&entry.actions[1].map(slot=>options.npcWeights.find(m=>m.slot===slot)?.probability||0);
- entry.policy={actions:entry.actions,probabilities:strategies(entry.matrix,weights),matrix:entry.matrix};
+ entry.policy={actions:entry.actions,probabilities:strategies(entry.matrix,weights),matrix:entry.matrix,actionFlags:entry.actionFlags};
  return entry.policy;
 }
 export function drawContinuation(policy,draw){

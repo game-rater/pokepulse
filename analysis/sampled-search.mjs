@@ -150,7 +150,7 @@ export function simulateSampledMovesCore(initial,options,reasons,evaluator){
  if(options.continuationPolicies)cache.policies=options.continuationPolicies;
  cache.npcPolicies??=new Map();
  const target=options.samplesPerPair??128,turnLimit=options.rolloutTurns??12;
- const rootKey=initial.key+'|policy-v'+CONTINUATION_VERSION+'|'+turnLimit+'|'+(options.opponentModel||'minimax')+'|'+JSON.stringify(options.npcAi||{});
+ const rootKey=initial.key+'|policy-v'+CONTINUATION_VERSION+'|'+turnLimit+'|'+(options.opponentModel||'minimax')+'|'+JSON.stringify(options.npcAi||{})+'|filter:'+Number(options.filterUselessTurns!==false);
  let root=cache.roots.get(rootKey),reused=!!root;
  if(!root){
   const game=restoreCompleteBattle(initial),actions=game.sides.map(s=>{const legal=choices(s.active[0]);return legal.length?legal.map(m=>m.slot):[1];});
