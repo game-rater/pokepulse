@@ -1,0 +1,2301 @@
+{
+  "created_at": "2026-10-18T15:06:04.821Z",
+  "node": "v24.19.0",
+  "seconds": 3,
+  "trials": 1,
+  "opponent_model": "minimax",
+  "source_hashes": {
+    "scripts/benchmark-retained-turn-worker.mjs": "898be80116a977078e453ccfda87ebf99be4f141191f9b8234401fadd0effad5",
+    "analysis/sampled-moves.mjs": "27b2876c2327c71be9f37604a951ee711b5fc13b2cc9f76d44da6be62f6a1da7",
+    "analysis/position-evaluator.mjs": "be8dc73dec6eeea9570d62da6d39af824e0645455427a74055cc8ea924766886",
+    "analysis/native-battle.mjs": "4772246187212a6282a89efa5d682e69ba07daf1ab3e0df07626047b94a475e1",
+    "analysis/native-search.mjs": "6d77bd37e8502ee45f26ac743e46818fa2fadc83add09485c82dacfab44c191f",
+    "analysis/sampled-search.mjs": "e15d869702336bb36c19d036e7115878e4426bc4e3450c5a2354d9e7ba0c4097",
+    "analysis/exact-endgame.mjs": "ad9ac3a99d6a70c55116fc73713a3063048802b89e1c3f2500ecf6bff098a0c6",
+    "analysis/retained-turn.mjs": "ad3da3608745d14d290995c3371b41c6eb603988f66824c9c479b19093b04d59",
+    "analysis/complete-moves.mjs": "461a90066f8c1a804ef5214bbc24a7a100f1756ab6662f7fb7addbfd928da9f1",
+    "analysis/search.mjs": "0758c9ec608cb5241a2bfa7eb0d16525886e7b5bd6b6fd43b03fcf00bada709f",
+    "analysis/result-contract.mjs": "d495ee9c3731e3e795c6cc56e6db2301846fbaecc899a6983bb7ebbbacc2e2b3",
+    "analysis/passive-endgame.mjs": "e222c8686bafe3e5802d67ab2421f37e99fa3a4d7cd4089a5c47ddea87f3a5a7",
+    "analysis/position-features.mjs": "e98588bcac7f3fc13a99487a4d0e37e90127f1a9f31a0d1fdc88410e4be5b862",
+    "analysis/continuation-policy.mjs": "fc12affa1a6416b906de4ca2372b72a80c64cd3d56ceb24fcbfd0a79c1bb8dc8",
+    "scripts/search-benchmark-fixtures.mjs": "c326f63b12823b9d4895fdb2fcb9ad5b0cdcb33378dbd2da2fad69183da357a6",
+    "scripts/stall-benchmark-fixtures.mjs": "5751d4f6d687dc3207822c2561be70f80064214d75b32463ed554b246b46e91c",
+    "scripts/stall-benchmark-oracles.mjs": "f592b87be213ce2d7b779f67eb4a7a73e7bf3398858f86074d6ae7a94638c252",
+    "scripts/real-battle-fixtures.mjs": "be6f5d6f5afe59a2caefe4e7c159ea80f2f0a442e80aff33e568a4134fefb236",
+    "scripts/accuracy-benchmark-fixtures.mjs": "6f8b1d5b71170cbf94a339d4c40f0b7a12641559393aa9e8af922c207273e3a0",
+    "scripts/benchmark-oracles.mjs": "90641cf33425d1830aa80b8ea196efad9dd58d2a7b270566ae456cc10e5e7266",
+    "scripts/reference-damage-race.mjs": "391d9b7b1fffcc186b8d1c9123acf280ab8e0adf120b0d2a3fff9678092a2203",
+    "scripts/benchmark-references.json": "2ad39ef18abb0c50ace0eaf80cf0216e125f1d53b94e029ee246468fcd2346f3",
+    "vendor/showdown/dist/sim/battle-actions.js": "15132d6f3347c56604b2dfb6e0e249d3b2fb4c1a223ae52c4c03f5f38979084d"
+  },
+  "method": "Isolated processes; engine initialization excluded; fixed native RNG seeds; alternating mode order; identical per-pass and sample budgets.",
+  "summary": [
+    {
+      "case": "stall-poison-clock",
+      "mode": "hybrid",
+      "opponent_model": "minimax",
+      "first_estimate_ms": 22.297900000000027,
+      "elapsed_ms": 22.60239999999999,
+      "reroot_first_estimate_ms": null,
+      "reuse_hits": 0,
+      "first_second_usable": 1,
+      "first_second_error_pp": 0,
+      "first_second_goal_met": 1,
+      "accuracy_reference_available": true,
+      "score_at_1s": 100,
+      "score_at_3s": 100,
+      "score_at_10s": 100,
+      "max_slice_ms": 22.22090000000003,
+      "samples": 0,
+      "peak_rss_mb": 140.10546875,
+      "completed": 1
+    },
+    {
+      "case": "stall-poison-leftovers",
+      "mode": "hybrid",
+      "opponent_model": "minimax",
+      "first_estimate_ms": 23.15859999999998,
+      "elapsed_ms": 23.462800000000016,
+      "reroot_first_estimate_ms": null,
+      "reuse_hits": 0,
+      "first_second_usable": 1,
+      "first_second_error_pp": 0,
+      "first_second_goal_met": 1,
+      "accuracy_reference_available": true,
+      "score_at_1s": 100,
+      "score_at_3s": 100,
+      "score_at_10s": 100,
+      "max_slice_ms": 23.085199999999986,
+      "samples": 0,
+      "peak_rss_mb": 142.359375,
+      "completed": 1
+    },
+    {
+      "case": "stall-recovery-delay",
+      "mode": "hybrid",
+      "opponent_model": "minimax",
+      "first_estimate_ms": 112.0202999999999,
+      "elapsed_ms": 3086.7266,
+      "reroot_first_estimate_ms": null,
+      "reuse_hits": 0,
+      "first_second_usable": 1,
+      "first_second_error_pp": 1.9999999999999716,
+      "first_second_goal_met": 1,
+      "accuracy_reference_available": true,
+      "score_at_1s": 98.00000000000003,
+      "score_at_3s": 98.00000000000003,
+      "score_at_10s": null,
+      "max_slice_ms": 111.9538,
+      "samples": 79,
+      "peak_rss_mb": 254.6484375,
+      "completed": 0
+    },
+    {
+      "case": "stall-recover-protect",
+      "mode": "hybrid",
+      "opponent_model": "minimax",
+      "first_estimate_ms": 167.12430000000006,
+      "elapsed_ms": 189.85440000000006,
+      "reroot_first_estimate_ms": null,
+      "reuse_hits": 0,
+      "first_second_usable": 1,
+      "first_second_error_pp": 0,
+      "first_second_goal_met": 1,
+      "accuracy_reference_available": true,
+      "score_at_1s": 100,
+      "score_at_3s": 100,
+      "score_at_10s": 100,
+      "max_slice_ms": 167.0575,
+      "samples": 0,
+      "peak_rss_mb": 159.9765625,
+      "completed": 1
+    },
+    {
+      "case": "stall-recover-protect-mid",
+      "mode": "hybrid",
+      "opponent_model": "minimax",
+      "first_estimate_ms": 189.9022,
+      "elapsed_ms": 189.9978000000001,
+      "reroot_first_estimate_ms": null,
+      "reuse_hits": 0,
+      "first_second_usable": 1,
+      "first_second_error_pp": 0,
+      "first_second_goal_met": 1,
+      "accuracy_reference_available": true,
+      "score_at_1s": 100,
+      "score_at_3s": 100,
+      "score_at_10s": 100,
+      "max_slice_ms": 170.37649999999996,
+      "samples": 0,
+      "peak_rss_mb": 142.15234375,
+      "completed": 1
+    },
+    {
+      "case": "stall-recover-protect-late",
+      "mode": "hybrid",
+      "opponent_model": "minimax",
+      "first_estimate_ms": 169.0046000000001,
+      "elapsed_ms": 183.48069999999996,
+      "reroot_first_estimate_ms": null,
+      "reuse_hits": 0,
+      "first_second_usable": 1,
+      "first_second_error_pp": 0,
+      "first_second_goal_met": 1,
+      "accuracy_reference_available": true,
+      "score_at_1s": 100,
+      "score_at_3s": 100,
+      "score_at_10s": 100,
+      "max_slice_ms": 168.85090000000002,
+      "samples": 0,
+      "peak_rss_mb": 141.69921875,
+      "completed": 1
+    },
+    {
+      "case": "stall-pp-exhaustion",
+      "mode": "hybrid",
+      "opponent_model": "minimax",
+      "first_estimate_ms": 170.5941999999999,
+      "elapsed_ms": 3055.9296,
+      "reroot_first_estimate_ms": null,
+      "reuse_hits": 0,
+      "first_second_usable": 1,
+      "first_second_error_pp": 1,
+      "first_second_goal_met": 1,
+      "accuracy_reference_available": true,
+      "score_at_1s": 1,
+      "score_at_3s": 1,
+      "score_at_10s": null,
+      "max_slice_ms": 170.51499999999987,
+      "samples": 256,
+      "peak_rss_mb": 245.83984375,
+      "completed": 0
+    },
+    {
+      "case": "stall-protect-risk",
+      "mode": "hybrid",
+      "opponent_model": "minimax",
+      "first_estimate_ms": 168.08539999999994,
+      "elapsed_ms": 179.78219999999988,
+      "reroot_first_estimate_ms": null,
+      "reuse_hits": 0,
+      "first_second_usable": 1,
+      "first_second_error_pp": 7.105427357601002e-15,
+      "first_second_goal_met": 1,
+      "accuracy_reference_available": true,
+      "score_at_1s": 33.33333333333333,
+      "score_at_3s": 33.33333333333333,
+      "score_at_10s": 33.33333333333333,
+      "max_slice_ms": 167.3211,
+      "samples": 0,
+      "peak_rss_mb": 160.1640625,
+      "completed": 1
+    },
+    {
+      "case": "stall-protect-used",
+      "mode": "hybrid",
+      "opponent_model": "minimax",
+      "first_estimate_ms": 167.8505,
+      "elapsed_ms": 182.4271,
+      "reroot_first_estimate_ms": null,
+      "reuse_hits": 0,
+      "first_second_usable": 1,
+      "first_second_error_pp": 4.440892098500626e-16,
+      "first_second_goal_met": 1,
+      "accuracy_reference_available": true,
+      "score_at_1s": 3.7037037037037033,
+      "score_at_3s": 3.7037037037037033,
+      "score_at_10s": 3.7037037037037033,
+      "max_slice_ms": 167.78009999999995,
+      "samples": 0,
+      "peak_rss_mb": 142.03125,
+      "completed": 1
+    },
+    {
+      "case": "stall-protect-three",
+      "mode": "hybrid",
+      "opponent_model": "minimax",
+      "first_estimate_ms": 167.37620000000004,
+      "elapsed_ms": 179.06540000000007,
+      "reroot_first_estimate_ms": null,
+      "reuse_hits": 0,
+      "first_second_usable": 1,
+      "first_second_error_pp": 4.440892098500626e-16,
+      "first_second_goal_met": 1,
+      "accuracy_reference_available": true,
+      "score_at_1s": 3.7037037037037033,
+      "score_at_3s": 3.7037037037037033,
+      "score_at_10s": 3.7037037037037033,
+      "max_slice_ms": 167.3047999999999,
+      "samples": 0,
+      "peak_rss_mb": 142.3359375,
+      "completed": 1
+    },
+    {
+      "case": "stall-heal-instead",
+      "mode": "hybrid",
+      "opponent_model": "minimax",
+      "first_estimate_ms": 170.20159999999987,
+      "elapsed_ms": 191.26600000000008,
+      "reroot_first_estimate_ms": null,
+      "reuse_hits": 0,
+      "first_second_usable": 1,
+      "first_second_error_pp": 0,
+      "first_second_goal_met": 1,
+      "accuracy_reference_available": true,
+      "score_at_1s": 100,
+      "score_at_3s": 100,
+      "score_at_10s": 100,
+      "max_slice_ms": 170.12930000000006,
+      "samples": 0,
+      "peak_rss_mb": 141.71484375,
+      "completed": 1
+    },
+    {
+      "case": "stall-lum-cure",
+      "mode": "hybrid",
+      "opponent_model": "minimax",
+      "first_estimate_ms": 114.62200000000007,
+      "elapsed_ms": 1282.3737,
+      "reroot_first_estimate_ms": null,
+      "reuse_hits": 0,
+      "first_second_usable": 1,
+      "first_second_error_pp": 1,
+      "first_second_goal_met": 1,
+      "accuracy_reference_available": true,
+      "score_at_1s": 1,
+      "score_at_3s": 1,
+      "score_at_10s": 1,
+      "max_slice_ms": 114.54730000000006,
+      "samples": 128,
+      "peak_rss_mb": 168.921875,
+      "completed": 1
+    },
+    {
+      "case": "stall-poison-heal",
+      "mode": "hybrid",
+      "opponent_model": "minimax",
+      "first_estimate_ms": 113.94759999999997,
+      "elapsed_ms": 1223.7316,
+      "reroot_first_estimate_ms": null,
+      "reuse_hits": 0,
+      "first_second_usable": 1,
+      "first_second_error_pp": 1,
+      "first_second_goal_met": 1,
+      "accuracy_reference_available": true,
+      "score_at_1s": 1,
+      "score_at_3s": 1,
+      "score_at_10s": 1,
+      "max_slice_ms": 113.87279999999987,
+      "samples": 128,
+      "peak_rss_mb": 168.9765625,
+      "completed": 1
+    }
+  ],
+  "rows": [
+    {
+      "trial": 0,
+      "reference": {
+        "status": "analytic",
+        "expected_percent": 100,
+        "fraction": "1/1",
+        "proof": "Incoming fixed damage is fully healed each turn; ordinary poison eventually KOs the foe. Leftovers precedes poison, with integer rounding.",
+        "turns": 9,
+        "opponent_hp_trace": [
+          121,
+          104,
+          87,
+          70,
+          53,
+          36,
+          19,
+          2,
+          0
+        ],
+        "input_sha256": "baadd933db1228f6765e21758f0e354f80299a919837663b15523d6ddd5ccb6e"
+      },
+      "case": "stall-poison-clock",
+      "mode": "hybrid",
+      "opponent_model": "minimax",
+      "fixture_hash": "baadd933db1228f6765e21758f0e354f80299a919837663b15523d6ddd5ccb6e",
+      "provenance": {
+        "kind": "analytic-control",
+        "sources": [
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/conditions.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/moves.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/items.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/abilities.ts"
+        ],
+        "notes": "Synthetic active-pair stall controls with independent resource/HP proofs; not recorded battles or ROM verification."
+      },
+      "checkpoints": {
+        "1000": {
+          "measured": true,
+          "score": 100,
+          "available_at_ms": 22.297900000000027
+        },
+        "3000": {
+          "measured": true,
+          "score": 100,
+          "available_at_ms": 22.297900000000027
+        },
+        "10000": {
+          "measured": true,
+          "score": 100,
+          "available_at_ms": 22.297900000000027
+        }
+      },
+      "input_blocked": false,
+      "unresolved_reasons": [],
+      "first_estimate_ms": 22.297900000000027,
+      "elapsed_ms": 22.60239999999999,
+      "cpu_ms": 31,
+      "max_slice_ms": 22.22090000000003,
+      "peak_rss_mb": 140.10546875,
+      "score": 100,
+      "absolute_error_pp": 0,
+      "samples": 0,
+      "done": true,
+      "retained_states": 1,
+      "total_native_rollouts": 0,
+      "exact_next_turn": false,
+      "next_turn_expansions": 0,
+      "merged_states": 0,
+      "first_second": {
+        "score": 100,
+        "available_at_ms": 22.297900000000027,
+        "absolute_error_pp": 0,
+        "reference": 100,
+        "reference_kind": "analytic",
+        "goal_met": true
+      },
+      "prediction": {
+        "schema_version": 1,
+        "kind": "proven",
+        "certificate": {
+          "lower": 100,
+          "upper": 100,
+          "width": 0
+        },
+        "search": {
+          "status": "proven",
+          "resolved": true
+        },
+        "reasons": [],
+        "estimate": {
+          "score": 100,
+          "basis": "proven-value"
+        }
+      },
+      "readings": [
+        {
+          "elapsed_ms": 22.297900000000027,
+          "score": 100,
+          "samples": 0,
+          "certainty": "proven",
+          "certificate_width_pp": 0,
+          "next_turn_expansion_complete": false
+        }
+      ]
+    },
+    {
+      "trial": 0,
+      "reference": {
+        "status": "analytic",
+        "expected_percent": 100,
+        "fraction": "1/1",
+        "proof": "Incoming fixed damage is fully healed each turn; ordinary poison eventually KOs the foe. Leftovers precedes poison, with integer rounding.",
+        "turns": 15,
+        "opponent_hp_trace": [
+          121,
+          112,
+          103,
+          94,
+          85,
+          76,
+          67,
+          58,
+          49,
+          40,
+          31,
+          22,
+          13,
+          4,
+          0
+        ],
+        "input_sha256": "891e472d43d1a2a03857e847a4d9ac83d96014796c3cf153569afb71f60370a8"
+      },
+      "case": "stall-poison-leftovers",
+      "mode": "hybrid",
+      "opponent_model": "minimax",
+      "fixture_hash": "891e472d43d1a2a03857e847a4d9ac83d96014796c3cf153569afb71f60370a8",
+      "provenance": {
+        "kind": "analytic-control",
+        "sources": [
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/conditions.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/moves.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/items.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/abilities.ts"
+        ],
+        "notes": "Synthetic active-pair stall controls with independent resource/HP proofs; not recorded battles or ROM verification."
+      },
+      "checkpoints": {
+        "1000": {
+          "measured": true,
+          "score": 100,
+          "available_at_ms": 23.15859999999998
+        },
+        "3000": {
+          "measured": true,
+          "score": 100,
+          "available_at_ms": 23.15859999999998
+        },
+        "10000": {
+          "measured": true,
+          "score": 100,
+          "available_at_ms": 23.15859999999998
+        }
+      },
+      "input_blocked": false,
+      "unresolved_reasons": [],
+      "first_estimate_ms": 23.15859999999998,
+      "elapsed_ms": 23.462800000000016,
+      "cpu_ms": 16,
+      "max_slice_ms": 23.085199999999986,
+      "peak_rss_mb": 142.359375,
+      "score": 100,
+      "absolute_error_pp": 0,
+      "samples": 0,
+      "done": true,
+      "retained_states": 1,
+      "total_native_rollouts": 0,
+      "exact_next_turn": false,
+      "next_turn_expansions": 0,
+      "merged_states": 0,
+      "first_second": {
+        "score": 100,
+        "available_at_ms": 23.15859999999998,
+        "absolute_error_pp": 0,
+        "reference": 100,
+        "reference_kind": "analytic",
+        "goal_met": true
+      },
+      "prediction": {
+        "schema_version": 1,
+        "kind": "proven",
+        "certificate": {
+          "lower": 100,
+          "upper": 100,
+          "width": 0
+        },
+        "search": {
+          "status": "proven",
+          "resolved": true
+        },
+        "reasons": [],
+        "estimate": {
+          "score": 100,
+          "basis": "proven-value"
+        }
+      },
+      "readings": [
+        {
+          "elapsed_ms": 23.15859999999998,
+          "score": 100,
+          "samples": 0,
+          "certainty": "proven",
+          "certificate_width_pp": 0,
+          "next_turn_expansion_complete": false
+        }
+      ]
+    },
+    {
+      "trial": 0,
+      "reference": {
+        "status": "analytic",
+        "expected_percent": 100,
+        "fraction": "1/1",
+        "proof": "Leftovers heals every possible enemy attack. After at most 25 normal actions, four recoil/poison turns finish the enemy; Splash PP lasts through all 29. An explicit five-Recover schedule survives past turn 24.",
+        "max_turns": 29,
+        "witness_turns": 28,
+        "witness_survives_turns": 25,
+        "witness_recover_turns": [
+          8,
+          12,
+          16,
+          20,
+          24
+        ],
+        "opponent_hp_trace": [
+          121,
+          112,
+          103,
+          94,
+          85,
+          76,
+          67,
+          121,
+          112,
+          103,
+          94,
+          121,
+          112,
+          103,
+          94,
+          121,
+          112,
+          103,
+          94,
+          121,
+          112,
+          103,
+          94,
+          121,
+          112,
+          68,
+          24,
+          0
+        ],
+        "input_sha256": "cae9f395d66195dbf58dca197285ad5243dd7a71dbd3a6b52b9be95390874cdb"
+      },
+      "case": "stall-recovery-delay",
+      "mode": "hybrid",
+      "opponent_model": "minimax",
+      "fixture_hash": "cae9f395d66195dbf58dca197285ad5243dd7a71dbd3a6b52b9be95390874cdb",
+      "provenance": {
+        "kind": "analytic-control",
+        "sources": [
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/conditions.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/moves.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/items.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/abilities.ts"
+        ],
+        "notes": "Synthetic active-pair stall controls with independent resource/HP proofs; not recorded battles or ROM verification."
+      },
+      "checkpoints": {
+        "1000": {
+          "measured": true,
+          "score": 98.00000000000003,
+          "available_at_ms": 941.0452999999999
+        },
+        "3000": {
+          "measured": true,
+          "score": 98.00000000000003,
+          "available_at_ms": 2982.3362
+        },
+        "10000": {
+          "measured": false,
+          "score": null,
+          "available_at_ms": null
+        }
+      },
+      "input_blocked": false,
+      "unresolved_reasons": [],
+      "first_estimate_ms": 112.0202999999999,
+      "elapsed_ms": 3086.7266,
+      "cpu_ms": 3610,
+      "max_slice_ms": 111.9538,
+      "peak_rss_mb": 254.6484375,
+      "score": 99,
+      "absolute_error_pp": 1,
+      "samples": 79,
+      "done": false,
+      "retained_states": 7,
+      "total_native_rollouts": 140,
+      "exact_next_turn": false,
+      "next_turn_expansions": 12,
+      "merged_states": 0,
+      "first_second": {
+        "score": 98.00000000000003,
+        "available_at_ms": 941.0452999999999,
+        "absolute_error_pp": 1.9999999999999716,
+        "reference": 100,
+        "reference_kind": "analytic",
+        "goal_met": true
+      },
+      "prediction": {
+        "schema_version": 1,
+        "kind": "estimate",
+        "certificate": null,
+        "search": {
+          "status": "searching",
+          "resolved": false
+        },
+        "reasons": [],
+        "estimate": {
+          "score": 99,
+          "basis": "simulation-estimate"
+        }
+      },
+      "readings": [
+        {
+          "elapsed_ms": 112.0202999999999,
+          "score": 98,
+          "samples": 8,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 219.83029999999997,
+          "score": 98,
+          "samples": 8,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 324.43449999999996,
+          "score": 98,
+          "samples": 8,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 428.4871999999999,
+          "score": 98,
+          "samples": 9,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 532.0100999999999,
+          "score": 98,
+          "samples": 10,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": true
+        },
+        {
+          "elapsed_ms": 634.0265,
+          "score": 98.00000000000001,
+          "samples": 19,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 737.9474999999999,
+          "score": 98.00000000000001,
+          "samples": 27,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 839.3603999999999,
+          "score": 98.00000000000003,
+          "samples": 32,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 941.0452999999999,
+          "score": 98.00000000000003,
+          "samples": 32,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1043.1970000000001,
+          "score": 98.00000000000003,
+          "samples": 35,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1144.8602999999998,
+          "score": 98.00000000000001,
+          "samples": 38,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1247.4380999999998,
+          "score": 98.00000000000001,
+          "samples": 40,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1349.3807000000002,
+          "score": 98.00000000000001,
+          "samples": 41,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1454.8616000000002,
+          "score": 98.00000000000001,
+          "samples": 43,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1556.9723,
+          "score": 98.00000000000001,
+          "samples": 46,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1659.183,
+          "score": 98.00000000000001,
+          "samples": 49,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1760.4899,
+          "score": 98.00000000000001,
+          "samples": 53,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1861.7561,
+          "score": 98.00000000000003,
+          "samples": 56,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1963.5326,
+          "score": 98.00000000000003,
+          "samples": 59,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 2064.5431,
+          "score": 98.00000000000003,
+          "samples": 62,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 2166.4282000000003,
+          "score": 98.00000000000003,
+          "samples": 64,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 2270.4269,
+          "score": 98.00000000000003,
+          "samples": 65,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 2372.2204,
+          "score": 98.00000000000003,
+          "samples": 67,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 2473.5833000000002,
+          "score": 98.00000000000003,
+          "samples": 68,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 2574.9892,
+          "score": 98.00000000000003,
+          "samples": 70,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 2676.6515,
+          "score": 98.00000000000003,
+          "samples": 72,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 2778.413,
+          "score": 98.00000000000003,
+          "samples": 74,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 2879.6785,
+          "score": 98.00000000000003,
+          "samples": 75,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 2982.3362,
+          "score": 98.00000000000003,
+          "samples": 77,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 3086.5557,
+          "score": 99,
+          "samples": 79,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        }
+      ]
+    },
+    {
+      "trial": 0,
+      "reference": {
+        "status": "analytic",
+        "expected_percent": 100,
+        "fraction": "1/1",
+        "proof": "Alternate faster Recover with Protect. No Protect is consecutive; all incoming hits are fixed damage, every recovery survives, and PP lasts until ordinary poison KOs the foe.",
+        "turns": 15,
+        "minimum_player_hp": 1,
+        "opponent_hp_trace": [
+          570,
+          529,
+          488,
+          447,
+          406,
+          365,
+          324,
+          283,
+          242,
+          201,
+          160,
+          119,
+          78,
+          37,
+          0
+        ],
+        "input_sha256": "2f29c7f72f574c1aebb9c3e793823cb73210a28480e0c42c844e06a2b6b21dd8"
+      },
+      "case": "stall-recover-protect",
+      "mode": "hybrid",
+      "opponent_model": "minimax",
+      "fixture_hash": "2f29c7f72f574c1aebb9c3e793823cb73210a28480e0c42c844e06a2b6b21dd8",
+      "provenance": {
+        "kind": "analytic-control",
+        "sources": [
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/conditions.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/moves.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/items.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/abilities.ts"
+        ],
+        "notes": "Synthetic active-pair stall controls with independent resource/HP proofs; not recorded battles or ROM verification."
+      },
+      "checkpoints": {
+        "1000": {
+          "measured": true,
+          "score": 100,
+          "available_at_ms": 189.76710000000003
+        },
+        "3000": {
+          "measured": true,
+          "score": 100,
+          "available_at_ms": 189.76710000000003
+        },
+        "10000": {
+          "measured": true,
+          "score": 100,
+          "available_at_ms": 189.76710000000003
+        }
+      },
+      "input_blocked": false,
+      "unresolved_reasons": [],
+      "first_estimate_ms": 167.12430000000006,
+      "elapsed_ms": 189.85440000000006,
+      "cpu_ms": 250,
+      "max_slice_ms": 167.0575,
+      "peak_rss_mb": 159.9765625,
+      "score": 100,
+      "absolute_error_pp": 0,
+      "samples": 0,
+      "done": true,
+      "retained_states": 1,
+      "total_native_rollouts": 0,
+      "exact_next_turn": false,
+      "next_turn_expansions": 0,
+      "merged_states": 0,
+      "first_second": {
+        "score": 100,
+        "available_at_ms": 189.76710000000003,
+        "absolute_error_pp": 0,
+        "reference": 100,
+        "reference_kind": "analytic",
+        "goal_met": true
+      },
+      "prediction": {
+        "schema_version": 1,
+        "kind": "proven",
+        "certificate": {
+          "lower": 100,
+          "upper": 100,
+          "width": 0
+        },
+        "search": {
+          "status": "proven",
+          "resolved": true
+        },
+        "reasons": [],
+        "estimate": {
+          "score": 100,
+          "basis": "proven-value"
+        }
+      },
+      "readings": [
+        {
+          "elapsed_ms": 167.12430000000006,
+          "score": 88.57454506601863,
+          "samples": 8,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 189.76710000000003,
+          "score": 100,
+          "samples": 0,
+          "certainty": "proven",
+          "certificate_width_pp": 0,
+          "next_turn_expansion_complete": false
+        }
+      ]
+    },
+    {
+      "trial": 0,
+      "reference": {
+        "status": "analytic",
+        "expected_percent": 100,
+        "fraction": "1/1",
+        "proof": "Alternate faster Recover with Protect. No Protect is consecutive; all incoming hits are fixed damage, every recovery survives, and PP lasts until ordinary poison KOs the foe.",
+        "turns": 7,
+        "minimum_player_hp": 262,
+        "opponent_hp_trace": [
+          242,
+          201,
+          160,
+          119,
+          78,
+          37,
+          0
+        ],
+        "input_sha256": "772cdcf098ca3411481bb7f3b5c381686896b4fc7ade4976a5e5fa44e115c541"
+      },
+      "case": "stall-recover-protect-mid",
+      "mode": "hybrid",
+      "opponent_model": "minimax",
+      "fixture_hash": "772cdcf098ca3411481bb7f3b5c381686896b4fc7ade4976a5e5fa44e115c541",
+      "provenance": {
+        "kind": "analytic-control",
+        "sources": [
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/conditions.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/moves.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/items.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/abilities.ts"
+        ],
+        "notes": "Synthetic active-pair stall controls with independent resource/HP proofs; not recorded battles or ROM verification."
+      },
+      "checkpoints": {
+        "1000": {
+          "measured": true,
+          "score": 100,
+          "available_at_ms": 189.9022
+        },
+        "3000": {
+          "measured": true,
+          "score": 100,
+          "available_at_ms": 189.9022
+        },
+        "10000": {
+          "measured": true,
+          "score": 100,
+          "available_at_ms": 189.9022
+        }
+      },
+      "input_blocked": false,
+      "unresolved_reasons": [],
+      "first_estimate_ms": 189.9022,
+      "elapsed_ms": 189.9978000000001,
+      "cpu_ms": 297,
+      "max_slice_ms": 170.37649999999996,
+      "peak_rss_mb": 142.15234375,
+      "score": 100,
+      "absolute_error_pp": 0,
+      "samples": 0,
+      "done": true,
+      "retained_states": 1,
+      "total_native_rollouts": 0,
+      "exact_next_turn": false,
+      "next_turn_expansions": 0,
+      "merged_states": 0,
+      "first_second": {
+        "score": 100,
+        "available_at_ms": 189.9022,
+        "absolute_error_pp": 0,
+        "reference": 100,
+        "reference_kind": "analytic",
+        "goal_met": true
+      },
+      "prediction": {
+        "schema_version": 1,
+        "kind": "proven",
+        "certificate": {
+          "lower": 100,
+          "upper": 100,
+          "width": 0
+        },
+        "search": {
+          "status": "proven",
+          "resolved": true
+        },
+        "reasons": [],
+        "estimate": {
+          "score": 100,
+          "basis": "proven-value"
+        }
+      },
+      "readings": [
+        {
+          "elapsed_ms": 170.44869999999992,
+          "score": null,
+          "samples": 3,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 189.9022,
+          "score": 100,
+          "samples": 0,
+          "certainty": "proven",
+          "certificate_width_pp": 0,
+          "next_turn_expansion_complete": false
+        }
+      ]
+    },
+    {
+      "trial": 0,
+      "reference": {
+        "status": "analytic",
+        "expected_percent": 100,
+        "fraction": "1/1",
+        "proof": "Alternate faster Recover with Protect. No Protect is consecutive; all incoming hits are fixed damage, every recovery survives, and PP lasts until ordinary poison KOs the foe.",
+        "turns": 3,
+        "minimum_player_hp": 262,
+        "opponent_hp_trace": [
+          78,
+          37,
+          0
+        ],
+        "input_sha256": "c3e27604919ae039845e9b60966598a1cee0b7ae37fe65165cc850691936348e"
+      },
+      "case": "stall-recover-protect-late",
+      "mode": "hybrid",
+      "opponent_model": "minimax",
+      "fixture_hash": "c3e27604919ae039845e9b60966598a1cee0b7ae37fe65165cc850691936348e",
+      "provenance": {
+        "kind": "analytic-control",
+        "sources": [
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/conditions.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/moves.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/items.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/abilities.ts"
+        ],
+        "notes": "Synthetic active-pair stall controls with independent resource/HP proofs; not recorded battles or ROM verification."
+      },
+      "checkpoints": {
+        "1000": {
+          "measured": true,
+          "score": 100,
+          "available_at_ms": 183.39729999999997
+        },
+        "3000": {
+          "measured": true,
+          "score": 100,
+          "available_at_ms": 183.39729999999997
+        },
+        "10000": {
+          "measured": true,
+          "score": 100,
+          "available_at_ms": 183.39729999999997
+        }
+      },
+      "input_blocked": false,
+      "unresolved_reasons": [],
+      "first_estimate_ms": 169.0046000000001,
+      "elapsed_ms": 183.48069999999996,
+      "cpu_ms": 219,
+      "max_slice_ms": 168.85090000000002,
+      "peak_rss_mb": 141.69921875,
+      "score": 100,
+      "absolute_error_pp": 0,
+      "samples": 0,
+      "done": true,
+      "retained_states": 1,
+      "total_native_rollouts": 0,
+      "exact_next_turn": false,
+      "next_turn_expansions": 0,
+      "merged_states": 0,
+      "first_second": {
+        "score": 100,
+        "available_at_ms": 183.39729999999997,
+        "absolute_error_pp": 0,
+        "reference": 100,
+        "reference_kind": "analytic",
+        "goal_met": true
+      },
+      "prediction": {
+        "schema_version": 1,
+        "kind": "proven",
+        "certificate": {
+          "lower": 100,
+          "upper": 100,
+          "width": 0
+        },
+        "search": {
+          "status": "proven",
+          "resolved": true
+        },
+        "reasons": [],
+        "estimate": {
+          "score": 100,
+          "basis": "proven-value"
+        }
+      },
+      "readings": [
+        {
+          "elapsed_ms": 169.0046000000001,
+          "score": 98.00000000000001,
+          "samples": 7,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 183.39729999999997,
+          "score": 100,
+          "samples": 0,
+          "certainty": "proven",
+          "certificate_width_pp": 0,
+          "next_turn_expansion_complete": false
+        }
+      ]
+    },
+    {
+      "trial": 0,
+      "reference": {
+        "status": "analytic",
+        "expected_percent": 0,
+        "fraction": "0/1",
+        "proof": "Either legal ordering uses the one Recover and one Protect. At turn three the player must Struggle; even its maximum critical cannot KO, and recoil plus Seismic Toss KOs the player.",
+        "turns": 3,
+        "input_sha256": "a76cfc7c2ce5316fd27e87ec3d84b8e79c062d8bbcd812ff5854b99b9a5d1aca"
+      },
+      "case": "stall-pp-exhaustion",
+      "mode": "hybrid",
+      "opponent_model": "minimax",
+      "fixture_hash": "a76cfc7c2ce5316fd27e87ec3d84b8e79c062d8bbcd812ff5854b99b9a5d1aca",
+      "provenance": {
+        "kind": "analytic-control",
+        "sources": [
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/conditions.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/moves.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/items.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/abilities.ts"
+        ],
+        "notes": "Synthetic active-pair stall controls with independent resource/HP proofs; not recorded battles or ROM verification."
+      },
+      "checkpoints": {
+        "1000": {
+          "measured": true,
+          "score": 1,
+          "available_at_ms": 913.6634
+        },
+        "3000": {
+          "measured": true,
+          "score": 1,
+          "available_at_ms": 2954.5163000000002
+        },
+        "10000": {
+          "measured": false,
+          "score": null,
+          "available_at_ms": null
+        }
+      },
+      "input_blocked": false,
+      "unresolved_reasons": [],
+      "first_estimate_ms": 170.5941999999999,
+      "elapsed_ms": 3055.9296,
+      "cpu_ms": 3829,
+      "max_slice_ms": 170.51499999999987,
+      "peak_rss_mb": 245.83984375,
+      "score": 1,
+      "absolute_error_pp": 1,
+      "samples": 256,
+      "done": false,
+      "retained_states": 5,
+      "total_native_rollouts": 470,
+      "exact_next_turn": true,
+      "next_turn_expansions": 12,
+      "merged_states": 2,
+      "first_second": {
+        "score": 1,
+        "available_at_ms": 913.6634,
+        "absolute_error_pp": 1,
+        "reference": 0,
+        "reference_kind": "analytic",
+        "goal_met": true
+      },
+      "prediction": {
+        "schema_version": 1,
+        "kind": "estimate",
+        "certificate": null,
+        "search": {
+          "status": "searching",
+          "resolved": false
+        },
+        "reasons": [],
+        "estimate": {
+          "score": 1,
+          "basis": "simulation-estimate"
+        }
+      },
+      "readings": [
+        {
+          "elapsed_ms": 170.5941999999999,
+          "score": 2,
+          "samples": 8,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 293.8893999999999,
+          "score": 2,
+          "samples": 9,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 397.7597999999999,
+          "score": 2,
+          "samples": 10,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 501.71410000000003,
+          "score": 1,
+          "samples": 19,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 603.3959999999998,
+          "score": 1,
+          "samples": 30,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 705.2425999999999,
+          "score": 1,
+          "samples": 39,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": true
+        },
+        {
+          "elapsed_ms": 811.3711,
+          "score": 1,
+          "samples": 49,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": true
+        },
+        {
+          "elapsed_ms": 913.6634,
+          "score": 1,
+          "samples": 59,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": true
+        },
+        {
+          "elapsed_ms": 1015.3247,
+          "score": 1,
+          "samples": 70,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": true
+        },
+        {
+          "elapsed_ms": 1118.2012,
+          "score": 1,
+          "samples": 82,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1221.9714,
+          "score": 1,
+          "samples": 93,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1323.8482,
+          "score": 1,
+          "samples": 104,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1427.6071000000002,
+          "score": 1,
+          "samples": 116,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1529.1170000000002,
+          "score": 1,
+          "samples": 128,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1630.6511,
+          "score": 1,
+          "samples": 141,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1731.9008,
+          "score": 1,
+          "samples": 155,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1834.0501,
+          "score": 1,
+          "samples": 166,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1935.426,
+          "score": 1,
+          "samples": 175,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": true
+        },
+        {
+          "elapsed_ms": 2036.7258000000002,
+          "score": 1,
+          "samples": 184,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": true
+        },
+        {
+          "elapsed_ms": 2138.9771,
+          "score": 1,
+          "samples": 192,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": true
+        },
+        {
+          "elapsed_ms": 2242.5905000000002,
+          "score": 1,
+          "samples": 205,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": true
+        },
+        {
+          "elapsed_ms": 2343.9249,
+          "score": 1,
+          "samples": 218,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": true
+        },
+        {
+          "elapsed_ms": 2446.0648,
+          "score": 1,
+          "samples": 230,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": true
+        },
+        {
+          "elapsed_ms": 2547.3721,
+          "score": 1,
+          "samples": 243,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": true
+        },
+        {
+          "elapsed_ms": 2648.5728,
+          "score": 1,
+          "samples": 256,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": true
+        },
+        {
+          "elapsed_ms": 2750.9522,
+          "score": 1,
+          "samples": 256,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": true
+        },
+        {
+          "elapsed_ms": 2852.9487,
+          "score": 1,
+          "samples": 256,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": true
+        },
+        {
+          "elapsed_ms": 2954.5163000000002,
+          "score": 1,
+          "samples": 256,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": true
+        },
+        {
+          "elapsed_ms": 3055.7834000000003,
+          "score": 1,
+          "samples": 256,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": true
+        }
+      ]
+    },
+    {
+      "trial": 0,
+      "reference": {
+        "status": "analytic",
+        "expected_percent": 33.333333333333336,
+        "fraction": "1/3",
+        "proof": "Every failed Protect loses before the next Toxic tick. Multiply successive native Protect success chances 1/(3^streak).",
+        "turns": 2,
+        "protect_success_denominator": 3,
+        "input_sha256": "3328b9329f0ad5f31dd55c99af29986a9ac47e4722d3567f8bb46a70455958a9"
+      },
+      "case": "stall-protect-risk",
+      "mode": "hybrid",
+      "opponent_model": "minimax",
+      "fixture_hash": "3328b9329f0ad5f31dd55c99af29986a9ac47e4722d3567f8bb46a70455958a9",
+      "provenance": {
+        "kind": "analytic-control",
+        "sources": [
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/conditions.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/moves.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/items.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/abilities.ts"
+        ],
+        "notes": "Synthetic active-pair stall controls with independent resource/HP proofs; not recorded battles or ROM verification."
+      },
+      "checkpoints": {
+        "1000": {
+          "measured": true,
+          "score": 33.33333333333333,
+          "available_at_ms": 179.64030000000002
+        },
+        "3000": {
+          "measured": true,
+          "score": 33.33333333333333,
+          "available_at_ms": 179.64030000000002
+        },
+        "10000": {
+          "measured": true,
+          "score": 33.33333333333333,
+          "available_at_ms": 179.64030000000002
+        }
+      },
+      "input_blocked": false,
+      "unresolved_reasons": [],
+      "first_estimate_ms": 168.08539999999994,
+      "elapsed_ms": 179.78219999999988,
+      "cpu_ms": 250,
+      "max_slice_ms": 167.3211,
+      "peak_rss_mb": 160.1640625,
+      "score": 33.33333333333333,
+      "absolute_error_pp": 7.105427357601002e-15,
+      "samples": 0,
+      "done": true,
+      "retained_states": 2,
+      "total_native_rollouts": 0,
+      "exact_next_turn": false,
+      "next_turn_expansions": 0,
+      "merged_states": 0,
+      "first_second": {
+        "score": 33.33333333333333,
+        "available_at_ms": 179.64030000000002,
+        "absolute_error_pp": 7.105427357601002e-15,
+        "reference": 33.333333333333336,
+        "reference_kind": "analytic",
+        "goal_met": true
+      },
+      "prediction": {
+        "schema_version": 1,
+        "kind": "proven",
+        "certificate": {
+          "lower": 33.33333333333333,
+          "upper": 33.33333333333333,
+          "width": 0
+        },
+        "search": {
+          "status": "proven",
+          "resolved": true
+        },
+        "reasons": [],
+        "estimate": {
+          "score": 33.33333333333333,
+          "basis": "proven-value"
+        }
+      },
+      "readings": [
+        {
+          "elapsed_ms": 168.08539999999994,
+          "score": 33.33333333333333,
+          "samples": 10,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 179.64030000000002,
+          "score": 33.33333333333333,
+          "samples": 0,
+          "certainty": "proven",
+          "certificate_width_pp": 0,
+          "next_turn_expansion_complete": false
+        }
+      ]
+    },
+    {
+      "trial": 0,
+      "reference": {
+        "status": "analytic",
+        "expected_percent": 3.7037037037037037,
+        "fraction": "1/27",
+        "proof": "Every failed Protect loses before the next Toxic tick. Multiply successive native Protect success chances 1/(3^streak).",
+        "turns": 2,
+        "protect_success_denominator": 27,
+        "input_sha256": "f6d68c7ae9404a5757af03ad263dcce1caf7ab7e5fc9e40e84b81595fdc2e281"
+      },
+      "case": "stall-protect-used",
+      "mode": "hybrid",
+      "opponent_model": "minimax",
+      "fixture_hash": "f6d68c7ae9404a5757af03ad263dcce1caf7ab7e5fc9e40e84b81595fdc2e281",
+      "provenance": {
+        "kind": "analytic-control",
+        "sources": [
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/conditions.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/moves.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/items.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/abilities.ts"
+        ],
+        "notes": "Synthetic active-pair stall controls with independent resource/HP proofs; not recorded battles or ROM verification."
+      },
+      "checkpoints": {
+        "1000": {
+          "measured": true,
+          "score": 3.7037037037037033,
+          "available_at_ms": 182.28570000000002
+        },
+        "3000": {
+          "measured": true,
+          "score": 3.7037037037037033,
+          "available_at_ms": 182.28570000000002
+        },
+        "10000": {
+          "measured": true,
+          "score": 3.7037037037037033,
+          "available_at_ms": 182.28570000000002
+        }
+      },
+      "input_blocked": false,
+      "unresolved_reasons": [],
+      "first_estimate_ms": 167.8505,
+      "elapsed_ms": 182.4271,
+      "cpu_ms": 281,
+      "max_slice_ms": 167.78009999999995,
+      "peak_rss_mb": 142.03125,
+      "score": 3.7037037037037033,
+      "absolute_error_pp": 4.440892098500626e-16,
+      "samples": 0,
+      "done": true,
+      "retained_states": 2,
+      "total_native_rollouts": 0,
+      "exact_next_turn": false,
+      "next_turn_expansions": 0,
+      "merged_states": 0,
+      "first_second": {
+        "score": 3.7037037037037033,
+        "available_at_ms": 182.28570000000002,
+        "absolute_error_pp": 4.440892098500626e-16,
+        "reference": 3.7037037037037037,
+        "reference_kind": "analytic",
+        "goal_met": true
+      },
+      "prediction": {
+        "schema_version": 1,
+        "kind": "proven",
+        "certificate": {
+          "lower": 3.7037037037037033,
+          "upper": 3.7037037037037033,
+          "width": 0
+        },
+        "search": {
+          "status": "proven",
+          "resolved": true
+        },
+        "reasons": [],
+        "estimate": {
+          "score": 3.7037037037037033,
+          "basis": "proven-value"
+        }
+      },
+      "readings": [
+        {
+          "elapsed_ms": 167.8505,
+          "score": 3.703703703703704,
+          "samples": 18,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 182.28570000000002,
+          "score": 3.7037037037037033,
+          "samples": 0,
+          "certainty": "proven",
+          "certificate_width_pp": 0,
+          "next_turn_expansion_complete": false
+        }
+      ]
+    },
+    {
+      "trial": 0,
+      "reference": {
+        "status": "analytic",
+        "expected_percent": 3.7037037037037037,
+        "fraction": "1/27",
+        "proof": "Every failed Protect loses before the next Toxic tick. Multiply successive native Protect success chances 1/(3^streak).",
+        "turns": 3,
+        "protect_success_denominator": 27,
+        "input_sha256": "7e80620566feec1420073bccd1a39578e565bda339870e1f223181f751583d01"
+      },
+      "case": "stall-protect-three",
+      "mode": "hybrid",
+      "opponent_model": "minimax",
+      "fixture_hash": "7e80620566feec1420073bccd1a39578e565bda339870e1f223181f751583d01",
+      "provenance": {
+        "kind": "analytic-control",
+        "sources": [
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/conditions.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/moves.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/items.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/abilities.ts"
+        ],
+        "notes": "Synthetic active-pair stall controls with independent resource/HP proofs; not recorded battles or ROM verification."
+      },
+      "checkpoints": {
+        "1000": {
+          "measured": true,
+          "score": 3.7037037037037033,
+          "available_at_ms": 178.93490000000008
+        },
+        "3000": {
+          "measured": true,
+          "score": 3.7037037037037033,
+          "available_at_ms": 178.93490000000008
+        },
+        "10000": {
+          "measured": true,
+          "score": 3.7037037037037033,
+          "available_at_ms": 178.93490000000008
+        }
+      },
+      "input_blocked": false,
+      "unresolved_reasons": [],
+      "first_estimate_ms": 167.37620000000004,
+      "elapsed_ms": 179.06540000000007,
+      "cpu_ms": 281,
+      "max_slice_ms": 167.3047999999999,
+      "peak_rss_mb": 142.3359375,
+      "score": 3.7037037037037033,
+      "absolute_error_pp": 4.440892098500626e-16,
+      "samples": 0,
+      "done": true,
+      "retained_states": 2,
+      "total_native_rollouts": 0,
+      "exact_next_turn": false,
+      "next_turn_expansions": 0,
+      "merged_states": 0,
+      "first_second": {
+        "score": 3.7037037037037033,
+        "available_at_ms": 178.93490000000008,
+        "absolute_error_pp": 4.440892098500626e-16,
+        "reference": 3.7037037037037037,
+        "reference_kind": "analytic",
+        "goal_met": true
+      },
+      "prediction": {
+        "schema_version": 1,
+        "kind": "proven",
+        "certificate": {
+          "lower": 3.7037037037037033,
+          "upper": 3.7037037037037033,
+          "width": 0
+        },
+        "search": {
+          "status": "proven",
+          "resolved": true
+        },
+        "reasons": [],
+        "estimate": {
+          "score": 3.7037037037037033,
+          "basis": "proven-value"
+        }
+      },
+      "readings": [
+        {
+          "elapsed_ms": 167.37620000000004,
+          "score": 3.7037037037037033,
+          "samples": 13,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 178.93490000000008,
+          "score": 3.7037037037037033,
+          "samples": 0,
+          "certainty": "proven",
+          "certificate_width_pp": 0,
+          "next_turn_expansion_complete": false
+        }
+      ]
+    },
+    {
+      "trial": 0,
+      "reference": {
+        "status": "analytic",
+        "expected_percent": 100,
+        "fraction": "1/1",
+        "proof": "Use faster Recover every turn; healing exceeds incoming fixed damage until Toxic KOs.",
+        "turns": 2,
+        "input_sha256": "974d4fb873f35e3e24e060077823112b6dbe4d2cc5ebc171195a1eb3d31116d1"
+      },
+      "case": "stall-heal-instead",
+      "mode": "hybrid",
+      "opponent_model": "minimax",
+      "fixture_hash": "974d4fb873f35e3e24e060077823112b6dbe4d2cc5ebc171195a1eb3d31116d1",
+      "provenance": {
+        "kind": "analytic-control",
+        "sources": [
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/conditions.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/moves.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/items.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/abilities.ts"
+        ],
+        "notes": "Synthetic active-pair stall controls with independent resource/HP proofs; not recorded battles or ROM verification."
+      },
+      "checkpoints": {
+        "1000": {
+          "measured": true,
+          "score": 100,
+          "available_at_ms": 191.1543999999999
+        },
+        "3000": {
+          "measured": true,
+          "score": 100,
+          "available_at_ms": 191.1543999999999
+        },
+        "10000": {
+          "measured": true,
+          "score": 100,
+          "available_at_ms": 191.1543999999999
+        }
+      },
+      "input_blocked": false,
+      "unresolved_reasons": [],
+      "first_estimate_ms": 170.20159999999987,
+      "elapsed_ms": 191.26600000000008,
+      "cpu_ms": 250,
+      "max_slice_ms": 170.12930000000006,
+      "peak_rss_mb": 141.71484375,
+      "score": 100,
+      "absolute_error_pp": 0,
+      "samples": 0,
+      "done": true,
+      "retained_states": 1,
+      "total_native_rollouts": 0,
+      "exact_next_turn": false,
+      "next_turn_expansions": 0,
+      "merged_states": 0,
+      "first_second": {
+        "score": 100,
+        "available_at_ms": 191.1543999999999,
+        "absolute_error_pp": 0,
+        "reference": 100,
+        "reference_kind": "analytic",
+        "goal_met": true
+      },
+      "prediction": {
+        "schema_version": 1,
+        "kind": "proven",
+        "certificate": {
+          "lower": 100,
+          "upper": 100,
+          "width": 0
+        },
+        "search": {
+          "status": "proven",
+          "resolved": true
+        },
+        "reasons": [],
+        "estimate": {
+          "score": 100,
+          "basis": "proven-value"
+        }
+      },
+      "readings": [
+        {
+          "elapsed_ms": 170.20159999999987,
+          "score": 98,
+          "samples": 8,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 191.1543999999999,
+          "score": 100,
+          "samples": 0,
+          "certainty": "proven",
+          "certificate_width_pp": 0,
+          "next_turn_expansion_complete": false
+        }
+      ]
+    },
+    {
+      "trial": 0,
+      "reference": {
+        "status": "analytic",
+        "expected_percent": 0,
+        "fraction": "0/1",
+        "proof": "Lum Berry cures Toxic before any poison tick. Protect only delays; when its PP ends, Struggle cannot KO the foe and recoil KOs the player.",
+        "input_sha256": "01d640799dd50e175c2db933ed46779556e5827298b46e88289a85d7f52bdc66"
+      },
+      "case": "stall-lum-cure",
+      "mode": "hybrid",
+      "opponent_model": "minimax",
+      "fixture_hash": "01d640799dd50e175c2db933ed46779556e5827298b46e88289a85d7f52bdc66",
+      "provenance": {
+        "kind": "analytic-control",
+        "sources": [
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/conditions.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/moves.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/items.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/abilities.ts"
+        ],
+        "notes": "Synthetic active-pair stall controls with independent resource/HP proofs; not recorded battles or ROM verification."
+      },
+      "checkpoints": {
+        "1000": {
+          "measured": true,
+          "score": 1,
+          "available_at_ms": 944.6378
+        },
+        "3000": {
+          "measured": true,
+          "score": 1,
+          "available_at_ms": 1282.1876000000002
+        },
+        "10000": {
+          "measured": true,
+          "score": 1,
+          "available_at_ms": 1282.1876000000002
+        }
+      },
+      "input_blocked": false,
+      "unresolved_reasons": [],
+      "first_estimate_ms": 114.62200000000007,
+      "elapsed_ms": 1282.3737,
+      "cpu_ms": 1875,
+      "max_slice_ms": 114.54730000000006,
+      "peak_rss_mb": 168.921875,
+      "score": 1,
+      "absolute_error_pp": 1,
+      "samples": 128,
+      "done": true,
+      "retained_states": 3,
+      "total_native_rollouts": 256,
+      "exact_next_turn": true,
+      "next_turn_expansions": 10,
+      "merged_states": 2,
+      "first_second": {
+        "score": 1,
+        "available_at_ms": 944.6378,
+        "absolute_error_pp": 1,
+        "reference": 0,
+        "reference_kind": "analytic",
+        "goal_met": true
+      },
+      "prediction": {
+        "schema_version": 1,
+        "kind": "estimate",
+        "certificate": null,
+        "search": {
+          "status": "sample-budget-finished",
+          "resolved": false
+        },
+        "reasons": [],
+        "estimate": {
+          "score": 1,
+          "basis": "simulation-estimate"
+        }
+      },
+      "readings": [
+        {
+          "elapsed_ms": 114.62200000000007,
+          "score": 1,
+          "samples": 5,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 224.46460000000002,
+          "score": 1,
+          "samples": 9,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 329.9532999999999,
+          "score": 1,
+          "samples": 17,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": true
+        },
+        {
+          "elapsed_ms": 431.9403,
+          "score": 1,
+          "samples": 25,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": true
+        },
+        {
+          "elapsed_ms": 534.0558000000001,
+          "score": 1,
+          "samples": 38,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 638.6573000000001,
+          "score": 1,
+          "samples": 53,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 740.6604,
+          "score": 1,
+          "samples": 68,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 842.2877000000001,
+          "score": 1,
+          "samples": 84,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": true
+        },
+        {
+          "elapsed_ms": 944.6378,
+          "score": 1,
+          "samples": 99,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": true
+        },
+        {
+          "elapsed_ms": 1046.3536,
+          "score": 1,
+          "samples": 116,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": true
+        },
+        {
+          "elapsed_ms": 1147.8905,
+          "score": 1,
+          "samples": 128,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": true
+        },
+        {
+          "elapsed_ms": 1249.5821999999998,
+          "score": 1,
+          "samples": 128,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": true
+        },
+        {
+          "elapsed_ms": 1282.1876000000002,
+          "score": 1,
+          "samples": 128,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": true
+        }
+      ]
+    },
+    {
+      "trial": 0,
+      "reference": {
+        "status": "analytic",
+        "expected_percent": 0,
+        "fraction": "0/1",
+        "proof": "Poison Heal prevents Toxic damage and heals instead. Protect cannot win; forced Struggle cannot KO the foe and its recoil KOs the player.",
+        "input_sha256": "e1fff3f0a22a1fa11e556fea975a80cce4f3c5c0a81f9af135a00b8cb46fb65e"
+      },
+      "case": "stall-poison-heal",
+      "mode": "hybrid",
+      "opponent_model": "minimax",
+      "fixture_hash": "e1fff3f0a22a1fa11e556fea975a80cce4f3c5c0a81f9af135a00b8cb46fb65e",
+      "provenance": {
+        "kind": "analytic-control",
+        "sources": [
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/conditions.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/moves.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/items.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/abilities.ts"
+        ],
+        "notes": "Synthetic active-pair stall controls with independent resource/HP proofs; not recorded battles or ROM verification."
+      },
+      "checkpoints": {
+        "1000": {
+          "measured": true,
+          "score": 1,
+          "available_at_ms": 939.6549
+        },
+        "3000": {
+          "measured": true,
+          "score": 1,
+          "available_at_ms": 1223.5633000000003
+        },
+        "10000": {
+          "measured": true,
+          "score": 1,
+          "available_at_ms": 1223.5633000000003
+        }
+      },
+      "input_blocked": false,
+      "unresolved_reasons": [],
+      "first_estimate_ms": 113.94759999999997,
+      "elapsed_ms": 1223.7316,
+      "cpu_ms": 1688,
+      "max_slice_ms": 113.87279999999987,
+      "peak_rss_mb": 168.9765625,
+      "score": 1,
+      "absolute_error_pp": 1,
+      "samples": 128,
+      "done": true,
+      "retained_states": 3,
+      "total_native_rollouts": 256,
+      "exact_next_turn": true,
+      "next_turn_expansions": 10,
+      "merged_states": 2,
+      "first_second": {
+        "score": 1,
+        "available_at_ms": 939.6549,
+        "absolute_error_pp": 1,
+        "reference": 0,
+        "reference_kind": "analytic",
+        "goal_met": true
+      },
+      "prediction": {
+        "schema_version": 1,
+        "kind": "estimate",
+        "certificate": null,
+        "search": {
+          "status": "sample-budget-finished",
+          "resolved": false
+        },
+        "reasons": [],
+        "estimate": {
+          "score": 1,
+          "basis": "simulation-estimate"
+        }
+      },
+      "readings": [
+        {
+          "elapsed_ms": 113.94759999999997,
+          "score": 1,
+          "samples": 6,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 221.97590000000014,
+          "score": 1,
+          "samples": 17,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 327.2038,
+          "score": 1,
+          "samples": 28,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": true
+        },
+        {
+          "elapsed_ms": 430.24839999999995,
+          "score": 1,
+          "samples": 40,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 531.7804000000001,
+          "score": 1,
+          "samples": 55,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 634.383,
+          "score": 1,
+          "samples": 69,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 735.8602000000001,
+          "score": 1,
+          "samples": 82,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 837.1284,
+          "score": 1,
+          "samples": 96,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": true
+        },
+        {
+          "elapsed_ms": 939.6549,
+          "score": 1,
+          "samples": 114,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": true
+        },
+        {
+          "elapsed_ms": 1041.5909000000001,
+          "score": 1,
+          "samples": 128,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": true
+        },
+        {
+          "elapsed_ms": 1143.6339000000003,
+          "score": 1,
+          "samples": 128,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": true
+        },
+        {
+          "elapsed_ms": 1223.5633000000003,
+          "score": 1,
+          "samples": 128,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": true
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,159 @@
+{
+  "created_at": "2026-10-18T15:06:45.362Z",
+  "seconds": 3,
+  "trials": 3,
+  "worker_preloaded": true,
+  "source_hashes": {
+    "scripts/benchmark-search-race-worker.mjs": "2084c8a75782e6a177b0c5573d1847320f939ee30e53e907c7d7b5b68ebea537",
+    "run-bun/search-service.mjs": "f1563a0b7ac35f24d8a711632efbd714d673c50bb7b1ebd2a0014b3cb2b5467a",
+    "run-bun/search-worker.mjs": "c4f5fab9b8292fcb93c99487597e42a3d5dc06fd94ab8bd8877e9111999e9ba2",
+    "run-bun/refinement.mjs": "1c9e7005cbc824d5ed5587d3b0527528fd58c475273ebcf751c7f3598639c49d",
+    "analysis/threat.mjs": "2ab1a43fdc5be0b7f2149f8b161cf4faa7d66527a118db1c4081f9d8d05b5894",
+    "analysis/complete-moves.mjs": "461a90066f8c1a804ef5214bbc24a7a100f1756ab6662f7fb7addbfd928da9f1",
+    "analysis/retained-turn.mjs": "ad3da3608745d14d290995c3371b41c6eb603988f66824c9c479b19093b04d59",
+    "analysis/sampled-moves.mjs": "27b2876c2327c71be9f37604a951ee711b5fc13b2cc9f76d44da6be62f6a1da7",
+    "analysis/passive-endgame.mjs": "e222c8686bafe3e5802d67ab2421f37e99fa3a4d7cd4089a5c47ddea87f3a5a7",
+    "analysis/position-features.mjs": "e98588bcac7f3fc13a99487a4d0e37e90127f1a9f31a0d1fdc88410e4be5b862",
+    "analysis/continuation-policy.mjs": "fc12affa1a6416b906de4ca2372b72a80c64cd3d56ceb24fcbfd0a79c1bb8dc8",
+    "analysis/position-evaluator.mjs": "be8dc73dec6eeea9570d62da6d39af824e0645455427a74055cc8ea924766886",
+    "analysis/native-battle.mjs": "4772246187212a6282a89efa5d682e69ba07daf1ab3e0df07626047b94a475e1",
+    "analysis/native-search.mjs": "6d77bd37e8502ee45f26ac743e46818fa2fadc83add09485c82dacfab44c191f",
+    "analysis/sampled-search.mjs": "e15d869702336bb36c19d036e7115878e4426bc4e3450c5a2354d9e7ba0c4097",
+    "scripts/stall-benchmark-fixtures.mjs": "5751d4f6d687dc3207822c2561be70f80064214d75b32463ed554b246b46e91c",
+    "scripts/stall-benchmark-oracles.mjs": "f592b87be213ce2d7b779f67eb4a7a73e7bf3398858f86074d6ae7a94638c252",
+    "scripts/real-battle-fixtures.mjs": "be6f5d6f5afe59a2caefe4e7c159ea80f2f0a442e80aff33e568a4134fefb236",
+    "scripts/accuracy-benchmark-fixtures.mjs": "6f8b1d5b71170cbf94a339d4c40f0b7a12641559393aa9e8af922c207273e3a0",
+    "analysis/exact-endgame.mjs": "ad9ac3a99d6a70c55116fc73713a3063048802b89e1c3f2500ecf6bff098a0c6"
+  },
+  "method": "Workers explicitly preloaded; reported initial decision latency excludes separately recorded preload_ms; observed-turn measurement reuses workers.",
+  "summary": [
+    {
+      "case": "stall-recover-protect-late",
+      "mode": "fallback",
+      "first_estimate_ms": 359.98889999999983,
+      "next_turn_estimate_ms": null,
+      "cpu_ms": 656,
+      "peak_rss_mb": 323.12890625,
+      "completed": 3
+    }
+  ],
+  "rows": [
+    {
+      "trial": 0,
+      "case": "stall-recover-protect-late",
+      "mode": "fallback",
+      "preload_ms": 932.6822000000002,
+      "worker_preloaded": true,
+      "cold": {
+        "first_estimate_ms": 359.98889999999983,
+        "first_score": 98.00000000000001,
+        "algorithm": "exact-native-passive-resource-endgame",
+        "elapsed_ms": 390.59619999999995,
+        "cpu_ms": 780,
+        "first_second": {
+          "elapsed_ms": 390.50329999999985,
+          "score": 100,
+          "algorithm": "exact-native-passive-resource-endgame"
+        },
+        "readings": [
+          {
+            "elapsed_ms": 359.97199999999975,
+            "score": 98.00000000000001,
+            "algorithm": "retained-next-turn-native-hybrid"
+          },
+          {
+            "elapsed_ms": 390.50329999999985,
+            "score": 100,
+            "algorithm": "exact-native-passive-resource-endgame"
+          }
+        ],
+        "score": 100,
+        "complete": true,
+        "updates": 2,
+        "selected": "fallback",
+        "reused": false,
+        "samples": 0
+      },
+      "warm": null,
+      "peak_rss_mb": 325.828125
+    },
+    {
+      "trial": 1,
+      "case": "stall-recover-protect-late",
+      "mode": "fallback",
+      "preload_ms": 930.0183,
+      "worker_preloaded": true,
+      "cold": {
+        "first_estimate_ms": 385.6435999999999,
+        "first_score": 98.00000000000001,
+        "algorithm": "exact-native-passive-resource-endgame",
+        "elapsed_ms": 432.48,
+        "cpu_ms": 656,
+        "first_second": {
+          "elapsed_ms": 432.3906999999999,
+          "score": 100,
+          "algorithm": "exact-native-passive-resource-endgame"
+        },
+        "readings": [
+          {
+            "elapsed_ms": 385.63139999999976,
+            "score": 98.00000000000001,
+            "algorithm": "retained-next-turn-native-hybrid"
+          },
+          {
+            "elapsed_ms": 432.3906999999999,
+            "score": 100,
+            "algorithm": "exact-native-passive-resource-endgame"
+          }
+        ],
+        "score": 100,
+        "complete": true,
+        "updates": 2,
+        "selected": "fallback",
+        "reused": false,
+        "samples": 0
+      },
+      "warm": null,
+      "peak_rss_mb": 319.828125
+    },
+    {
+      "trial": 2,
+      "case": "stall-recover-protect-late",
+      "mode": "fallback",
+      "preload_ms": 922.605,
+      "worker_preloaded": true,
+      "cold": {
+        "first_estimate_ms": 349.5160000000001,
+        "first_score": 98.00000000000001,
+        "algorithm": "exact-native-passive-resource-endgame",
+        "elapsed_ms": 372.35699999999997,
+        "cpu_ms": 578,
+        "first_second": {
+          "elapsed_ms": 372.19529999999986,
+          "score": 100,
+          "algorithm": "exact-native-passive-resource-endgame"
+        },
+        "readings": [
+          {
+            "elapsed_ms": 349.5036,
+            "score": 98.00000000000001,
+            "algorithm": "retained-next-turn-native-hybrid"
+          },
+          {
+            "elapsed_ms": 372.19529999999986,
+            "score": 100,
+            "algorithm": "exact-native-passive-resource-endgame"
+          }
+        ],
+        "score": 100,
+        "complete": true,
+        "updates": 2,
+        "selected": "fallback",
+        "reused": false,
+        "samples": 0
+      },
+      "warm": null,
+      "peak_rss_mb": 323.12890625
+    }
+  ]
+}

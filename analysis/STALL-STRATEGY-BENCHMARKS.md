@@ -137,3 +137,44 @@ Resumption fixes starvation, but richer feature extraction still has a cost.
 The live-worker and warm benchmark latency results above remain the relevant
 separate measurements. Runtime distribution files and recorded source hashes
 were checked against the final source before committing.
+
+## Bounded backward resource solver (2026-10-18)
+
+The [bounded passive endgame provider](PASSIVE-ENDGAME-SOLVER.md) now proves eligible passive wins and exact Protect outcomes. It compiles native mechanics into a small HP/PP/Protect-state graph and backs up terminal values. The previous reference targets, fixtures and ten-point acceptance tolerance are unchanged.
+
+| Case | Exact target | Minimax: by 1s / final | NPC: by 1s / final | Result |
+|---|---:|---:|---:|---|
+| stall-poison-clock | 100.000% | 100.000% / 100.000% | 100.000% / 100.000% | proven |
+| stall-poison-leftovers | 100.000% | 100.000% / 100.000% | 100.000% / 100.000% | proven |
+| stall-recovery-delay | 100.000% | 98.000% / 99.000% | 98.000% / 98.000% | estimate |
+| stall-recover-protect | 100.000% | 100.000% / 100.000% | 100.000% / 100.000% | proven |
+| stall-recover-protect-mid | 100.000% | 100.000% / 100.000% | 100.000% / 100.000% | proven |
+| stall-recover-protect-late | 100.000% | 100.000% / 100.000% | 100.000% / 100.000% | proven |
+| stall-pp-exhaustion | 0.000% | 1.000% / 1.000% | 1.000% / 1.000% | estimate |
+| stall-protect-risk | 33.333% | 33.333% / 33.333% | 33.333% / 33.333% | proven |
+| stall-protect-used | 3.704% | 3.704% / 3.704% | 3.704% / 3.704% | proven |
+| stall-protect-three | 3.704% | 3.704% / 3.704% | 3.704% / 3.704% | proven |
+| stall-heal-instead | 100.000% | 100.000% / 100.000% | 100.000% / 100.000% | proven |
+| stall-lum-cure | 0.000% | 1.000% / 1.000% | 1.000% / 1.000% | estimate |
+| stall-poison-heal | 0.000% | 1.000% / 1.000% | 1.000% / 1.000% | estimate |
+
+All 26 warm accuracy/latency acceptance checks pass. Nine positions per opponent model now have certificates, including the fractional Protect cases; four retain fallback behavior. The proof does not infer a Struggle loss or approximate enemy recovery. Exact proof construction uses no rollout values; incomplete compilation can coexist with fallback sampling before the proof is published.
+
+Raw records: [minimax](benchmarks/stall-backward-minimax-2026-10-18.json), [NPC](benchmarks/stall-backward-npc-2026-10-18.json), [acceptance](benchmarks/stall-backward-assessment-2026-10-18.json). These exploratory warm runs have one trial per model/case, 100 ms slices, a three-second maximum and separately recorded source hashes.
+
+### Actual preloaded worker results
+
+| Position | Trials | First estimate range | Exact completion range | Score by 1s |
+|---|---:|---:|---:|---:|
+| initial Recover/Protect | 3 | 353–374 ms | 389–402 ms | 100% |
+| late Recover/Protect | 3 | 350–386 ms | 372–432 ms | 100% |
+
+The initial live position previously reported 89.60% by one second and was still refining at 98% after three seconds. It now reaches a certified 100% before one second in all three recorded trials. Early publications can still be approximate while the compiler resumes. Preload time is recorded separately; decoder/UI latency is excluded. These six runs are not a universal latency guarantee.
+
+Worker records: [initial position](benchmarks/stall-backward-recover-worker-2026-10-18.json), [late position](benchmarks/stall-backward-late-worker-2026-10-18.json).
+
+### Regression checks and stopping point
+
+The full suite passes 495 tests (zero failures), including 26 new passive-solver tests. Independent checks include four short exhaustive native trees; twelve HP/PP/speed/item variants; native winning-policy replays with other healing moves/species; failed-Protect reset; resource/counter changes; cancellation and resumed graph/state budgets; malformed input and mid-turn rejection; shared proof caching; and declines for unsupported mechanics. The earlier conditional-expectation unit test explicitly disables this provider so it still exercises the sampled terminal-turn optimization.
+
+This evidence supports keeping the bounded provider. It does not justify a general inverse simulator or unrestricted reverse-search engine. Ordinary random attacks, enemy recovery and more complex effects continue through the existing search. Broader proof domains require their own native/reference validation before certification.
