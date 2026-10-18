@@ -27,7 +27,7 @@ flowchart TD
 - **Native mechanics:** `native-battle.mjs` creates/restores battles, applies live state, enumerates chance and exposes legal moves. It does not import search orchestration.
 - **Native input and bounded search:** `native-search.mjs` validates/prepares native inputs once and runs the bounded native adapter. Its continuation resolver comes from the evaluator.
 - **Approximate strategies:** `sampled-search.mjs` and `retained-turn.mjs` implement their strategies and use the supplied evaluation context for continuation proofs. They have no knowledge of the fixed-retaliation solver. A solved child updates retained bounds without being counted as a Monte Carlo rollout.
-- **Proof providers:** `exact-endgame.mjs` declares a cheap snapshot applicability filter and a guarded native solver. It does not prepare snapshots, own session caches, choose search engines or format forecasts. Adding another proof provider requires registering it in the evaluator, not editing search loops.
+- **Proof providers:** `exact-endgame.mjs` and `passive-endgame.mjs` register bounded mathematical domains. The fixed-retaliation provider declares a cheap snapshot applicability filter and a guarded native solver. It does not prepare snapshots, own session caches, choose search engines or format forecasts. Adding another proof provider requires registering it in the evaluator, not editing search loops.
 - **Result contract:** the evaluator formats proof results with coincident bounds and provenance under `proof`. Existing `result-contract.mjs` continues to classify all final engine outputs. Approximate continuation use never converts the surrounding sampled calculation into a certificate.
 - **Compatibility:** `complete-moves.mjs` and `sampled-moves.mjs` retain their public export names as small facades. Internal mechanics consumers import the mechanics module directly, so mechanics no longer depend on forecast initialization. The old `exactEndgameChecked` flag and the separate snapshot/native proof-result helpers are removed.
 
@@ -40,6 +40,8 @@ flowchart TD
 5. On a proof miss, dispatch to the selected engine. Native search continuations reuse the same context, cache and proof-attempt set. Continuation probes do not recursively start another full search.
 
 The fast bounded model retains its own compact state representation and internal search cache. Native continuation proofs require lossless native state; the evaluator does not invent missing native history to apply them to compact states. Its root still passes through the common proof and dispatch stage.
+
+Resumable proof providers expose `start`/`advance`; the evaluator owns a 32-entry `positionProofWork` map alongside solved values. Pending native compilation and resource-graph frames survive slices and matching worker context changes. Successful work moves into the solved-value cache. Unsupported or incomplete work never changes result certainty. See [the bounded passive solver design](PASSIVE-ENDGAME-SOLVER.md).
 
 ## Regression coverage
 

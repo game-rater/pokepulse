@@ -3,14 +3,16 @@
 // This module alone owns proof caching, classification and engine selection.
 import {requiresCompleteMoves,completeMoveAdapter} from './native-battle.mjs';
 import {prepareNativePosition,searchNativePosition} from './native-search.mjs';
+import {passiveEndgameProof} from './passive-endgame.mjs';
 import {fixedRetaliationProof} from './exact-endgame.mjs';
 import {simulateSampledMovesCore} from './sampled-search.mjs';
 import {simulateRetainedTurn} from './retained-turn.mjs';
-const providers=[fixedRetaliationProof];
+const providers=[fixedRetaliationProof,passiveEndgameProof];
 const nativeTerminal=completeMoveAdapter().terminal;
 function contextFor(options){
  const values=options.session?(options.session.positionValues??=new Map()):new Map();
- const context={values,attempted:new Set()};
+ const work=options.session?(options.session.positionProofWork??=new Map()):new Map();
+ const context={values,work,attempted:new Set()};
  context.continuation=(state,reasons=new Set(),overrides={})=>evaluate({state,reasons,purpose:'continuation'},{...options,...overrides},context);
  return context;
 }
@@ -31,9 +33,14 @@ function resolveProof(state,reasons,options,context){
   if(context.values.has(key))return proofResult(context.values.get(key),provider,context,true);
   if(options.warmOnly||context.attempted.has(key))continue;
   context.attempted.add(key);
-  const proof=provider.solve(state,options);
+  let proof;
+  if(provider.start){
+   let job=context.work.get(key);if(job){context.work.delete(key);context.work.set(key,job);}
+   if(!job){job=provider.start(state);if(job){context.work.set(key,job);while(context.work.size>32)context.work.delete(context.work.keys().next().value);}}
+   proof=job&&provider.advance(job,options);
+  }else proof=provider.solve(state,options);
   if(!proof)continue;
-  context.values.set(key,proof);while(context.values.size>256)context.values.delete(context.values.keys().next().value);
+  context.work.delete(key);context.values.set(key,proof);while(context.values.size>256)context.values.delete(context.values.keys().next().value);
   return proofResult(proof,provider,context,false);
  }
  return null;
