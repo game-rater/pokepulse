@@ -411,6 +411,470 @@
           "proof": "Focus Blast first: a hit (4/5) wins immediately or enables a guaranteed Seismic Toss finish. After a miss (1/5), only a hitting critical Focus Blast wins (4/5 * 1/16). Total 4/5 + 1/5 * 4/5 * 1/16 = 81/100. Seismic Toss first gives only 4/5. Normal damage 172-204; critical 260-306."
         }
       }
+    },
+    {
+      "id": "stall-poison-clock",
+      "input_sha256": "baadd933db1228f6765e21758f0e354f80299a919837663b15523d6ddd5ccb6e",
+      "models": {
+        "minimax": {
+          "status": "analytic",
+          "expected_percent": 100,
+          "fraction": "1/1",
+          "proof": "Incoming fixed damage is fully healed each turn; ordinary poison eventually KOs the foe. Leftovers precedes poison, with integer rounding.",
+          "turns": 9,
+          "opponent_hp_trace": [
+            121,
+            104,
+            87,
+            70,
+            53,
+            36,
+            19,
+            2,
+            0
+          ]
+        },
+        "npc-ai": {
+          "status": "analytic",
+          "expected_percent": 100,
+          "fraction": "1/1",
+          "proof": "Incoming fixed damage is fully healed each turn; ordinary poison eventually KOs the foe. Leftovers precedes poison, with integer rounding.",
+          "turns": 9,
+          "opponent_hp_trace": [
+            121,
+            104,
+            87,
+            70,
+            53,
+            36,
+            19,
+            2,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "stall-poison-leftovers",
+      "input_sha256": "891e472d43d1a2a03857e847a4d9ac83d96014796c3cf153569afb71f60370a8",
+      "models": {
+        "minimax": {
+          "status": "analytic",
+          "expected_percent": 100,
+          "fraction": "1/1",
+          "proof": "Incoming fixed damage is fully healed each turn; ordinary poison eventually KOs the foe. Leftovers precedes poison, with integer rounding.",
+          "turns": 15,
+          "opponent_hp_trace": [
+            121,
+            112,
+            103,
+            94,
+            85,
+            76,
+            67,
+            58,
+            49,
+            40,
+            31,
+            22,
+            13,
+            4,
+            0
+          ]
+        },
+        "npc-ai": {
+          "status": "analytic",
+          "expected_percent": 100,
+          "fraction": "1/1",
+          "proof": "Incoming fixed damage is fully healed each turn; ordinary poison eventually KOs the foe. Leftovers precedes poison, with integer rounding.",
+          "turns": 15,
+          "opponent_hp_trace": [
+            121,
+            112,
+            103,
+            94,
+            85,
+            76,
+            67,
+            58,
+            49,
+            40,
+            31,
+            22,
+            13,
+            4,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "stall-recovery-delay",
+      "input_sha256": "cae9f395d66195dbf58dca197285ad5243dd7a71dbd3a6b52b9be95390874cdb",
+      "models": {
+        "minimax": {
+          "status": "analytic",
+          "expected_percent": 100,
+          "fraction": "1/1",
+          "proof": "Leftovers heals every possible enemy attack. After at most 25 normal actions, four recoil/poison turns finish the enemy; Splash PP lasts through all 29. An explicit five-Recover schedule survives past turn 24.",
+          "max_turns": 29,
+          "witness_turns": 28,
+          "witness_survives_turns": 25,
+          "witness_recover_turns": [
+            8,
+            12,
+            16,
+            20,
+            24
+          ],
+          "opponent_hp_trace": [
+            121,
+            112,
+            103,
+            94,
+            85,
+            76,
+            67,
+            121,
+            112,
+            103,
+            94,
+            121,
+            112,
+            103,
+            94,
+            121,
+            112,
+            103,
+            94,
+            121,
+            112,
+            103,
+            94,
+            121,
+            112,
+            68,
+            24,
+            0
+          ]
+        },
+        "npc-ai": {
+          "status": "analytic",
+          "expected_percent": 100,
+          "fraction": "1/1",
+          "proof": "Leftovers heals every possible enemy attack. After at most 25 normal actions, four recoil/poison turns finish the enemy; Splash PP lasts through all 29. An explicit five-Recover schedule survives past turn 24.",
+          "max_turns": 29,
+          "witness_turns": 28,
+          "witness_survives_turns": 25,
+          "witness_recover_turns": [
+            8,
+            12,
+            16,
+            20,
+            24
+          ],
+          "opponent_hp_trace": [
+            121,
+            112,
+            103,
+            94,
+            85,
+            76,
+            67,
+            121,
+            112,
+            103,
+            94,
+            121,
+            112,
+            103,
+            94,
+            121,
+            112,
+            103,
+            94,
+            121,
+            112,
+            103,
+            94,
+            121,
+            112,
+            68,
+            24,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "stall-recover-protect",
+      "input_sha256": "2f29c7f72f574c1aebb9c3e793823cb73210a28480e0c42c844e06a2b6b21dd8",
+      "models": {
+        "minimax": {
+          "status": "analytic",
+          "expected_percent": 100,
+          "fraction": "1/1",
+          "proof": "Alternate faster Recover with Protect. No Protect is consecutive; all incoming hits are fixed damage, every recovery survives, and PP lasts until ordinary poison KOs the foe.",
+          "turns": 15,
+          "minimum_player_hp": 1,
+          "opponent_hp_trace": [
+            570,
+            529,
+            488,
+            447,
+            406,
+            365,
+            324,
+            283,
+            242,
+            201,
+            160,
+            119,
+            78,
+            37,
+            0
+          ]
+        },
+        "npc-ai": {
+          "status": "analytic",
+          "expected_percent": 100,
+          "fraction": "1/1",
+          "proof": "Alternate faster Recover with Protect. No Protect is consecutive; all incoming hits are fixed damage, every recovery survives, and PP lasts until ordinary poison KOs the foe.",
+          "turns": 15,
+          "minimum_player_hp": 1,
+          "opponent_hp_trace": [
+            570,
+            529,
+            488,
+            447,
+            406,
+            365,
+            324,
+            283,
+            242,
+            201,
+            160,
+            119,
+            78,
+            37,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "stall-recover-protect-mid",
+      "input_sha256": "772cdcf098ca3411481bb7f3b5c381686896b4fc7ade4976a5e5fa44e115c541",
+      "models": {
+        "minimax": {
+          "status": "analytic",
+          "expected_percent": 100,
+          "fraction": "1/1",
+          "proof": "Alternate faster Recover with Protect. No Protect is consecutive; all incoming hits are fixed damage, every recovery survives, and PP lasts until ordinary poison KOs the foe.",
+          "turns": 7,
+          "minimum_player_hp": 262,
+          "opponent_hp_trace": [
+            242,
+            201,
+            160,
+            119,
+            78,
+            37,
+            0
+          ]
+        },
+        "npc-ai": {
+          "status": "analytic",
+          "expected_percent": 100,
+          "fraction": "1/1",
+          "proof": "Alternate faster Recover with Protect. No Protect is consecutive; all incoming hits are fixed damage, every recovery survives, and PP lasts until ordinary poison KOs the foe.",
+          "turns": 7,
+          "minimum_player_hp": 262,
+          "opponent_hp_trace": [
+            242,
+            201,
+            160,
+            119,
+            78,
+            37,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "stall-recover-protect-late",
+      "input_sha256": "c3e27604919ae039845e9b60966598a1cee0b7ae37fe65165cc850691936348e",
+      "models": {
+        "minimax": {
+          "status": "analytic",
+          "expected_percent": 100,
+          "fraction": "1/1",
+          "proof": "Alternate faster Recover with Protect. No Protect is consecutive; all incoming hits are fixed damage, every recovery survives, and PP lasts until ordinary poison KOs the foe.",
+          "turns": 3,
+          "minimum_player_hp": 262,
+          "opponent_hp_trace": [
+            78,
+            37,
+            0
+          ]
+        },
+        "npc-ai": {
+          "status": "analytic",
+          "expected_percent": 100,
+          "fraction": "1/1",
+          "proof": "Alternate faster Recover with Protect. No Protect is consecutive; all incoming hits are fixed damage, every recovery survives, and PP lasts until ordinary poison KOs the foe.",
+          "turns": 3,
+          "minimum_player_hp": 262,
+          "opponent_hp_trace": [
+            78,
+            37,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "stall-pp-exhaustion",
+      "input_sha256": "a76cfc7c2ce5316fd27e87ec3d84b8e79c062d8bbcd812ff5854b99b9a5d1aca",
+      "models": {
+        "minimax": {
+          "status": "analytic",
+          "expected_percent": 0,
+          "fraction": "0/1",
+          "proof": "Either legal ordering uses the one Recover and one Protect. At turn three the player must Struggle; even its maximum critical cannot KO, and recoil plus Seismic Toss KOs the player.",
+          "turns": 3
+        },
+        "npc-ai": {
+          "status": "analytic",
+          "expected_percent": 0,
+          "fraction": "0/1",
+          "proof": "Either legal ordering uses the one Recover and one Protect. At turn three the player must Struggle; even its maximum critical cannot KO, and recoil plus Seismic Toss KOs the player.",
+          "turns": 3
+        }
+      }
+    },
+    {
+      "id": "stall-protect-risk",
+      "input_sha256": "3328b9329f0ad5f31dd55c99af29986a9ac47e4722d3567f8bb46a70455958a9",
+      "models": {
+        "minimax": {
+          "status": "analytic",
+          "expected_percent": 33.333333333333336,
+          "fraction": "1/3",
+          "proof": "Every failed Protect loses before the next Toxic tick. Multiply successive native Protect success chances 1/(3^streak).",
+          "turns": 2,
+          "protect_success_denominator": 3
+        },
+        "npc-ai": {
+          "status": "analytic",
+          "expected_percent": 33.333333333333336,
+          "fraction": "1/3",
+          "proof": "Every failed Protect loses before the next Toxic tick. Multiply successive native Protect success chances 1/(3^streak).",
+          "turns": 2,
+          "protect_success_denominator": 3
+        }
+      }
+    },
+    {
+      "id": "stall-protect-used",
+      "input_sha256": "f6d68c7ae9404a5757af03ad263dcce1caf7ab7e5fc9e40e84b81595fdc2e281",
+      "models": {
+        "minimax": {
+          "status": "analytic",
+          "expected_percent": 3.7037037037037037,
+          "fraction": "1/27",
+          "proof": "Every failed Protect loses before the next Toxic tick. Multiply successive native Protect success chances 1/(3^streak).",
+          "turns": 2,
+          "protect_success_denominator": 27
+        },
+        "npc-ai": {
+          "status": "analytic",
+          "expected_percent": 3.7037037037037037,
+          "fraction": "1/27",
+          "proof": "Every failed Protect loses before the next Toxic tick. Multiply successive native Protect success chances 1/(3^streak).",
+          "turns": 2,
+          "protect_success_denominator": 27
+        }
+      }
+    },
+    {
+      "id": "stall-protect-three",
+      "input_sha256": "7e80620566feec1420073bccd1a39578e565bda339870e1f223181f751583d01",
+      "models": {
+        "minimax": {
+          "status": "analytic",
+          "expected_percent": 3.7037037037037037,
+          "fraction": "1/27",
+          "proof": "Every failed Protect loses before the next Toxic tick. Multiply successive native Protect success chances 1/(3^streak).",
+          "turns": 3,
+          "protect_success_denominator": 27
+        },
+        "npc-ai": {
+          "status": "analytic",
+          "expected_percent": 3.7037037037037037,
+          "fraction": "1/27",
+          "proof": "Every failed Protect loses before the next Toxic tick. Multiply successive native Protect success chances 1/(3^streak).",
+          "turns": 3,
+          "protect_success_denominator": 27
+        }
+      }
+    },
+    {
+      "id": "stall-heal-instead",
+      "input_sha256": "974d4fb873f35e3e24e060077823112b6dbe4d2cc5ebc171195a1eb3d31116d1",
+      "models": {
+        "minimax": {
+          "status": "analytic",
+          "expected_percent": 100,
+          "fraction": "1/1",
+          "proof": "Use faster Recover every turn; healing exceeds incoming fixed damage until Toxic KOs.",
+          "turns": 2
+        },
+        "npc-ai": {
+          "status": "analytic",
+          "expected_percent": 100,
+          "fraction": "1/1",
+          "proof": "Use faster Recover every turn; healing exceeds incoming fixed damage until Toxic KOs.",
+          "turns": 2
+        }
+      }
+    },
+    {
+      "id": "stall-lum-cure",
+      "input_sha256": "01d640799dd50e175c2db933ed46779556e5827298b46e88289a85d7f52bdc66",
+      "models": {
+        "minimax": {
+          "status": "analytic",
+          "expected_percent": 0,
+          "fraction": "0/1",
+          "proof": "Lum Berry cures Toxic before any poison tick. Protect only delays; when its PP ends, Struggle cannot KO the foe and recoil KOs the player."
+        },
+        "npc-ai": {
+          "status": "analytic",
+          "expected_percent": 0,
+          "fraction": "0/1",
+          "proof": "Lum Berry cures Toxic before any poison tick. Protect only delays; when its PP ends, Struggle cannot KO the foe and recoil KOs the player."
+        }
+      }
+    },
+    {
+      "id": "stall-poison-heal",
+      "input_sha256": "e1fff3f0a22a1fa11e556fea975a80cce4f3c5c0a81f9af135a00b8cb46fb65e",
+      "models": {
+        "minimax": {
+          "status": "analytic",
+          "expected_percent": 0,
+          "fraction": "0/1",
+          "proof": "Poison Heal prevents Toxic damage and heals instead. Protect cannot win; forced Struggle cannot KO the foe and its recoil KOs the player."
+        },
+        "npc-ai": {
+          "status": "analytic",
+          "expected_percent": 0,
+          "fraction": "0/1",
+          "proof": "Poison Heal prevents Toxic damage and heals instead. Protect cannot win; forced Struggle cannot KO the foe and its recoil KOs the player."
+        }
+      }
     }
   ]
 }

@@ -1,3 +1,4 @@
+import {stallFixtures} from './stall-benchmark-fixtures.mjs';
 import {createCompleteBattle,restoreCompleteBattle,installChanceTape,packed} from '../analysis/complete-moves.mjs';
 import {accuracyFixtures} from './accuracy-benchmark-fixtures.mjs';
 import {realBattleFixtures} from './real-battle-fixtures.mjs';
@@ -17,6 +18,7 @@ export const searchFixtures=[
   opponent:{species:'Wingull',current_hp:37,actual_stats:{hp:37,atk:14,def:16,spa:23,spd:16,spe:34},build:{level:13,nature:'Serious',ability:'',item:'',moves:['Water Pulse','Air Cutter','Shock Wave','Rain Dance']},effects:{first_turn:false,move_history_known:true},pp:{'Water Pulse':32,'Air Cutter':24,'Shock Wave':20,'Rain Dance':5}},field:{}}},
  ...realBattleFixtures,
  ...accuracyFixtures,
+ ...stallFixtures,
 ];
 // Synthetic observation reconstruction, exercising the same native hydrator as
 // live input. This helper intentionally targets the simple reusable fixture.

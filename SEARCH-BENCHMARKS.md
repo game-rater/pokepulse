@@ -139,3 +139,7 @@ Use `--family=proved-complex --require-reference` for the six harder proved cont
 `benchmark-search-race.mjs --preload` loads workers before the decision timer and records startup cost as `preload_ms`. It also records the first published score separately from the final score. See [exact endgame optimization](analysis/EXACT-ENDGAME-OPTIMIZATION.md) for domain guards, fallback behavior, and results.
 
 The shared evaluator and module boundaries are documented in [position evaluation design](analysis/POSITION-EVALUATION-DESIGN.md). Engine benchmark fingerprints include the evaluator, native mechanics, native search, and sampled implementation rather than only their public facades.
+
+## Stall strategy acceptance
+
+Use `--group=stall --require-reference` for thirteen proved poison/healing/Protect/resource cases. See [stall strategy benchmarks](analysis/STALL-STRATEGY-BENCHMARKS.md) for references, progression snapshots, current deficiencies, and the explicit `check-stall-benchmarks.mjs` accuracy acceptance command. Its current nonzero exit exposes prediction failures; ordinary reference/mechanics tests remain separate.

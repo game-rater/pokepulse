@@ -1,3 +1,4 @@
+import {stallOracle} from './stall-benchmark-oracles.mjs';
 import {solveDamageRace} from './reference-damage-race.mjs';
 import {createHash} from 'node:crypto';
 import {readFileSync} from 'node:fs';
@@ -37,6 +38,7 @@ export function analyticOracle(fixture){
   assert(p.build.level>=q.current_hp&&q.build.level>=p.current_hp,'either first hit KOs');
   return {expected_percent:50,fraction:'1/2',proof:'The first actor KOs; the fair Speed tie decides the battle.'};
  }
+ if(id.startsWith('stall:'))return stallOracle(fixture);
  if(id.startsWith('complex-'))return complexOracle(fixture,pm,qm);
  assert(q.build.moves.join()==='Seismic Toss'&&q.build.level>=p.current_hp,'guaranteed retaliation KO');
  assert(!p.build.item&&!q.build.item,'no survival/healing items');
