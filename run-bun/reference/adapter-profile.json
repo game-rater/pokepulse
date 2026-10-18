@@ -1,0 +1,49 @@
+{
+  "game": "Pokemon Run & Bun",
+  "version": "1.07",
+  "rom_sha256": "68ec5b0c02e6def8da8dc2b1857b269505418803d44cc2b816fb7471587bf89d",
+  "rom_sha1": "cceadcd453d36e120b9a4e01e71f4003cf463716",
+  "rom_crc32": "0b5a9694",
+  "emulator_tested": "mGBA 0.10.5 Windows x64",
+  "mapping_source": "Creator's runandbun.lua; local reference copy, not executed",
+  "mapping_source_url": "https://drive.google.com/file/d/1W5mbkQLmrA2w8XhFfFvfFbwMbHa1tRjC/view",
+  "ability_name_table_rom_offset": "0x3ac0c9",
+  "ability_name_stride": 17,
+  "validation": "Live battle entry/exit, HP/PP changes, fainting, Growl stages and burn verified. Controlled isolated gameplay verified rain/sun/sand/hail, four terrains, screens on both sides, Tailwind, Trick Room, Taunt on both sides, Disable and Encore. Original ROM/save/state files preserved.",
+  "unverified": [
+    "player switching in gameplay (test save has one party member)",
+    "other major statuses",
+    "additional weather variants",
+    "full custom calculator compatibility"
+  ],
+  "battle_phase": {
+    "callback_address": "0x03005d04",
+    "turn_counter_address": "0x03005d23",
+    "action_index_address": "0x020233fa",
+    "action_kind_address": "0x020233fb",
+    "battler_order_address": "0x020233f6",
+    "selection_callback": "0x0803be39",
+    "resolving_callback": "0x0803e371",
+    "end_turn_callback": "0x0803ba25",
+    "verification": "ROM-disassembled. Live captures observed selection, action slots 0/1, HP changes within each action, then selection with turn counters 2 through 6. End-turn callback identified from ROM; short callback may fall between captures."
+  },
+  "live_effects": {
+    "decoder": "run-bun/live-effects.mjs",
+    "verification": "82 isolated native snapshots decoded, normalized and restored into the move engine without unknown-effect warnings. Battle code differs from original at one documented arena experience patch byte (ROM offset 0x3c3b8); user game and save are untouched.",
+    "scope": [
+      "status2 and status3 named volatiles",
+      "Substitute HP",
+      "Bide stored damage",
+      "charge, recharge, rampage, Rollout",
+      "first-turn eligibility",
+      "screen and side-condition counters",
+      "weather, terrain and field counters",
+      "Wish heal amount and Future Sight cast-time snapshot",
+      "Choice lock, Truant and Slow Start",
+      "Flash Fire, Unburden and Micle activation",
+      "Stockpile, Autotomize and used move history"
+    ],
+    "synthetic_tests": "test/live-effects.test.mjs",
+    "limits": "Reserved, inconsistent, or unidentified flags remain unresolved. This audit does not certify every conditional interaction against the ROM."
+  }
+}

@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>PokéThreat Run &amp; Bun</title><link rel="stylesheet" href="/style.css"></head>
+<body><main><p class="controls small">RUN &amp; BUN · Separate application · Community calculator data; ROM version compatibility unverified · No emulator connection yet</p>
+<header class="controls"><a class="brand" href="/">◈ <span>POKÉTHREAT</span></a><span class="pill">STREAM TOOL / PROTOTYPE</span></header>
+<section class="intro controls"><p class="eyebrow">READ THE ROOM. FEEL THE MATCHUP.</p><h1>How strong is<br>your position?</h1><p class="muted">0 is hopeless. 100 is victory secured. Watch your outlook change as the battle unfolds.</p></section>
+<section class="privacy-controls controls"><label class="privacy-toggle" for="hide-analysis"><input id="hide-analysis" type="checkbox"><span>Hide analysis from me</span></label><p class="small muted">Hide ratings, damage calculations, suggested moves, and stat hints on this page. Your audience’s OBS overlay stays visible. Matchup and HP controls remain available.</p><p id="privacy-status" class="small" role="status"></p></section>
+<section class="workspace">
+<div class="setup controls"><div class="section-title"><h2>Set the matchup</h2><span class="live">● INSTANT</span></div>
+<label for="player">YOUR POKÉMON</label><input id="player" list="species" autocomplete="off" placeholder="Search species or form"><div id="player-info" class="pokemon-info"></div>
+<button id="swap" class="swap" title="Reverse matchup perspective">⇅ Swap sides</button>
+<label for="opponent">OPPONENT</label><input id="opponent" list="species" autocomplete="off" placeholder="Search species or form"><div id="opponent-info" class="pokemon-info"></div><datalist id="species"></datalist>
+<div class="divider"></div><label for="mechanics">BATTLE MECHANICS</label><select id="mechanics"><option value="modern">Generation 9</option><option value="gen8">Generation 8</option><option value="gen7">Generation 7</option><option value="gen6">Generation 6</option><option value="gen5">Generation 5</option><option value="gen4">Generation 4</option><option value="classic">Generation 3 · type-based split</option></select>
+<p class="small muted">Run &amp; Bun uses its own community calculator fork. Generation selection and generic data imports are disabled here.</p>
+<div class="divider"></div><div class="section-title"><h2>Live battle HP</h2><button id="new-battle" class="secondary">Reset HP</button></div>
+<label for="player-hp">YOUR HP <output id="player-hp-value">100%</output></label><input id="player-hp" type="range" min="0" max="100" step="1" value="100">
+<label for="opponent-hp">OPPONENT HP <output id="opponent-hp-value">100%</output></label><input id="opponent-hp" type="range" min="0" max="100" step="1" value="100">
+<p class="small muted">Adjust HP as damage lands. The overlay follows smoothly. HP is entered manually; game tracking is not connected yet.</p>
+<p id="error" role="alert"></p>
+</div>
+<div class="result-column"><article id="threat-card"><div class="bar-caption"><span>POKÉPULSE</span><span id="difficulty-number">— / 100</span></div><div id="meter" role="progressbar" aria-label="Victory outlook, higher is better" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div id="meter-fill"></div><div class="bar-midpoint"></div></div><p id="connection-status" role="status" hidden>Disconnected</p></article>
+<p id="matchup" class="matchup controls">Loading matchup…</p>
+<section class="reasons controls"><p class="eyebrow">WHAT THE CALCULATIONS SAY</p><p id="model-name" class="small muted"></p><ul id="explanations"></ul><div id="damage-report"></div><details class="assumptions"><summary>Assumptions & limits</summary><ul id="warnings"></ul></details></section>
+<section class="battle-editors controls"><details id="player-editor"><summary>Your Pokémon · moves & stats</summary><div id="player-build" class="build-editor"></div></details><details id="opponent-editor"><summary>Opponent · moves & stats</summary><div id="opponent-build" class="build-editor"></div></details><details><summary>Field conditions</summary><div class="build-editor"><div id="field-editor"></div></div></details><p class="small muted">Defaults: level 50, neutral nature, 31 IVs, 0 EVs, no item or ability. Suggested moves come from species learnsets across games; edit them to match the actual battle. This is a damage-based outlook, not a proof of a winning strategy.</p></section></div>
+</section>
+<section class="tools controls"><div><p class="eyebrow">READY FOR THE BROADCAST</p><h2>Your next encounter, on screen.</h2><p class="muted small">Add the overlay URL as an OBS Browser Source (400 × 64). Matchups and HP update live while this local server runs.</p><div class="actions"><button id="copy">Copy OBS URL</button><a class="button secondary" href="/?overlay=1" target="_blank" rel="noopener">Preview overlay ↗</a></div><p id="copy-status" class="small" role="status"></p></div><div><p class="eyebrow">BRING YOUR OWN POKÉDEX</p><h2>Dedicated Run &amp; Bun data.</h2><p id="pack-name" class="muted small"></p><div class="actions"><label class="button secondary file-label">Import JSON pack<input id="import" type="file" accept=".json,application/json"></label><button id="reset" class="secondary">Reset data</button></div><p class="small muted">This version uses bundled Run &amp; Bun calculator data. <a href="https://github.com/smogon/pokemon-showdown" target="_blank" rel="noopener">Bundled data: Pokémon Showdown</a>. Imports and selections last until the server restarts.</p></div></section>
+<footer class="controls">POKÉTHREAT METER <span>Built for the moment before the first move.</span></footer>
+</main><script type="module" src="/app.mjs"></script><script type="module" src="/snapshot.mjs"></script></body></html>
+
+

@@ -1,0 +1,9 @@
+POKEPULSE — START HERE
+
+1. Extract the whole ZIP (right-click it, then choose Extract All).
+2. Open the new folder.
+3. Double-click 00 - OPEN POKEPULSE.cmd.
+
+PokéPulse opens in your web browser. Leave its small server window open while you use it.
+
+Leave the “Pokepulse App Files (Leave Here)” folder beside the launcher. It contains the app.

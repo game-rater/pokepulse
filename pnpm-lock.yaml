@@ -1,0 +1,44 @@
+lockfileVersion: '9.0'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
+importers:
+
+  .:
+    dependencies:
+      '@smogon/calc':
+        specifier: ^0.12.0
+        version: 0.12.0
+      ts-chacha20:
+        specifier: 1.2.0
+        version: 1.2.0
+
+packages:
+
+  '@smogon/calc@0.12.0':
+    resolution: {integrity: sha512-rNkdYV/ZGIugxD+hZlHdDaZLdGPYRIm+AaMFM18X2T2Pf8jpuuro9aoeiaZh51zcRR4tN3NRjSPoEXZ5ZDTuuA==}
+
+  '@types/node@18.19.130':
+    resolution: {integrity: sha512-GRaXQx6jGfL8sKfaIDD6OupbIHBr9jv7Jnaml9tB7l4v068PAOXqfcujMMo5PhbIs6ggR1XODELqahT2R8v0fg==}
+
+  ts-chacha20@1.2.0:
+    resolution: {integrity: sha512-PTyPoWYHc2we8P2NTn5hpYG211popWbkjiw+k63xqjeMrx9pPtXSclz9F3fu0Tpr+vfR1xxcQFwsEkh1cXMLqw==}
+
+  undici-types@5.26.5:
+    resolution: {integrity: sha512-JlCMO+ehdEIKqlFxk6IfVoAUVmgz7cU7zD/h9XZ0qzeosSHmUJVOzSQvvYSYWXkFXC+IfLKSIffhv0sVZup6pA==}
+
+snapshots:
+
+  '@smogon/calc@0.12.0':
+    dependencies:
+      '@types/node': 18.19.130
+
+  '@types/node@18.19.130':
+    dependencies:
+      undici-types: 5.26.5
+
+  ts-chacha20@1.2.0: {}
+
+  undici-types@5.26.5: {}

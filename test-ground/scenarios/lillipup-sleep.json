@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "game": "run-bun",
+  "species": "gossifleur",
+  "opponent": "lillipup",
+  "player_move": "Leafage",
+  "opponent_move": "Tackle",
+  "player_build": {"level":2,"ability":"Cotton Down","moves":["Leafage","Sing"],"boosts":{"def":-2}},
+  "opponent_build": {"level":2,"ability":"Run Away","moves":["Tackle","Leer"]},
+  "live": {
+    "player":{"current_hp":13,"actual_stats":{"hp":13,"atk":6,"def":7,"spe":5,"spa":7,"spd":7}},
+    "opponent":{"current_hp":14,"actual_stats":{"hp":14,"atk":7,"def":7,"spe":7,"spa":6,"spd":6}}
+  },
+  "scenarios": [
+    {"name":"Lillipup asleep before three free hits","opponent":{"status":"slp","sleep_counter":4},"expected":{"incomingAction":0,"unresolved":0}},
+    {"name":"First successful Leafage hit","opponent":{"status":"slp","sleep_counter":3},"live":{"opponent":{"current_hp":11}},"expected":{"incomingAction":0,"unresolved":0}},
+    {"name":"Second successful Leafage hit","opponent":{"status":"slp","sleep_counter":2},"live":{"opponent":{"current_hp":8}},"expected":{"incomingAction":0,"unresolved":0}},
+    {"name":"Third successful hit before waking","opponent":{"status":"slp","sleep_counter":1},"live":{"opponent":{"current_hp":5}},"expected":{"incomingAction":1,"unresolved":0}},
+    {"name":"Awake at the same HP","live":{"opponent":{"current_hp":5}},"expected":{"incomingAction":1,"unresolved":0}}
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "repository": "https://github.com/ForwardFeed/runbuncalc",
+  "commit": "b7fd03c493121ac17a45adbf326a9540edbcc74c",
+  "imported_at": "2026-10-04T21:21:52.754Z",
+  "notice": "Community Run & Bun calculator fork. Exact ROM version compatibility must be checked.",
+  "patches": [
+    "Magma Armor prevents critical damage",
+    "Gale Wings applies at every HP value",
+    "Triage adds three priority stages",
+    "Stateful forecasts skip entry effects already represented in observed stat stages"
+  ]
+}

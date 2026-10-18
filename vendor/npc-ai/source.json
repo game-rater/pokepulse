@@ -1,0 +1,15 @@
+{
+  "repository": "https://github.com/SynchEleven/rnb-calc-ultimate",
+  "commit": "15a0ea580604595786e0f81d965e68afc66279e4",
+  "file": "calc/src/ai.ts",
+  "license": "MIT",
+  "patches": [
+    "Read Corrosion, Merciless and Rest recovery abilities from the attacker",
+    "Use weather-dependent recovery fractions and score Shore Up",
+    "Keep fixed three-hit moves at three hits with Skill Link",
+    "Reject stat-drop bonuses when an attack deals no damage",
+    "Use supplied next toxic stage and residual-damage immunity for Protect",
+    "Apply Psychic Terrain priority penalties only to grounded targets"
+  ],
+  "adaptations": "Type annotations removed; runtime imports use existing Run & Bun calculator with damageRolls compatibility. This is a community implementation, not verified ROM code."
+}

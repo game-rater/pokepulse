@@ -1,0 +1,12 @@
+import assert from 'node:assert/strict';
+const base=process.argv[2]||'http://127.0.0.1:3001';
+const response=await fetch(`${base}/api/state`);assert.equal(response.status,200);const s=await response.json();
+assert.ok(['battle','waiting','outside-battle','unsupported','stale','disconnected'].includes(s.tracking.status));
+if(s.tracking.status==='battle'){if(s.result){assert.ok(s.result.victory===null||Number.isFinite(s.result.victory));}assert.ok(s.live.player.actual_stats.hp>0);}else assert.equal(s.result,null);
+const html=await(await fetch(base)).text();assert.ok(html.includes('Connect mGBA'));assert.ok(html.includes('id="hide-analysis" type="checkbox" checked'));assert.ok(!html.includes('Set the matchup'));
+assert.equal((await fetch(`${base}/?overlay=1`)).status,200);
+const lua=await(await fetch(`${base}/api/integration.lua`)).text();assert.ok(lua.includes('emu:readRange'));assert.ok(!lua.includes('emu:write'));assert.ok(!lua.includes('Athena'));assert.ok(lua.includes('checksum(0)'));
+assert.equal((await fetch(`${base}/api/state`,{method:'POST',body:'{}'})).status,409);
+assert.equal((await fetch(`${base}/api/snapshot`,{method:'POST',body:'{}'})).status,409);
+const abort=new AbortController();const stream=await fetch(`${base}/api/events`,{signal:abort.signal});const reader=stream.body.getReader();const first=await reader.read();abort.abort();const text=new TextDecoder().decode(first.value);assert.ok(text.startsWith('data: '));assert.ok(text.length<15000,'SSE should send compact battle state');
+console.log(`Automatic API, read-only integration, hidden-by-default controls, overlay, and compact SSE checks passed (${s.tracking.status}).`);
