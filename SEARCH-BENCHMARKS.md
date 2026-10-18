@@ -3,7 +3,7 @@
 Run from the project root with Node or the bundled `dist/Run-and-Bun-Automatic/node.exe`.
 
 ```powershell
-# Short smoke comparison: six cases, one trial, one second per case/mode.
+# Short smoke comparison: all cases, one trial, one second per case/mode.
 node scripts/benchmark-retained-turn.mjs --quick
 
 # Repeatable comparison: three trials, three seconds per case/mode.
@@ -17,6 +17,18 @@ node scripts/benchmark-retained-turn.mjs --case=reusable-next-turn --seconds=3 -
 
 # Compare the two-worker race with the previous single-worker fallback.
 node scripts/benchmark-search-race.mjs
+
+# Four battle-inspired families, three constructed decision states per family.
+node scripts/benchmark-retained-turn.mjs --group=real-battle --mode=hybrid --seconds=10 --trials=3
+
+# Same states evaluated against the community NPC policy; separate results.
+node scripts/benchmark-retained-turn.mjs --group=real-battle --mode=hybrid --opponent-model=npc-ai --seconds=10 --trials=3
+
+# Limit a comparison to the initial reconstructed state of each family.
+node scripts/benchmark-retained-turn.mjs --group=real-battle --variant=initial --seconds=3 --trials=3
+
+# Actual worker startup on the four initial states, fallback versus race.
+node scripts/benchmark-search-race.mjs --group=real-battle --variant=initial --seconds=5 --trials=3
 ```
 
 Results are JSON files under `.local-tools/search-benchmarks/`. `--out=path` selects a file. Fixtures are synthetic/public and use no ROM, save file or live captures.
@@ -33,6 +45,14 @@ The race comparison uses actual persistent service workers in isolated processes
 | four-by-four | Sixteen root move pairs, priority, protection, healing and secondaries |
 | persistent-effects | Confusion, toxic counters and item healing |
 | herdier-wingull | Existing public reproduction of the slow Run & Bun matchup |
+| drednaw-lunatone-* | Hypnosis, Chesto Berry, Weakness Policy and Speed changes |
+| monferno-scraggy-* | Rest/Shed Skin, attack boosts, and status versus attack choices |
+| hariyama-porygon2-* | Deliberate Guts activation, paralysis, and Recover |
+| togedemaru-cinccino-* | Skill Link, flinch, contact damage, first-turn moves and Protect history |
+
+The battle-inspired families use pinned public trainer sets and constructed player states. Only the Drednaw build is substantially specified in its battle report; other player builds, HP, PP and histories are explicitly synthetic. Each family includes three independent states, not a recorded three-turn trajectory. They have no analytic accuracy reference and do not establish ROM learnset legality. See `scripts/real-battle-fixtures.mjs` for provenance and `analysis/REAL-BATTLE-BENCHMARK-CANDIDATES.md` for the source selection.
+
+The retained-turn report records point estimates available by 1, 3 and 10 seconds. A checkpoint beyond the measurement window stays unmeasured unless the search already finished. A result arriving after a deadline is not credited retrospectively. A later score from the same approximate engine is a refinement comparison, not ground truth. The real-battle states currently measure independent starting positions; reuse remains measured by `reusable-next-turn` and the actual-worker race benchmark.
 
 ## Comparison method
 
