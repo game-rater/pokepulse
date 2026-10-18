@@ -6,7 +6,7 @@ import {normalizeSnapshot} from './input.mjs';
 import {snapshotInput} from './battle-state.mjs';
 import {actionOpportunity} from './actions.mjs';
 import {hitChance} from './accuracy.mjs';
-import {completeMoveDex,genderFromIdentity} from '../analysis/complete-moves.mjs';
+import {completeMoveDex,genderFromIdentity} from '../analysis/native-battle.mjs';
 import {readFileSync} from 'node:fs';
 const romMoves=JSON.parse(readFileSync(new URL('./reference/mappings.json',import.meta.url))).move.filter(Boolean);
 export {defaultField};

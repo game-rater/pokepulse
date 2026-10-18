@@ -1,0 +1,102 @@
+{
+  "created_at": "2026-10-18T12:44:31.907Z",
+  "seconds": 3,
+  "trials": 3,
+  "worker_preloaded": true,
+  "source_hashes": {
+    "run-bun/search-service.mjs": "f1563a0b7ac35f24d8a711632efbd714d673c50bb7b1ebd2a0014b3cb2b5467a",
+    "run-bun/search-worker.mjs": "40f6391a6c23266ad70cf23343cb93be321e536ff90782c106b37401f4361643",
+    "run-bun/refinement.mjs": "1c9e7005cbc824d5ed5587d3b0527528fd58c475273ebcf751c7f3598639c49d",
+    "analysis/threat.mjs": "2ab1a43fdc5be0b7f2149f8b161cf4faa7d66527a118db1c4081f9d8d05b5894",
+    "analysis/complete-moves.mjs": "461a90066f8c1a804ef5214bbc24a7a100f1756ab6662f7fb7addbfd928da9f1",
+    "analysis/retained-turn.mjs": "24740b194cf40e8bd2df67dd2de6063d397d505bf616b395e559e7c005d94709",
+    "analysis/sampled-moves.mjs": "27b2876c2327c71be9f37604a951ee711b5fc13b2cc9f76d44da6be62f6a1da7",
+    "analysis/position-evaluator.mjs": "ecd4b27430cd44533aeca4a3141b65b5a9bdd3b9f05230d81d0dd4352284ae0b",
+    "analysis/native-battle.mjs": "4772246187212a6282a89efa5d682e69ba07daf1ab3e0df07626047b94a475e1",
+    "analysis/native-search.mjs": "6d77bd37e8502ee45f26ac743e46818fa2fadc83add09485c82dacfab44c191f",
+    "analysis/sampled-search.mjs": "e41e40380e288617d8962dc3c0628e4bb6424d8195275abf175aed8e51c772be",
+    "scripts/real-battle-fixtures.mjs": "be6f5d6f5afe59a2caefe4e7c159ea80f2f0a442e80aff33e568a4134fefb236",
+    "scripts/accuracy-benchmark-fixtures.mjs": "6f8b1d5b71170cbf94a339d4c40f0b7a12641559393aa9e8af922c207273e3a0",
+    "analysis/exact-endgame.mjs": "ad9ac3a99d6a70c55116fc73713a3063048802b89e1c3f2500ecf6bff098a0c6"
+  },
+  "method": "Workers explicitly preloaded; reported initial decision latency excludes separately recorded preload_ms; observed-turn measurement reuses workers.",
+  "summary": [
+    {
+      "case": "oracle-choice-adaptive",
+      "mode": "fallback",
+      "first_estimate_ms": 166.03769999999986,
+      "next_turn_estimate_ms": null,
+      "cpu_ms": 390,
+      "peak_rss_mb": 303.1796875,
+      "completed": 3
+    }
+  ],
+  "rows": [
+    {
+      "trial": 0,
+      "case": "oracle-choice-adaptive",
+      "mode": "fallback",
+      "preload_ms": 855.4392,
+      "worker_preloaded": true,
+      "cold": {
+        "first_estimate_ms": 166.03769999999986,
+        "first_score": 81.00000000000007,
+        "algorithm": "exact-native-fixed-retaliation-endgame",
+        "elapsed_ms": 166.22159999999985,
+        "cpu_ms": 390,
+        "score": 81.00000000000007,
+        "complete": true,
+        "updates": 1,
+        "selected": "fallback",
+        "reused": false,
+        "samples": 0
+      },
+      "warm": null,
+      "peak_rss_mb": 303.1796875
+    },
+    {
+      "trial": 1,
+      "case": "oracle-choice-adaptive",
+      "mode": "fallback",
+      "preload_ms": 864.8755000000001,
+      "worker_preloaded": true,
+      "cold": {
+        "first_estimate_ms": 150.81169999999975,
+        "first_score": 81.00000000000007,
+        "algorithm": "exact-native-fixed-retaliation-endgame",
+        "elapsed_ms": 150.89530000000013,
+        "cpu_ms": 375,
+        "score": 81.00000000000007,
+        "complete": true,
+        "updates": 1,
+        "selected": "fallback",
+        "reused": false,
+        "samples": 0
+      },
+      "warm": null,
+      "peak_rss_mb": 303.953125
+    },
+    {
+      "trial": 2,
+      "case": "oracle-choice-adaptive",
+      "mode": "fallback",
+      "preload_ms": 885.0055000000001,
+      "worker_preloaded": true,
+      "cold": {
+        "first_estimate_ms": 185.15429999999992,
+        "first_score": 81.00000000000007,
+        "algorithm": "exact-native-fixed-retaliation-endgame",
+        "elapsed_ms": 185.2695000000001,
+        "cpu_ms": 438,
+        "score": 81.00000000000007,
+        "complete": true,
+        "updates": 1,
+        "selected": "fallback",
+        "reused": false,
+        "samples": 0
+      },
+      "warm": null,
+      "peak_rss_mb": 302.66796875
+    }
+  ]
+}

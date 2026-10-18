@@ -2,7 +2,7 @@
 
 ## Implemented
 
-- The native forecast checks a bounded exact kernel before either exhaustive or sampled search. Sampled continuations may also use it as a leaf value.
+- The shared position evaluator checks the bounded exact kernel before selecting an engine. Native bounded, retained and sampled searches use the same continuation evaluator. See `POSITION-EVALUATION-DESIGN.md` for ownership and dependency boundaries.
 - Eligible positions have known nature/order, neutral stages, no status/items/volatiles/field or pending side/slot effects, no relevant abilities, and an opponent with one legal Seismic Toss. Player moves are Seismic Toss and/or Focus Blast. There are at most three player opportunities and sufficient PP for every branch.
 - Focus Blast uses all sixteen native damage rolls and Run & Bun's 1/16 base critical probability. Native damage calculation preserves exact live stats, typing and rounding. When a nonterminal hit can lower SpD, a guaranteed Seismic Toss finish must make that change irrelevant; other positions fall back.
 - A memoized weighted backup chooses the best move at each resulting HP state. Outcomes leading to the same remaining HP or terminal knockout are combined before evaluating continuation. Probabilities are added, never renormalized.

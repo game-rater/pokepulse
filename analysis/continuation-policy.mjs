@@ -1,6 +1,6 @@
 // Continuation strategies are approximate. Candidate moves execute a complete
 // native turn; this module never substitutes a made-up effect for a callback.
-import {restoreCompleteBattle,installChanceTape,nativeMoveChoices} from './complete-moves.mjs';
+import {restoreCompleteBattle,installChanceTape,nativeMoveChoices} from './native-battle.mjs';
 import {observationKey} from './observation-key.mjs';
 
 export const CONTINUATION_VERSION=2;

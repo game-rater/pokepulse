@@ -23,8 +23,8 @@ parentPort.on('message',async({version,request,budgets,modelContext})=>{
     const cache=session.sampledMoves?.cache;
     const turnGraph=session.turnGraph;
     const npcMoves=session.npcMoves;
-    const exactEndgames=session.exactEndgames;
-    session={...(exactEndgames?{exactEndgames}:{}),...(cache?{sampledMoves:{cache}}:{}),...(turnGraph?{turnGraph}:{}),...(npcMoves?{npcMoves}:{})};
+    const positionValues=session.positionValues;
+    session={...(positionValues?{positionValues}:{}),...(cache?{sampledMoves:{cache}}:{}),...(turnGraph?{turnGraph}:{}),...(npcMoves?{npcMoves}:{})};
   }
   const retained=session;
   const retainedCount=()=>(retained.graph?.size||0)+(retained.completeMoves?.graph?.size||0);

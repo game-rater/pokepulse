@@ -1,0 +1,882 @@
+{
+  "created_at": "2026-10-18T12:44:15.148Z",
+  "node": "v24.19.0",
+  "seconds": 3,
+  "trials": 1,
+  "opponent_model": "minimax",
+  "source_hashes": {
+    "analysis/sampled-moves.mjs": "27b2876c2327c71be9f37604a951ee711b5fc13b2cc9f76d44da6be62f6a1da7",
+    "analysis/position-evaluator.mjs": "ecd4b27430cd44533aeca4a3141b65b5a9bdd3b9f05230d81d0dd4352284ae0b",
+    "analysis/native-battle.mjs": "4772246187212a6282a89efa5d682e69ba07daf1ab3e0df07626047b94a475e1",
+    "analysis/native-search.mjs": "6d77bd37e8502ee45f26ac743e46818fa2fadc83add09485c82dacfab44c191f",
+    "analysis/sampled-search.mjs": "e41e40380e288617d8962dc3c0628e4bb6424d8195275abf175aed8e51c772be",
+    "analysis/exact-endgame.mjs": "ad9ac3a99d6a70c55116fc73713a3063048802b89e1c3f2500ecf6bff098a0c6",
+    "analysis/retained-turn.mjs": "24740b194cf40e8bd2df67dd2de6063d397d505bf616b395e559e7c005d94709",
+    "analysis/complete-moves.mjs": "461a90066f8c1a804ef5214bbc24a7a100f1756ab6662f7fb7addbfd928da9f1",
+    "analysis/search.mjs": "0758c9ec608cb5241a2bfa7eb0d16525886e7b5bd6b6fd43b03fcf00bada709f",
+    "analysis/result-contract.mjs": "d495ee9c3731e3e795c6cc56e6db2301846fbaecc899a6983bb7ebbbacc2e2b3",
+    "analysis/continuation-policy.mjs": "f7d5991dfe5923705fc2d878b30898ea19f1fe916dff606a99e71665653c63c8",
+    "scripts/search-benchmark-fixtures.mjs": "49acd5e19f3f41de2790e3b30f94c5f253ebcca1b612e80c3922e319e3cfa0a9",
+    "scripts/real-battle-fixtures.mjs": "be6f5d6f5afe59a2caefe4e7c159ea80f2f0a442e80aff33e568a4134fefb236",
+    "scripts/accuracy-benchmark-fixtures.mjs": "6f8b1d5b71170cbf94a339d4c40f0b7a12641559393aa9e8af922c207273e3a0",
+    "scripts/benchmark-oracles.mjs": "5a3eb3d63a3936d0c66df3fd9fa08c24bb508299a735f8adf7877bc126d36a6c",
+    "scripts/reference-damage-race.mjs": "391d9b7b1fffcc186b8d1c9123acf280ab8e0adf120b0d2a3fff9678092a2203",
+    "scripts/benchmark-references.json": "d72d76d734ee8d66091656059a5be4015c9347a2898e959ff2e4642501df6ea0",
+    "vendor/showdown/dist/sim/battle-actions.js": "15132d6f3347c56604b2dfb6e0e249d3b2fb4c1a223ae52c4c03f5f38979084d"
+  },
+  "method": "Isolated processes; engine initialization excluded; fixed native RNG seeds; alternating mode order; identical per-pass and sample budgets.",
+  "summary": [
+    {
+      "case": "oracle-focus-three",
+      "mode": "hybrid",
+      "opponent_model": "minimax",
+      "first_estimate_ms": 17.55359999999996,
+      "elapsed_ms": 17.93089999999995,
+      "reroot_first_estimate_ms": null,
+      "reuse_hits": 0,
+      "first_second_usable": 1,
+      "first_second_error_pp": 8.526512829121202e-14,
+      "first_second_goal_met": 1,
+      "accuracy_reference_available": true,
+      "score_at_1s": 99.20000000000009,
+      "score_at_3s": 99.20000000000009,
+      "score_at_10s": 99.20000000000009,
+      "max_slice_ms": 17.105500000000006,
+      "samples": 0,
+      "peak_rss_mb": 129.21875,
+      "completed": 1
+    },
+    {
+      "case": "oracle-paralysis-three",
+      "mode": "hybrid",
+      "opponent_model": "minimax",
+      "first_estimate_ms": 112.54200000000003,
+      "elapsed_ms": 530.6617000000001,
+      "reroot_first_estimate_ms": null,
+      "reuse_hits": 0,
+      "first_second_usable": 1,
+      "first_second_error_pp": 1.5625,
+      "first_second_goal_met": 1,
+      "accuracy_reference_available": true,
+      "score_at_1s": 96.875,
+      "score_at_3s": 96.875,
+      "score_at_10s": 96.875,
+      "max_slice_ms": 112.4801,
+      "samples": 128,
+      "peak_rss_mb": 168.81640625,
+      "completed": 1
+    },
+    {
+      "case": "oracle-sash-paralysis",
+      "mode": "hybrid",
+      "opponent_model": "minimax",
+      "first_estimate_ms": 112.94370000000004,
+      "elapsed_ms": 594.981,
+      "reroot_first_estimate_ms": null,
+      "reuse_hits": 0,
+      "first_second_usable": 1,
+      "first_second_error_pp": 0,
+      "first_second_goal_met": 1,
+      "accuracy_reference_available": true,
+      "score_at_1s": 93.75,
+      "score_at_3s": 93.75,
+      "score_at_10s": 93.75,
+      "max_slice_ms": 112.87649999999996,
+      "samples": 128,
+      "peak_rss_mb": 168.3671875,
+      "completed": 1
+    },
+    {
+      "case": "oracle-poison-window",
+      "mode": "hybrid",
+      "opponent_model": "minimax",
+      "first_estimate_ms": 113.72080000000005,
+      "elapsed_ms": 449.4361000000001,
+      "reroot_first_estimate_ms": null,
+      "reuse_hits": 0,
+      "first_second_usable": 1,
+      "first_second_error_pp": 7.105427357601002e-14,
+      "first_second_goal_met": 1,
+      "accuracy_reference_available": true,
+      "score_at_1s": 80.00000000000007,
+      "score_at_3s": 80.00000000000007,
+      "score_at_10s": 80.00000000000007,
+      "max_slice_ms": 113.62689999999998,
+      "samples": 128,
+      "peak_rss_mb": 167.80078125,
+      "completed": 1
+    },
+    {
+      "case": "oracle-choice-guaranteed",
+      "mode": "hybrid",
+      "opponent_model": "minimax",
+      "first_estimate_ms": 23.299299999999903,
+      "elapsed_ms": 23.60439999999994,
+      "reroot_first_estimate_ms": null,
+      "reuse_hits": 0,
+      "first_second_usable": 1,
+      "first_second_error_pp": 0,
+      "first_second_goal_met": 1,
+      "accuracy_reference_available": true,
+      "score_at_1s": 100,
+      "score_at_3s": 100,
+      "score_at_10s": 100,
+      "max_slice_ms": 22.828399999999988,
+      "samples": 0,
+      "peak_rss_mb": 129.65625,
+      "completed": 1
+    },
+    {
+      "case": "oracle-choice-adaptive",
+      "mode": "hybrid",
+      "opponent_model": "minimax",
+      "first_estimate_ms": 24.1644,
+      "elapsed_ms": 24.472500000000082,
+      "reroot_first_estimate_ms": null,
+      "reuse_hits": 0,
+      "first_second_usable": 1,
+      "first_second_error_pp": 7.105427357601002e-14,
+      "first_second_goal_met": 1,
+      "accuracy_reference_available": true,
+      "score_at_1s": 81.00000000000007,
+      "score_at_3s": 81.00000000000007,
+      "score_at_10s": 81.00000000000007,
+      "max_slice_ms": 24.053999999999974,
+      "samples": 0,
+      "peak_rss_mb": 128.90234375,
+      "completed": 1
+    }
+  ],
+  "rows": [
+    {
+      "trial": 0,
+      "reference": {
+        "status": "analytic",
+        "expected_percent": 99.2,
+        "fraction": "124/125",
+        "proof": "Each miss costs 100 HP; a faster attacker at 201 HP gets three attempts: 1 - (1/5)^3.",
+        "input_sha256": "9f9cfcca77eb8a228766ba5930772aacfcef13f121c23f120bca48e0521e5737"
+      },
+      "case": "oracle-focus-three",
+      "mode": "hybrid",
+      "opponent_model": "minimax",
+      "fixture_hash": "9f9cfcca77eb8a228766ba5930772aacfcef13f121c23f120bca48e0521e5737",
+      "provenance": {
+        "kind": "analytic-control",
+        "sources": [
+          "https://github.com/smogon/damage-calc/blob/master/calc/src/test/calc.test.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/moves.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/items.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/conditions.ts"
+        ],
+        "notes": "Mechanics-test-inspired Run & Bun controls, not reproductions of recorded battles."
+      },
+      "checkpoints": {
+        "1000": {
+          "measured": true,
+          "score": 99.20000000000009,
+          "available_at_ms": 17.55359999999996
+        },
+        "3000": {
+          "measured": true,
+          "score": 99.20000000000009,
+          "available_at_ms": 17.55359999999996
+        },
+        "10000": {
+          "measured": true,
+          "score": 99.20000000000009,
+          "available_at_ms": 17.55359999999996
+        }
+      },
+      "input_blocked": false,
+      "unresolved_reasons": [],
+      "first_estimate_ms": 17.55359999999996,
+      "elapsed_ms": 17.93089999999995,
+      "cpu_ms": 31,
+      "max_slice_ms": 17.105500000000006,
+      "peak_rss_mb": 129.21875,
+      "score": 99.20000000000009,
+      "absolute_error_pp": 8.526512829121202e-14,
+      "samples": 0,
+      "done": true,
+      "retained_states": 1,
+      "total_native_rollouts": 0,
+      "exact_next_turn": false,
+      "next_turn_expansions": 0,
+      "merged_states": 0,
+      "first_second": {
+        "score": 99.20000000000009,
+        "available_at_ms": 17.55359999999996,
+        "absolute_error_pp": 8.526512829121202e-14,
+        "reference": 99.2,
+        "reference_kind": "analytic",
+        "goal_met": true
+      },
+      "prediction": {
+        "schema_version": 1,
+        "kind": "proven",
+        "certificate": {
+          "lower": 99.20000000000009,
+          "upper": 99.20000000000009,
+          "width": 0
+        },
+        "search": {
+          "status": "proven",
+          "resolved": true
+        },
+        "reasons": [],
+        "estimate": {
+          "score": 99.20000000000009,
+          "basis": "proven-value"
+        }
+      },
+      "readings": [
+        {
+          "elapsed_ms": 17.55359999999996,
+          "score": 99.20000000000009,
+          "samples": 0,
+          "certainty": "proven",
+          "certificate_width_pp": 0,
+          "next_turn_expansion_complete": false
+        }
+      ]
+    },
+    {
+      "trial": 0,
+      "reference": {
+        "status": "analytic",
+        "expected_percent": 98.4375,
+        "fraction": "63/64",
+        "proof": "Quick Attack has priority on all three turns. Only three full-paralysis events lose: 1 - (1/4)^3.",
+        "input_sha256": "e44ffe5168b39aedd23e2bf340e1700be58c8fc7df54df109a2bbc7da2763e2a"
+      },
+      "case": "oracle-paralysis-three",
+      "mode": "hybrid",
+      "opponent_model": "minimax",
+      "fixture_hash": "e44ffe5168b39aedd23e2bf340e1700be58c8fc7df54df109a2bbc7da2763e2a",
+      "provenance": {
+        "kind": "analytic-control",
+        "sources": [
+          "https://github.com/smogon/damage-calc/blob/master/calc/src/test/calc.test.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/moves.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/items.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/conditions.ts"
+        ],
+        "notes": "Mechanics-test-inspired Run & Bun controls, not reproductions of recorded battles."
+      },
+      "checkpoints": {
+        "1000": {
+          "measured": true,
+          "score": 96.875,
+          "available_at_ms": 530.5826999999999
+        },
+        "3000": {
+          "measured": true,
+          "score": 96.875,
+          "available_at_ms": 530.5826999999999
+        },
+        "10000": {
+          "measured": true,
+          "score": 96.875,
+          "available_at_ms": 530.5826999999999
+        }
+      },
+      "input_blocked": false,
+      "unresolved_reasons": [],
+      "first_estimate_ms": 112.54200000000003,
+      "elapsed_ms": 530.6617000000001,
+      "cpu_ms": 782,
+      "max_slice_ms": 112.4801,
+      "peak_rss_mb": 168.81640625,
+      "score": 96.875,
+      "absolute_error_pp": 1.5625,
+      "samples": 128,
+      "done": true,
+      "retained_states": 3,
+      "total_native_rollouts": 136,
+      "exact_next_turn": true,
+      "next_turn_expansions": 41,
+      "merged_states": 0,
+      "first_second": {
+        "score": 96.875,
+        "available_at_ms": 530.5826999999999,
+        "absolute_error_pp": 1.5625,
+        "reference": 98.4375,
+        "reference_kind": "analytic",
+        "goal_met": true
+      },
+      "prediction": {
+        "schema_version": 1,
+        "kind": "estimate",
+        "certificate": null,
+        "search": {
+          "status": "sample-budget-finished",
+          "resolved": false
+        },
+        "reasons": [],
+        "estimate": {
+          "score": 96.875,
+          "basis": "simulation-estimate"
+        }
+      },
+      "readings": [
+        {
+          "elapsed_ms": 112.54200000000003,
+          "score": 97.5,
+          "samples": 20,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 208.0045,
+          "score": 98.86363636363636,
+          "samples": 43,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 301.3354999999999,
+          "score": 99,
+          "samples": 69,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 397.2979,
+          "score": 99,
+          "samples": 98,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 489.86570000000006,
+          "score": 99,
+          "samples": 125,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 530.5826999999999,
+          "score": 96.875,
+          "samples": 128,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": true
+        }
+      ]
+    },
+    {
+      "trial": 0,
+      "reference": {
+        "status": "analytic",
+        "expected_percent": 93.75,
+        "fraction": "15/16",
+        "proof": "Priority avoids the paralysis Speed penalty. First failure consumes Focus Sash; only full paralysis on both attempts loses: 1 - (1/4)^2.",
+        "input_sha256": "e09d1915d01cb615726e3dce58e217219f0a4d06b01e8d1da7a49394a304809b"
+      },
+      "case": "oracle-sash-paralysis",
+      "mode": "hybrid",
+      "opponent_model": "minimax",
+      "fixture_hash": "e09d1915d01cb615726e3dce58e217219f0a4d06b01e8d1da7a49394a304809b",
+      "provenance": {
+        "kind": "analytic-control",
+        "sources": [
+          "https://github.com/smogon/damage-calc/blob/master/calc/src/test/calc.test.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/moves.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/items.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/conditions.ts"
+        ],
+        "notes": "Mechanics-test-inspired Run & Bun controls, not reproductions of recorded battles."
+      },
+      "checkpoints": {
+        "1000": {
+          "measured": true,
+          "score": 93.75,
+          "available_at_ms": 594.9076
+        },
+        "3000": {
+          "measured": true,
+          "score": 93.75,
+          "available_at_ms": 594.9076
+        },
+        "10000": {
+          "measured": true,
+          "score": 93.75,
+          "available_at_ms": 594.9076
+        }
+      },
+      "input_blocked": false,
+      "unresolved_reasons": [],
+      "first_estimate_ms": 112.94370000000004,
+      "elapsed_ms": 594.981,
+      "cpu_ms": 890,
+      "max_slice_ms": 112.87649999999996,
+      "peak_rss_mb": 168.3671875,
+      "score": 93.75,
+      "absolute_error_pp": 0,
+      "samples": 128,
+      "done": true,
+      "retained_states": 2,
+      "total_native_rollouts": 136,
+      "exact_next_turn": true,
+      "next_turn_expansions": 40,
+      "merged_states": 0,
+      "first_second": {
+        "score": 93.75,
+        "available_at_ms": 594.9076,
+        "absolute_error_pp": 0,
+        "reference": 93.75,
+        "reference_kind": "analytic",
+        "goal_met": true
+      },
+      "prediction": {
+        "schema_version": 1,
+        "kind": "estimate",
+        "certificate": null,
+        "search": {
+          "status": "sample-budget-finished",
+          "resolved": false
+        },
+        "reasons": [],
+        "estimate": {
+          "score": 93.75,
+          "basis": "simulation-estimate"
+        }
+      },
+      "readings": [
+        {
+          "elapsed_ms": 112.94370000000004,
+          "score": 97.5,
+          "samples": 20,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 207.9448,
+          "score": 94.31818181818181,
+          "samples": 44,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 308.3523,
+          "score": 94.6969696969697,
+          "samples": 66,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 409.1259,
+          "score": 92.93478260869566,
+          "samples": 92,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 507.4695999999999,
+          "score": 93.42105263157895,
+          "samples": 114,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 564.2784999999999,
+          "score": 92.96875,
+          "samples": 128,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 594.9076,
+          "score": 93.75,
+          "samples": 128,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": true
+        }
+      ]
+    },
+    {
+      "trial": 0,
+      "reference": {
+        "status": "analytic",
+        "expected_percent": 80,
+        "fraction": "4/5",
+        "proof": "On a miss, Seismic Toss leaves one HP and end-of-turn poison KOs. Only the first attack can win.",
+        "input_sha256": "fdc2ca6dfa3aec23fea94bb75d9fbc2dda893f7a1b3a9a8f3fa98b015b0c2b5d"
+      },
+      "case": "oracle-poison-window",
+      "mode": "hybrid",
+      "opponent_model": "minimax",
+      "fixture_hash": "fdc2ca6dfa3aec23fea94bb75d9fbc2dda893f7a1b3a9a8f3fa98b015b0c2b5d",
+      "provenance": {
+        "kind": "analytic-control",
+        "sources": [
+          "https://github.com/smogon/damage-calc/blob/master/calc/src/test/calc.test.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/moves.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/items.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/conditions.ts"
+        ],
+        "notes": "Mechanics-test-inspired Run & Bun controls, not reproductions of recorded battles."
+      },
+      "checkpoints": {
+        "1000": {
+          "measured": true,
+          "score": 80.00000000000007,
+          "available_at_ms": 449.3266000000001
+        },
+        "3000": {
+          "measured": true,
+          "score": 80.00000000000007,
+          "available_at_ms": 449.3266000000001
+        },
+        "10000": {
+          "measured": true,
+          "score": 80.00000000000007,
+          "available_at_ms": 449.3266000000001
+        }
+      },
+      "input_blocked": false,
+      "unresolved_reasons": [],
+      "first_estimate_ms": 113.72080000000005,
+      "elapsed_ms": 449.4361000000001,
+      "cpu_ms": 718,
+      "max_slice_ms": 113.62689999999998,
+      "peak_rss_mb": 167.80078125,
+      "score": 80.00000000000007,
+      "absolute_error_pp": 7.105427357601002e-14,
+      "samples": 128,
+      "done": true,
+      "retained_states": 1,
+      "total_native_rollouts": 128,
+      "exact_next_turn": true,
+      "next_turn_expansions": 102,
+      "merged_states": 0,
+      "first_second": {
+        "score": 80.00000000000007,
+        "available_at_ms": 449.3266000000001,
+        "absolute_error_pp": 7.105427357601002e-14,
+        "reference": 80,
+        "reference_kind": "analytic",
+        "goal_met": true
+      },
+      "prediction": {
+        "schema_version": 1,
+        "kind": "estimate",
+        "certificate": null,
+        "search": {
+          "status": "sample-budget-finished",
+          "resolved": false
+        },
+        "reasons": [],
+        "estimate": {
+          "score": 80.00000000000007,
+          "basis": "simulation-estimate"
+        }
+      },
+      "readings": [
+        {
+          "elapsed_ms": 113.72080000000005,
+          "score": 80,
+          "samples": 45,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 211.23430000000008,
+          "score": 80,
+          "samples": 90,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 295.1432,
+          "score": 80,
+          "samples": 128,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 313.66499999999996,
+          "score": 80,
+          "samples": 128,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 330.0522000000001,
+          "score": 80,
+          "samples": 128,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 347.2337,
+          "score": 80,
+          "samples": 128,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 364.0803000000001,
+          "score": 80,
+          "samples": 128,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 380.64879999999994,
+          "score": 80,
+          "samples": 128,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 396.827,
+          "score": 80,
+          "samples": 128,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 412.9055000000001,
+          "score": 80,
+          "samples": 128,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 429.24340000000007,
+          "score": 80,
+          "samples": 128,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 445.7052000000001,
+          "score": 80,
+          "samples": 128,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 449.3266000000001,
+          "score": 80.00000000000007,
+          "samples": 128,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": true
+        }
+      ]
+    },
+    {
+      "trial": 0,
+      "reference": {
+        "status": "analytic",
+        "expected_percent": 100,
+        "fraction": "1/1",
+        "proof": "Use Seismic Toss twice for a guaranteed win; repeated Focus Blast would win with probability 24/25.",
+        "input_sha256": "cfd25788a907ed04b53f20976854692a1b4b226c52d48a5280222c46c0c6536f"
+      },
+      "case": "oracle-choice-guaranteed",
+      "mode": "hybrid",
+      "opponent_model": "minimax",
+      "fixture_hash": "cfd25788a907ed04b53f20976854692a1b4b226c52d48a5280222c46c0c6536f",
+      "provenance": {
+        "kind": "analytic-control",
+        "sources": [
+          "https://github.com/smogon/damage-calc/blob/master/calc/src/test/calc.test.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/moves.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/items.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/conditions.ts"
+        ],
+        "notes": "Mechanics-test-inspired Run & Bun controls, not reproductions of recorded battles."
+      },
+      "checkpoints": {
+        "1000": {
+          "measured": true,
+          "score": 100,
+          "available_at_ms": 23.299299999999903
+        },
+        "3000": {
+          "measured": true,
+          "score": 100,
+          "available_at_ms": 23.299299999999903
+        },
+        "10000": {
+          "measured": true,
+          "score": 100,
+          "available_at_ms": 23.299299999999903
+        }
+      },
+      "input_blocked": false,
+      "unresolved_reasons": [],
+      "first_estimate_ms": 23.299299999999903,
+      "elapsed_ms": 23.60439999999994,
+      "cpu_ms": 16,
+      "max_slice_ms": 22.828399999999988,
+      "peak_rss_mb": 129.65625,
+      "score": 100,
+      "absolute_error_pp": 0,
+      "samples": 0,
+      "done": true,
+      "retained_states": 1,
+      "total_native_rollouts": 0,
+      "exact_next_turn": false,
+      "next_turn_expansions": 0,
+      "merged_states": 0,
+      "first_second": {
+        "score": 100,
+        "available_at_ms": 23.299299999999903,
+        "absolute_error_pp": 0,
+        "reference": 100,
+        "reference_kind": "analytic",
+        "goal_met": true
+      },
+      "prediction": {
+        "schema_version": 1,
+        "kind": "proven",
+        "certificate": {
+          "lower": 100,
+          "upper": 100,
+          "width": 0
+        },
+        "search": {
+          "status": "proven",
+          "resolved": true
+        },
+        "reasons": [],
+        "estimate": {
+          "score": 100,
+          "basis": "proven-value"
+        }
+      },
+      "readings": [
+        {
+          "elapsed_ms": 23.299299999999903,
+          "score": 100,
+          "samples": 0,
+          "certainty": "proven",
+          "certificate_width_pp": 0,
+          "next_turn_expansion_complete": false
+        }
+      ]
+    },
+    {
+      "trial": 0,
+      "reference": {
+        "status": "analytic",
+        "expected_percent": 81,
+        "fraction": "81/100",
+        "proof": "Focus Blast first: a hit (4/5) wins immediately or enables a guaranteed Seismic Toss finish. After a miss (1/5), only a hitting critical Focus Blast wins (4/5 * 1/16). Total 4/5 + 1/5 * 4/5 * 1/16 = 81/100. Seismic Toss first gives only 4/5. Normal damage 172-204; critical 260-306.",
+        "input_sha256": "379495ec2528e7c795e3e03539f3a141cd4c385afaca6609b6645b4eb7f80c32"
+      },
+      "case": "oracle-choice-adaptive",
+      "mode": "hybrid",
+      "opponent_model": "minimax",
+      "fixture_hash": "379495ec2528e7c795e3e03539f3a141cd4c385afaca6609b6645b4eb7f80c32",
+      "provenance": {
+        "kind": "analytic-control",
+        "sources": [
+          "https://github.com/smogon/damage-calc/blob/master/calc/src/test/calc.test.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/moves.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/items.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/conditions.ts"
+        ],
+        "notes": "Mechanics-test-inspired Run & Bun controls, not reproductions of recorded battles."
+      },
+      "checkpoints": {
+        "1000": {
+          "measured": true,
+          "score": 81.00000000000007,
+          "available_at_ms": 24.1644
+        },
+        "3000": {
+          "measured": true,
+          "score": 81.00000000000007,
+          "available_at_ms": 24.1644
+        },
+        "10000": {
+          "measured": true,
+          "score": 81.00000000000007,
+          "available_at_ms": 24.1644
+        }
+      },
+      "input_blocked": false,
+      "unresolved_reasons": [],
+      "first_estimate_ms": 24.1644,
+      "elapsed_ms": 24.472500000000082,
+      "cpu_ms": 47,
+      "max_slice_ms": 24.053999999999974,
+      "peak_rss_mb": 128.90234375,
+      "score": 81.00000000000007,
+      "absolute_error_pp": 7.105427357601002e-14,
+      "samples": 0,
+      "done": true,
+      "retained_states": 1,
+      "total_native_rollouts": 0,
+      "exact_next_turn": false,
+      "next_turn_expansions": 0,
+      "merged_states": 0,
+      "first_second": {
+        "score": 81.00000000000007,
+        "available_at_ms": 24.1644,
+        "absolute_error_pp": 7.105427357601002e-14,
+        "reference": 81,
+        "reference_kind": "analytic",
+        "goal_met": true
+      },
+      "prediction": {
+        "schema_version": 1,
+        "kind": "proven",
+        "certificate": {
+          "lower": 81.00000000000007,
+          "upper": 81.00000000000007,
+          "width": 0
+        },
+        "search": {
+          "status": "proven",
+          "resolved": true
+        },
+        "reasons": [],
+        "estimate": {
+          "score": 81.00000000000007,
+          "basis": "proven-value"
+        }
+      },
+      "readings": [
+        {
+          "elapsed_ms": 24.1644,
+          "score": 81.00000000000007,
+          "samples": 0,
+          "certainty": "proven",
+          "certificate_width_pp": 0,
+          "next_turn_expansion_complete": false
+        }
+      ]
+    }
+  ]
+}

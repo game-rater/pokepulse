@@ -1,7 +1,7 @@
 // Exact, bounded kernel for a known-order fixed-retaliation endgame. Native
 // damage probes preserve Run & Bun rounding and exact live stats. No fixture
 // IDs, benchmark targets, heuristic evaluations or sampling are used here.
-import {createCompleteBattle,restoreCompleteBattle,nativeMoveChoices} from './complete-moves.mjs';
+import {restoreCompleteBattle,nativeMoveChoices} from './native-battle.mjs';
 const inert=new Set(['','synchronize','innerfocus','naturalcure','runaway']);
 const empty=x=>!x||Object.keys(x).length===0;
 export function solveNativeEndgame(state,options={}){
@@ -67,27 +67,15 @@ export function solveNativeEndgame(state,options={}){
  return {value,action_values:memo.get(p.hp+':'+q.hp).values,actions:ours.map(m=>m.slot),states:memo.size,branches,merged,damage_probes:probes,elapsed_ms:performance.now()-start};
 }
 const TIMEOUT=Symbol('exact endgame budget exhausted');
-export function exactEndgameResult(initial,options,reasons){
- if(reasons?.size||options.exactEndgames===false||options.shouldStop?.())return null;
- const cache=options.session?(options.session.exactEndgames??=new Map()):null;
- let proof=cache?.get(initial.key),reused=!!proof;
- if(!proof&&!options.warmOnly){proof=solveNativeEndgame(initial,options);if(proof&&cache){cache.set(initial.key,proof);while(cache.size>256)cache.delete(cache.keys().next().value);}}
- if(!proof)return null;
- const score=proof.value*100;
- return {score,provisional_score:score,provisional_usable:true,partial_estimate:proof.value,lower:proof.value,upper:proof.value,lower_bound:score,upper_bound:score,
-  complete:true,certified:true,approximate:false,unresolved:0,score_kind:'certified-lower-bound',sampling_complete:true,
-  algorithm:'exact-native-fixed-retaliation-endgame',opponent_model:'optimized player; opponent has one legal fixed-damage move',
-  move_engine:'pokemon-showdown 0.11.11 with Run & Bun overrides',nodes:proof.states,samples:0,retained_states:cache?.size||0,root_reused:reused,
-  exact_endgame:proof,merged_outcomes:proof.merged,unresolved_reasons:[],omitted_moves:[],input_blocked:false};
-}
-
-// Cheap filter before the legacy/native router. Full eligibility is still
-// checked against the restored native state; this filter proves nothing.
-export function snapshotEndgameResult(snapshot,options={}){
- if(options.exactEndgames===false||options.shouldStop?.())return null;
+// This filter only avoids preparing obviously unsupported native inputs.
+function mayApply(snapshot){
  const [p,q]=[snapshot.player,snapshot.opponent];
- if(p.build.item||q.build.item||p.build.status||q.build.status||p.build.critical||q.build.critical)return null;
- if(q.build.moves.length!==1||q.build.moves[0]!=='Seismic Toss'||!p.build.moves.length||p.build.moves.some(m=>!['Seismic Toss','Focus Blast'].includes(m)))return null;
- if([p,q].some(s=>!inert.has((s.build.ability||'').toLowerCase().replace(/[^a-z]/g,''))||s.effects?.unknown_effects?.length))return null;
- return exactEndgameResult(createCompleteBattle(snapshot),options,new Set());
+ if(p.build.item||q.build.item||p.build.status||q.build.status||p.build.critical||q.build.critical)return false;
+ if(q.build.moves.length!==1||q.build.moves[0]!=='Seismic Toss'||!p.build.moves.length||p.build.moves.some(m=>!['Seismic Toss','Focus Blast'].includes(m)))return false;
+ return ![p,q].some(s=>!inert.has((s.build.ability||'').toLowerCase().replace(/[^a-z]/g,''))||s.effects?.unknown_effects?.length);
 }
+export const fixedRetaliationProof={
+ id:'fixed-retaliation-v1',algorithm:'exact-native-fixed-retaliation-endgame',
+ opponentModel:'optimized player; opponent has one legal fixed-damage move',
+ enabled:options=>options.exactEndgames!==false,mayApply,solve:solveNativeEndgame,
+};

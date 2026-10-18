@@ -137,3 +137,5 @@ See [accuracy references](analysis/ACCURACY-BENCHMARK-REFERENCES.md) for exact c
 Use `--family=proved-complex --require-reference` for the six harder proved controls. See [proofs and optimization opportunities](analysis/COMPLEX-PROVED-BENCHMARKS.md). `node scripts/benchmark-analytic-proofs.mjs` measures restricted proof-check cost separately from production search.
 
 `benchmark-search-race.mjs --preload` loads workers before the decision timer and records startup cost as `preload_ms`. It also records the first published score separately from the final score. See [exact endgame optimization](analysis/EXACT-ENDGAME-OPTIMIZATION.md) for domain guards, fallback behavior, and results.
+
+The shared evaluator and module boundaries are documented in [position evaluation design](analysis/POSITION-EVALUATION-DESIGN.md). Engine benchmark fingerprints include the evaluator, native mechanics, native search, and sampled implementation rather than only their public facades.

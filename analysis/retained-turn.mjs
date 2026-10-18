@@ -1,7 +1,7 @@
 // Exact, resumable next-turn probabilities above retained deeper estimates.
 // No trainer AI. Unknown/unfinished chance mass is never renormalized.
-import {completeMoveAdapter,restoreCompleteBattle} from './complete-moves.mjs';
-import {simulateSampledMovesCore,samplingConfidenceBounds} from './sampled-moves.mjs';
+import {completeMoveAdapter,restoreCompleteBattle} from './native-battle.mjs';
+import {simulateSampledMovesCore,samplingConfidenceBounds} from './sampled-search.mjs';
 import {matrixBounds,matrixPruning,thresholdDecision,proofThreshold} from './search.mjs';
 
 export {observationKey} from './observation-key.mjs';
@@ -113,17 +113,18 @@ function backedValue(node){
  const matrix=node.pairs.map(row=>row.map(p=>p.terminal+[...p.edges.values()].reduce((s,e)=>s+e.probability*e.node.value,0)));
  const v=matrixBounds(matrix,matrix,256);return (v.lower+v.upper)/2;
 }
-function refine(graph,node,options,reasons,timeMs){
+function refine(graph,node,options,reasons,timeMs,evaluator){
  const previous=graph.processingKey;graph.processingKey=node.key;
  try {
- const result=simulateSampledMovesCore(node.state,{...options,timeMs,session:node.session,continuationPolicies:graph.continuationPolicies??=new Map(),retainAfterTurn:options.retainChildren===false?undefined:(state,unbiased,horizon)=>{
+ const result=evaluator?.continuation(node.state,reasons,{...options,deadline:Math.min(options.deadline??Infinity,performance.now()+Math.max(0,timeMs))})||simulateSampledMovesCore(node.state,{...options,timeMs,session:node.session,continuationPolicies:graph.continuationPolicies??=new Map(),retainAfterTurn:options.retainChildren===false?undefined:(state,unbiased,horizon)=>{
   const child=turnNode(graph,state,options);
   if(!unbiased)return null;
   return value=>{child.prior.n++;child.prior.sum+=value;child.prior.horizons[horizon]=(child.prior.horizons[horizon]||0)+1;
    if(!child.result?.provisional_usable)child.value=child.prior.sum/child.prior.n;};
- }},reasons);
+ }},reasons,evaluator);
  node.result=result;node.visits++;
- graph.rollouts=(graph.rollouts||0)+result.nodes;
+ if(result.certified&&result.lower===result.upper)node.lower=node.upper=result.lower;
+ graph.rollouts=(graph.rollouts||0)+(result.certified?0:result.nodes);
  if(result.provisional_usable)node.value=result.score/100;
  return result;
  }finally{graph.processingKey=previous;}
@@ -148,7 +149,7 @@ function selectChild(node,options={}){
  }
  return [...influence].sort((a,b)=>b[1]-a[1])[0]?.[0];
 }
-export function simulateRetainedTurn(initial,options,reasons){
+export function simulateRetainedTurn(initial,options,reasons,evaluator){
  const outer=options.session||{},graph=outer.turnGraph??={nodes:new Map(),limit:options.retainedStateLimit??256,hits:0,merged:0,expansions:0};
  const previousHits=graph.hits,node=turnNode(graph,initial,options),reused=graph.hits>previousHits;
  node.wasRerooted=reused&&graph.lastRootKey!==node.key;graph.lastRootKey=node.key;
@@ -160,7 +161,7 @@ export function simulateRetainedTurn(initial,options,reasons){
  let result=node.result,added=0;
  const cold=!node.result?.provisional_usable&&!node.prior.n;
  if(!result?.sampling_complete||result.sample_target_per_pair!==(options.samplesPerPair??128)){
-  result=refine(graph,node,options,reasons,budget*(cold?1:0.75));added=result.nodes;
+  result=refine(graph,node,options,reasons,budget*(cold?1:0.75),evaluator);added=result.nodes;
  }
  outer.sampledMoves=node.session.sampledMoves;
  if(cold){
@@ -171,7 +172,7 @@ export function simulateRetainedTurn(initial,options,reasons){
  if(left()>0)expandTurn(graph,node,{...options,timeMs:Math.min(left(),budget*0.15)},reasons);
  const child=selectChild(node,options);
  if(child&&left()>0)expandTurn(graph,child,{...options,timeMs:Math.min(left(),budget*0.03)},reasons);
- if(child&&left()>0)refine(graph,child,{...options,samplesPerPair:options.continuationSamplesPerPair??8},reasons,left());
+ if(child&&left()>0)refine(graph,child,{...options,samplesPerPair:options.continuationSamplesPerPair??8},reasons,left(),evaluator);
  const backup=backedValue(node);if(backup!==null)node.value=backup;
  if(reasons.size){
   result={...result,provisional_usable:false,input_blocked:true,unresolved_reasons:[...reasons]};
@@ -183,6 +184,7 @@ function emptyResult(options){return {complete:false,certified:false,approximate
  unresolved:1,score_kind:'simulation-estimate',samples:0,samples_per_pair:0,sample_target_per_pair:options.samplesPerPair??128,rollout_turn_limit:options.rolloutTurns??12,
  input_blocked:false,omitted_moves:[],unresolved_reasons:[],move_engine:'pokemon-showdown 0.11.11 with Run & Bun overrides'};}
 function report(node,result,reused,added,graph,start,options={}){
+ if(result.certified&&result.complete&&!result.input_blocked)return {...result,root_reused:reused||result.root_reused,retained_states:graph.nodes.size,elapsed_ms:performance.now()-start};
  const exactTurn=backedValue(node)!==null,ready=!result.unresolved_reasons?.length&&
   (result.provisional_usable||node.prior.n>0);
  const score=ready?Math.max(1,Math.min(99,node.value*100)):null;

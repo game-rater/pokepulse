@@ -1,7 +1,7 @@
 import {readFileSync} from 'node:fs';
 import {fileURLToPath} from 'node:url';
 import {dirname,resolve} from 'node:path';
-import {completeMoveDex} from '../analysis/complete-moves.mjs';
+import {completeMoveDex} from '../analysis/native-battle.mjs';
 
 const root=resolve(dirname(fileURLToPath(import.meta.url)),'..');
 const moveData=JSON.parse(readFileSync(resolve(root,'data/battle-data.json'),'utf8')).moves;

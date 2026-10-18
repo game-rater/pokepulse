@@ -1,6 +1,6 @@
 import calculator from '../vendor/run-bun/index.js';
 import {generateMoveDist} from '../vendor/npc-ai/predictor.mjs';
-import {completeMoveDex,MissingInput,nativeMoveChoices} from '../analysis/complete-moves.mjs';
+import {completeMoveDex,MissingInput,nativeMoveChoices} from '../analysis/native-battle.mjs';
 
 const gen=calculator.Generations.get(8);
 const names={raindance:'Rain',sunnyday:'Sun',sandstorm:'Sand',hail:'Hail',snow:'Hail',electricterrain:'Electric',grassyterrain:'Grassy',mistyterrain:'Misty',psychicterrain:'Psychic'};
