@@ -10,4 +10,4 @@ test('An estimate after the deadline cannot count retrospectively',()=>{const r=
 test('Later refinement must not move outside the error budget',()=>{const r=row();r.score=2;const a=assessStallRows([r])[0];assert.equal(a.first_second_pass,true);assert.equal(a.final_pass,false);});
 test('Blocked or unavailable predictions fail accuracy acceptance',()=>{for(const r of [{...row(),input_blocked:true},{...row(),first_second:{score:null},score:null}])assert.equal(assessStallRows([r])[0].pass,false);});
 test('Acceptance refuses changed inputs and rebased targets',()=>{for(const r of [{...row(),fixture_hash:'changed'},{...row(),reference:{expected_percent:2}}])assert.throws(()=>assessStallRows([r]),/Stale or changed/);});
-test('Empty runs and unrelated cases are not passing coverage',()=>{assert.throws(()=>assessStallRows([]),/No stall/);assert.throws(()=>assessStallRows([{case:'unregistered'}]),/Unknown stall/);});
+test('Empty runs and unrelated cases are not passing coverage',()=>{assert.throws(()=>assessStallRows([]),/No benchmark/);assert.throws(()=>assessStallRows([{case:'unregistered'}]),/Unknown benchmark/);});

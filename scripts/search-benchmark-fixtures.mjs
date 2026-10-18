@@ -1,4 +1,5 @@
 import {stallFixtures} from './stall-benchmark-fixtures.mjs';
+import {strategyFixtures} from './strategy-benchmark-fixtures.mjs';
 import {createCompleteBattle,restoreCompleteBattle,installChanceTape,packed} from '../analysis/complete-moves.mjs';
 import {accuracyFixtures} from './accuracy-benchmark-fixtures.mjs';
 import {realBattleFixtures} from './real-battle-fixtures.mjs';
@@ -19,6 +20,7 @@ export const searchFixtures=[
  ...realBattleFixtures,
  ...accuracyFixtures,
  ...stallFixtures,
+ ...strategyFixtures,
 ];
 // Synthetic observation reconstruction, exercising the same native hydrator as
 // live input. This helper intentionally targets the simple reusable fixture.

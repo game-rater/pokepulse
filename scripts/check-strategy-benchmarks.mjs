@@ -1,0 +1,10 @@
+import {readFileSync,writeFileSync} from 'node:fs';
+import {strategyFixtures} from './strategy-benchmark-fixtures.mjs';
+import {assessBenchmarkRows} from './check-stall-benchmarks.mjs';
+const args=process.argv.slice(2),files=args.filter(a=>!a.startsWith('--'));
+if(!files.length)throw Error('Pass strategy retained-turn benchmark JSON files');
+const cases=assessBenchmarkRows(files.flatMap(f=>JSON.parse(readFileSync(f,'utf8')).rows),strategyFixtures);
+const report={created_at:new Date().toISOString(),scope:'Warm active-pair search: estimate available by one second and within ten percentage points of the independent reference; final error also within ten points. Performance goal, not universal guarantee.',total:cases.length,passed:cases.filter(c=>c.pass).length,failed:cases.filter(c=>!c.pass).length,cases};
+const out=args.find(a=>a.startsWith('--out='))?.slice(6);if(out)writeFileSync(out,JSON.stringify(report,null,2)+'\n');
+for(const c of cases)console.log(`${c.pass?'PASS':'FAIL'} ${c.case}/${c.opponent_model}: expected ${c.expected_percent}%; 1s ${c.score_at_one_second}%; final ${c.final_score}%`);
+console.log(`${report.passed}/${report.total} passed`);process.exitCode=report.failed?1:0;

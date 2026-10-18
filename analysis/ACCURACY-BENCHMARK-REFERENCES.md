@@ -77,3 +77,7 @@ Both independently proved Lunatone losses returned 1% in their one-second benchm
 ## More complex controls
 
 Six additional multi-turn, item/status and adaptive-strategy controls are documented in [complex proved benchmarks](COMPLEX-PROVED-BENCHMARKS.md), along with measured errors and concrete optimization opportunities. The original seven controls remain unchanged.
+
+Seven recovery and setup decision controls, with independently enumerated damage,
+critical hits, HP, PP and action choices, are documented in
+[recovery and setup benchmarks](RECOVERY-SETUP-BENCHMARKS.md).

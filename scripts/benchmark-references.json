@@ -875,6 +875,216 @@
           "proof": "Poison Heal prevents Toxic damage and heals instead. Protect cannot win; forced Struggle cannot KO the foe and its recoil KOs the player."
         }
       }
+    },
+    {
+      "id": "strategy-recover-1",
+      "input_sha256": "85361f7fc1019483a3b12a127443d49e141ffa791ab685a143a36fa0d6fff96a",
+      "models": {
+        "minimax": {
+          "status": "analytic",
+          "expected_percent": 18.067192286252975,
+          "fraction": "finite-enumeration",
+          "root_action_values": [
+            18.067192286252975,
+            0
+          ],
+          "states": 22,
+          "branches": 836,
+          "proof": "Independent HP/PP/stage dynamic program; 1/16 critical chance and all 16 uniform damage rolls, faster player action, enemy retaliation, then toxic. Root values follow listed move order. No production search or native simulator used."
+        },
+        "npc-ai": {
+          "status": "analytic",
+          "expected_percent": 18.067192286252975,
+          "fraction": "finite-enumeration",
+          "root_action_values": [
+            18.067192286252975,
+            0
+          ],
+          "states": 22,
+          "branches": 836,
+          "proof": "Independent HP/PP/stage dynamic program; 1/16 critical chance and all 16 uniform damage rolls, faster player action, enemy retaliation, then toxic. Root values follow listed move order. No production search or native simulator used."
+        }
+      }
+    },
+    {
+      "id": "strategy-recover-35",
+      "input_sha256": "0fcaecf300caf96bc94d48255efe8b8a8509484bad8b56d3b4f7dc3a0227eab2",
+      "models": {
+        "minimax": {
+          "status": "analytic",
+          "expected_percent": 98.050266969949,
+          "fraction": "finite-enumeration",
+          "root_action_values": [
+            98.050266969949,
+            0
+          ],
+          "states": 108,
+          "branches": 3990,
+          "proof": "Independent HP/PP/stage dynamic program; 1/16 critical chance and all 16 uniform damage rolls, faster player action, enemy retaliation, then toxic. Root values follow listed move order. No production search or native simulator used."
+        },
+        "npc-ai": {
+          "status": "analytic",
+          "expected_percent": 98.050266969949,
+          "fraction": "finite-enumeration",
+          "root_action_values": [
+            98.050266969949,
+            0
+          ],
+          "states": 108,
+          "branches": 3990,
+          "proof": "Independent HP/PP/stage dynamic program; 1/16 critical chance and all 16 uniform damage rolls, faster player action, enemy retaliation, then toxic. Root values follow listed move order. No production search or native simulator used."
+        }
+      }
+    },
+    {
+      "id": "strategy-recover-70",
+      "input_sha256": "7bdc4f3e027f3d2e2158b1666d31d95c8a5a86587e1e30ce63cae4aea4042473",
+      "models": {
+        "minimax": {
+          "status": "analytic",
+          "expected_percent": 98.87883067131042,
+          "fraction": "finite-enumeration",
+          "root_action_values": [
+            98.31970324739814,
+            98.87883067131042
+          ],
+          "states": 194,
+          "branches": 6593,
+          "proof": "Independent HP/PP/stage dynamic program; 1/16 critical chance and all 16 uniform damage rolls, faster player action, enemy retaliation, then toxic. Root values follow listed move order. No production search or native simulator used."
+        },
+        "npc-ai": {
+          "status": "analytic",
+          "expected_percent": 98.87883067131042,
+          "fraction": "finite-enumeration",
+          "root_action_values": [
+            98.31970324739814,
+            98.87883067131042
+          ],
+          "states": 194,
+          "branches": 6593,
+          "proof": "Independent HP/PP/stage dynamic program; 1/16 critical chance and all 16 uniform damage rolls, faster player action, enemy retaliation, then toxic. Root values follow listed move order. No production search or native simulator used."
+        }
+      }
+    },
+    {
+      "id": "strategy-setup-35",
+      "input_sha256": "431c04beff4957f3266df0177787f67e86a97beb136abc30d8d001d0a722fcbb",
+      "models": {
+        "minimax": {
+          "status": "analytic",
+          "expected_percent": 100,
+          "fraction": "finite-enumeration",
+          "root_action_values": [
+            100,
+            100
+          ],
+          "states": 15,
+          "branches": 21,
+          "proof": "Independent HP/PP/stage dynamic program; 1/16 critical chance and all 16 uniform damage rolls, faster player action, enemy retaliation, then toxic. Root values follow listed move order. No production search or native simulator used."
+        },
+        "npc-ai": {
+          "status": "analytic",
+          "expected_percent": 100,
+          "fraction": "finite-enumeration",
+          "root_action_values": [
+            100,
+            100
+          ],
+          "states": 15,
+          "branches": 21,
+          "proof": "Independent HP/PP/stage dynamic program; 1/16 critical chance and all 16 uniform damage rolls, faster player action, enemy retaliation, then toxic. Root values follow listed move order. No production search or native simulator used."
+        }
+      }
+    },
+    {
+      "id": "strategy-setup-90",
+      "input_sha256": "bb4fa1da4caa634cd941419771436e6f455b3ce0a1d9974efddf823d5e6f54bb",
+      "models": {
+        "minimax": {
+          "status": "analytic",
+          "expected_percent": 100,
+          "fraction": "finite-enumeration",
+          "root_action_values": [
+            100,
+            13.97753357887268
+          ],
+          "states": 93,
+          "branches": 537,
+          "proof": "Independent HP/PP/stage dynamic program; 1/16 critical chance and all 16 uniform damage rolls, faster player action, enemy retaliation, then toxic. Root values follow listed move order. No production search or native simulator used."
+        },
+        "npc-ai": {
+          "status": "analytic",
+          "expected_percent": 100,
+          "fraction": "finite-enumeration",
+          "root_action_values": [
+            100,
+            13.97753357887268
+          ],
+          "states": 93,
+          "branches": 537,
+          "proof": "Independent HP/PP/stage dynamic program; 1/16 critical chance and all 16 uniform damage rolls, faster player action, enemy retaliation, then toxic. Root values follow listed move order. No production search or native simulator used."
+        }
+      }
+    },
+    {
+      "id": "strategy-setup-120",
+      "input_sha256": "ca7ca062534a13d6ded060e8701d2c1129caef5c7655d0aaa2611af1537863ea",
+      "models": {
+        "minimax": {
+          "status": "analytic",
+          "expected_percent": 11.92626953125,
+          "fraction": "finite-enumeration",
+          "root_action_values": [
+            11.92626953125,
+            0.10833740234375
+          ],
+          "states": 93,
+          "branches": 1239,
+          "proof": "Independent HP/PP/stage dynamic program; 1/16 critical chance and all 16 uniform damage rolls, faster player action, enemy retaliation, then toxic. Root values follow listed move order. No production search or native simulator used."
+        },
+        "npc-ai": {
+          "status": "analytic",
+          "expected_percent": 11.92626953125,
+          "fraction": "finite-enumeration",
+          "root_action_values": [
+            11.92626953125,
+            0.10833740234375
+          ],
+          "states": 93,
+          "branches": 1239,
+          "proof": "Independent HP/PP/stage dynamic program; 1/16 critical chance and all 16 uniform damage rolls, faster player action, enemy retaliation, then toxic. Root values follow listed move order. No production search or native simulator used."
+        }
+      }
+    },
+    {
+      "id": "strategy-setup-too-late",
+      "input_sha256": "10c150e42f89790ee11f5ba54724661ff49d2b8c8609aaf6f377832b6fc7399d",
+      "models": {
+        "minimax": {
+          "status": "analytic",
+          "expected_percent": 6.25,
+          "fraction": "finite-enumeration",
+          "root_action_values": [
+            0,
+            6.25
+          ],
+          "states": 1,
+          "branches": 7,
+          "proof": "Independent HP/PP/stage dynamic program; 1/16 critical chance and all 16 uniform damage rolls, faster player action, enemy retaliation, then toxic. Root values follow listed move order. No production search or native simulator used."
+        },
+        "npc-ai": {
+          "status": "analytic",
+          "expected_percent": 6.25,
+          "fraction": "finite-enumeration",
+          "root_action_values": [
+            0,
+            6.25
+          ],
+          "states": 1,
+          "branches": 7,
+          "proof": "Independent HP/PP/stage dynamic program; 1/16 critical chance and all 16 uniform damage rolls, faster player action, enemy retaliation, then toxic. Root values follow listed move order. No production search or native simulator used."
+        }
+      }
     }
   ]
 }

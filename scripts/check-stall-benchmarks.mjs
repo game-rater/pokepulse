@@ -3,10 +3,10 @@ import {resolve,dirname} from 'node:path';
 import {pathToFileURL} from 'node:url';
 import {stallFixtures} from './stall-benchmark-fixtures.mjs';
 import {benchmarkReference} from './benchmark-oracles.mjs';
-export function assessStallRows(rows){
- if(!Array.isArray(rows)||!rows.length)throw Error('No stall benchmark rows');
+export function assessBenchmarkRows(rows,fixtures){
+ if(!Array.isArray(rows)||!rows.length)throw Error('No benchmark rows');
  return rows.map(row=>{
-  const f=stallFixtures.find(f=>f.id===row.case);if(!f)throw Error('Unknown stall case '+row.case);
+  const f=fixtures.find(f=>f.id===row.case);if(!f)throw Error('Unknown benchmark case '+row.case);
   const reference=benchmarkReference(f,row.opponent_model);
   if(row.fixture_hash!==reference.input_sha256||row.reference?.expected_percent!==reference.expected_percent)throw Error('Stale or changed reference for '+row.case);
   const first=row.first_second,available=Number.isFinite(first?.score)&&first.available_at_ms>0&&first.available_at_ms<=1000&&!row.input_blocked;
@@ -18,6 +18,7 @@ export function assessStallRows(rows){
    first_second_pass:earlyPass,final_pass:finalPass,pass:earlyPass&&finalPass};
  });
 }
+export function assessStallRows(rows){return assessBenchmarkRows(rows,stallFixtures);}
 if(process.argv[1]&&pathToFileURL(resolve(process.argv[1])).href===import.meta.url){
  const files=process.argv.slice(2).filter(a=>!a.startsWith('--')),out=process.argv.find(a=>a.startsWith('--out='))?.slice(6);
  if(!files.length)throw Error('Pass one or more retained-turn stall benchmark JSON files');

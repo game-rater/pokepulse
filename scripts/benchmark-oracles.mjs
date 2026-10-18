@@ -1,4 +1,5 @@
 import {stallOracle} from './stall-benchmark-oracles.mjs';
+import {strategyOracle} from './strategy-benchmark-oracle.mjs';
 import {solveDamageRace} from './reference-damage-race.mjs';
 import {createHash} from 'node:crypto';
 import {readFileSync} from 'node:fs';
@@ -17,6 +18,7 @@ const range=(a,b,name,crit=false,bp)=>{
 export function analyticOracle(fixture){
  const {player:p,opponent:q}=fixture.snapshot,pm=mon(p),qm=mon(q),id=fixture.oracle;
  if(!id)return null;
+ if(id==='strategy')return strategyOracle(fixture);
  for(const side of [p,q]){
   const calculated=mon(side);
   assert(Object.keys(calculated.rawStats).every(k=>calculated.rawStats[k]===side.actual_stats[k]),'actual stats match proof build');
