@@ -12,6 +12,10 @@ The architecture has accumulated duplicated rules. This document defines their b
 | Choosing strategies and propagating chance probabilities | `search.mjs`, `sampled-moves.mjs`, `continuation-policy.mjs` | Analytic games, weighted outcomes and continuation scenarios |
 | State equivalence and retained values | `observation-key.mjs`, `retained-turn.mjs` | Rerooting and changed-state rejection checks |
 | Publishing a result for the right live matchup | `run-bun/search-service.mjs`, `server.mjs` | Stream and stale-result checks |
+| Certainty classification and display estimate | `analysis/result-contract.mjs` | Separate sampled estimates, certified intervals, and coincident modeled bounds |
+| Named worker requests and observation provenance | `run-bun/battle-state.mjs`, `input.mjs` | Preserve supplied, unknown, and defaulted values |
+
+See `STATE-AND-RESULT-CONTRACTS.md` for publication fields, compatibility boundaries, and benchmark reporting.
 
 ## Capability rule
 

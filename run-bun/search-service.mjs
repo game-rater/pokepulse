@@ -1,5 +1,7 @@
 import {Worker} from 'node:worker_threads';
 import {displayEstimate} from './display-estimate.mjs';
+import {hasResolvedCertificate,predictionReport} from '../analysis/result-contract.mjs';
+import {createSearchRequest} from './battle-state.mjs';
 export function modelContext(args){
   const [player,opponent,rules,,builds,field,effects,live]=args;
   const staticBuild=b=>{const {status,boosts,...rest}=b;return rest;};
@@ -10,7 +12,7 @@ export function modelContext(args){
 export function chooseSearchResult(results){
  const exact=results.exact,hybrid=results.hybrid;
  const usable=r=>r&&!r.outlook.input_blocked&&Number.isFinite(displayEstimate(r).score);
- if(exact?.outlook.complete&&!exact.outlook.approximate)return {engine:'exact',result:exact};
+ if(hasResolvedCertificate(exact))return {engine:'exact',result:exact};
  if(usable(hybrid))return {engine:'hybrid',result:hybrid};
  if(usable(exact))return {engine:'exact',result:exact};
  return exact?{engine:'exact',result:exact}:hybrid?{engine:'hybrid',result:hybrid}:null;
@@ -19,7 +21,7 @@ const engineStatus=r=>!r?'starting':r.outlook.complete?'complete':r.outlook.inpu
  r.outlook.search_paused?'paused':r.outlook.sampling_complete?'finished':'searching';
 export class SearchService {
  constructor({settleMs=0,parallel=true,exactProbeMs=2000}={}){
-  this.worker=null;this.hybridWorker=null;this.version=0;this.context=null;this.display=null;
+  this.worker=null;this.hybridWorker=null;this.version=0;this.context=null;this.display=null;this.provenance=null;
   this.parallel=parallel;this.runningParallel=parallel;this.exactProbeMs=exactProbeMs;this.results={};this.errors={};this.lastSelected=null;
   this.generation=new Int32Array(new SharedArrayBuffer(4));this.exactHalt=new Int32Array(new SharedArrayBuffer(4));
   this.hybridHalt=new Int32Array(new SharedArrayBuffer(4));this.settleMs=settleMs;this.timer=null;
@@ -27,14 +29,14 @@ export class SearchService {
  cancel(){
   Atomics.store(this.generation,0,++this.version);clearTimeout(this.timer);
   for(const name of ['worker','hybridWorker']){this[name]?.terminate();this[name]=null;}
-  this.context=null;this.display=null;this.results={};this.lastSelected=null;
+  this.context=null;this.display=null;this.provenance=null;this.results={};this.lastSelected=null;
  }
  receive(engine,{version,result}){
   if(version!==this.version)return;
   if(!this.runningParallel){this.publish(result);return;}
   this.results[engine]=result;
   const choice=chooseSearchResult(this.results);if(!choice)return;
-  if(choice.result.outlook.complete&&!choice.result.outlook.approximate){
+  if(hasResolvedCertificate(choice.result)){
    Atomics.store(choice.engine==='exact'?this.hybridHalt:this.exactHalt,0,version);
   }
   const statuses={exact:this.errors.exact?'failed':engineStatus(this.results.exact),hybrid:this.errors.hybrid?'failed':engineStatus(this.results.hybrid)};
@@ -48,6 +50,8 @@ export class SearchService {
  publish(result,refining){
   const estimate=result.outlook.input_blocked?{score:null,kind:'missing-input'}:displayEstimate(result,this.display);
   result.display_score=estimate.score;result.display_score_kind=estimate.kind;
+  result.prediction=predictionReport(result.outlook,this.display);
+  result.observation_provenance=this.provenance||null;
   result.refining=refining??(!result.outlook.complete&&!result.outlook.input_blocked&&!result.outlook.sampling_complete&&!result.outlook.search_paused);
   this.display=estimate.score;this.onResult(result);
  }
@@ -76,7 +80,9 @@ export class SearchService {
   this.results={};this.errors={};this.lastSelected=null;this.onResult=onResult;this.onError=onError;
   if(!this.worker)this.makeWorker('exact');
   if(this.runningParallel&&!this.hybridWorker)this.makeWorker('hybrid');
-  const dispatch=()=>{const message={version,args,budgets,modelContext:context};
+  const request=createSearchRequest(args);
+  this.provenance=request.provenance;
+  const dispatch=()=>{const message={version,request,budgets,modelContext:context};
    this.worker?.postMessage(message);if(this.runningParallel)this.hybridWorker?.postMessage(message);};
   if(this.settleMs)this.timer=setTimeout(dispatch,this.settleMs);else dispatch();
   return {sameContext};

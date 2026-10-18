@@ -13,7 +13,7 @@ pnpm install --frozen-lockfile
 pnpm start:run-bun
 ```
 
-Open http://localhost:3001/live.html. In mGBA, load your own Run & Bun game and load the generated `run-bun/PokeThreat.lua` through the scripting window. Keep the server running. ROMs, saves, emulator installations, and private battle reports are not included.
+Open http://localhost:3001/. In mGBA, load your own Run & Bun game and load the generated `run-bun/PokeThreat.lua` through the scripting window. Keep the server running. ROMs, saves, emulator installations, and private battle reports are not included.
 
 The Windows launchers belong to the packaged desktop distribution and expect its bundled files. A source checkout uses the commands above.
 

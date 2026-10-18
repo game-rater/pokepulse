@@ -1,5 +1,6 @@
 import {STATS,validateField} from '../battle-engine.mjs';
 import {nativeVolatiles,nativeSideConditions,nativeFieldConditions} from './live-effects.mjs';
+import {observationProvenance} from './battle-state.mjs';
 function effectMap(value,allowed,label,catalog){
  if(!value||typeof value!=='object'||Array.isArray(value))throw Error(`Invalid ${label}.`);
  const result={};
@@ -16,7 +17,7 @@ function effectMap(value,allowed,label,catalog){
  return result;
 }
 // Adapters (JSON now, emulator later) return this same complete snapshot.
-export function normalizeSnapshot(input,pack,catalog){
+export function normalizeSnapshot(input,pack,catalog,{source='unattributed'}={}){
   if(!input || input.schema_version!==1 || input.game!=='run-bun')throw Error('Expected a version 1 Run & Bun snapshot.');
   const battle={},builds={},effects={},live={};
   const ids={};
@@ -80,5 +81,6 @@ export function normalizeSnapshot(input,pack,catalog){
     effects[side]={...extra,...(e.focus_energy!==undefined?{focus_energy:e.focus_energy}:{}),taunted:e.taunted||false,disabled_moves:e.disabled_moves||[],...(e.protect_streak!==undefined?{protect_streak:e.protect_streak}:{}),...(e.encore_move?{encore_move:e.encore_move}:{}),...(e.locked_move?{locked_move:e.locked_move}:{}),...(e.sleep_counter!==undefined?{sleep_counter:e.sleep_counter}:{}),...(e.confusion_turns!==undefined?{confusion_turns:e.confusion_turns}:{})};
   }
   validateField(input.field,8);
-  return {...ids,battle,builds,field:structuredClone(input.field),effects,live};
+  live.observation_provenance=observationProvenance(input,source);
+  return {...ids,battle,builds,field:structuredClone(input.field),effects:structuredClone(effects),live};
 }

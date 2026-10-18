@@ -17,6 +17,7 @@ engineFiles.push('run-bun/npc-ai.mjs','vendor/npc-ai/predictor.mjs','vendor/npc-
 engineFiles.push('analysis/continuation-policy.mjs');
 engineFiles.push('analysis/observation-key.mjs');
 engineFiles.push('analysis/mechanics-contract.mjs');
+engineFiles.push('analysis/result-contract.mjs','run-bun/battle-state.mjs');
 const hashes=Object.fromEntries(await Promise.all(engineFiles.map(async file=>[file,createHash('sha256').update(await readFile(file)).digest('hex')])));
 const recorder=new BattleRecorder({directory:reportsDirectory,metadata:{engine_hashes:hashes,node:process.version,game:'Run & Bun 1.07',search_slices_ms:[150,250]}});
 let recordedTracking='';
@@ -69,7 +70,7 @@ function resetPrediction() {
 function startPrediction(snapshot,signature,warnings) {
   predictionActors=actorsOf(snapshot);
   predictionError=null;
-  const next=normalizeSnapshot(snapshot,pack,c);
+  const next=normalizeSnapshot(snapshot,pack,c,{source:'emulator'});
   const rootStateId=recorder.stateId;
   analysisStateId=rootStateId;
   const {sameContext}=searchService.start(searchArgs(next),result=>{
@@ -187,7 +188,7 @@ const server = http.createServer(async (req,res) => {
       if(process.env.POKETHREAT_DIAGNOSTICS!=='1')return json(res,409,{error:'Snapshot injection is available only with POKETHREAT_DIAGNOSTICS=1. Normal play uses the read-only emulator bridge.'});
       if(req.headers.origin && req.headers.origin !== `http://${req.headers.host}`)return json(res,403,{error:'Use the local application.'});
       let body='';for await(const chunk of req){body+=chunk;if(Buffer.byteLength(body)>2500000)throw Error('Snapshot too large.');}
-      const next=normalizeSnapshot(JSON.parse(body),pack,catalog());
+      const next=normalizeSnapshot(JSON.parse(body),pack,catalog(),{source:'diagnostic'});
       searchService.cancel();
       cachedResult=scoreBattle(...searchArgs(next),optimizer==='npc-ai'?{opponentModel:'npc-ai',forceNativeForecast:true,approximateCompleteMoves:true}:{});lastBattle='';
       ({player,opponent,battle,builds,field,effects,live}=next);

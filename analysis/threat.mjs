@@ -1,4 +1,5 @@
 import {simulateOutlook,statusEffects} from './outlook.mjs';
+import {predictionReport} from './result-contract.mjs';
 import {readFileSync} from 'node:fs';
 import {mixHit,convolveHits,hitCounts} from './damage-distribution.mjs';
 import {dynamicField} from './turn-mechanics.mjs';
@@ -153,7 +154,7 @@ export function analyzeBattle(snapshot,calculator,getSpeed,actionOpportunity=()=
   if(forecast.omitted_moves.length)warnings.push(`Unsupported status moves retained as unresolved decisions: ${forecast.omitted_moves.join(', ')}.`);
   warnings.push(...forecast.unresolved_reasons);
   const display=rs=>rs.map(({damage_rolls,damage_distribution,hit_distributions,...r})=>r);
-  return {victory:forecast.score,outlook:forecast,outgoing_moves:display(rows[0]),incoming_moves:display(rows[1]),
+  return {victory:forecast.score,outlook:forecast,prediction:predictionReport(forecast),outgoing_moves:display(rows[0]),incoming_moves:display(rows[1]),
     stats:{player:mons[0].rawStats,opponent:mons[1].rawStats},warnings,
     model:forecast.approximate?'Run & Bun · sampled battle simulation':'Run & Bun · bounded stochastic game search',
     explanations:forecast.approximate?[`Evaluated ${forecast.samples} native battle continuations, with at least ${forecast.samples_per_pair} samples per starting move pair.`,`Continuation choices and endings beyond ${forecast.rollout_turn_limit} turns use a heuristic; this estimate is not a certified search bound.`]:[`Searched ${forecast.nodes} decision states through a depth of ${forecast.depth}; reused ${forecast.cache_hits} cached results.`,

@@ -5,7 +5,7 @@ export function mon(moves,{hp=100,spe=50,level=20,pp=20,item='',ability=''}={}){
   pp:Object.fromEntries(moves.map(m=>[m,pp]))};
 }
 export const searchFixtures=[
- {id:'cheap-ending',description:'Guaranteed fixed-damage finishing turn',snapshot:{player:mon(['Seismic Toss']),opponent:mon(['Splash'],{hp:1,spe:10}),field:{}}},
+ {id:'cheap-ending',description:'Guaranteed fixed-damage finishing turn',expected:100,snapshot:{player:mon(['Seismic Toss']),opponent:mon(['Splash'],{hp:1,spe:10}),field:{}}},
  {id:'rare-critical',description:'Only a base-rate critical wins the immediate turn',expected:6.25,snapshot:{player:mon(['Tackle'],{hp:15}),opponent:mon(['Seismic Toss'],{hp:12,spe:10}),field:{}}},
  {id:'reusable-next-turn',description:'Attack and status choices with reconstructable live next turn',reroot:true,snapshot:{player:mon(['Tackle','Foresight']),opponent:mon(['Splash'],{spe:10}),field:{}}},
  {id:'four-by-four',description:'Sixteen strategic root pairs with secondary effects',snapshot:{player:mon(['Bite','Thunder Wave','Foresight','Protect']),opponent:mon(['Water Pulse','Recover','Air Cutter','Rain Dance'],{spe:60}),field:{}}},

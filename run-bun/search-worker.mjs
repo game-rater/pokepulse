@@ -1,6 +1,7 @@
 import {parentPort,workerData} from 'node:worker_threads';
 import {scoreBattle} from './profile.mjs';
 import {refineUntilResolved} from './refinement.mjs';
+import {searchArguments} from './battle-state.mjs';
 const generation=new Int32Array(workerData.generation);
 const engineMode=workerData.engineMode||'auto';
 const halt=workerData.halt?new Int32Array(workerData.halt):null;
@@ -10,7 +11,8 @@ function trim(map,limit){
   while(map.size>limit)map.delete(map.keys().next().value);
 }
 // Rerooting changes the initial state, while state bounds stay in memory.
-parentPort.on('message',async({version,args,budgets,modelContext})=>{
+parentPort.on('message',async({version,request,budgets,modelContext})=>{
+  const args=searchArguments(request);
   const obsolete=()=>Atomics.load(generation,0)!==version||(halt&&Atomics.load(halt,0)===version);
   const deadline=engineMode==='exact'?performance.now()+(workerData.exactProbeMs??2000):Infinity;
   if(obsolete())return;

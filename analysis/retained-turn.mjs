@@ -190,6 +190,8 @@ function report(node,result,reused,added,graph,start,options={}){
   algorithm:'retained-next-turn-native-hybrid',opponent_model:'simultaneous minimax root; retained sampled continuation estimates',
   root_reused:reused||result.root_reused,retained_states:graph.nodes.size,retained_next_turn:true,
   reused_next_turn_estimate:node.wasRerooted&&(node.prior.n>0||!!node.result?.provisional_usable),next_turn_exact:exactTurn,
+  // The legacy flag describes first-turn expansion, not proof of continuation values.
+  next_turn:{expansion_complete:exactTurn,continuation_value_kind:'estimate'},
   total_native_rollouts:graph.rollouts||0,
   next_turn_expansions:graph.expansions,merged_next_turn_states:graph.merged,continuation_samples:node.prior.n,
   continuation_sample_horizons:node.prior.horizons,

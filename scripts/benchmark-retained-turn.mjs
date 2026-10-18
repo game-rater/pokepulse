@@ -12,19 +12,24 @@ const cases=arg('case')?searchFixtures.filter(f=>f.id===arg('case')):searchFixtu
 if(!cases.length)throw Error('Unknown benchmark case');
 const root=fileURLToPath(new URL('../',import.meta.url)),worker=fileURLToPath(new URL('./benchmark-retained-turn-worker.mjs',import.meta.url));
 const sourceHashes=Object.fromEntries(['analysis/sampled-moves.mjs','analysis/retained-turn.mjs','analysis/complete-moves.mjs',
- 'analysis/search.mjs','vendor/showdown/dist/sim/battle-actions.js'].map(path=>[path,createHash('sha256').update(readFileSync(resolve(root,path))).digest('hex')]));
+ 'analysis/search.mjs','analysis/result-contract.mjs','analysis/continuation-policy.mjs','scripts/search-benchmark-fixtures.mjs',
+ 'vendor/showdown/dist/sim/battle-actions.js'].map(path=>[path,createHash('sha256').update(readFileSync(resolve(root,path))).digest('hex')]));
 const rows=[];
 for(let trial=0;trial<trials;trial++)for(const fixture of cases)for(const mode of trial%2?['hybrid','baseline']:['baseline','hybrid']){
  const child=spawnSync(process.execPath,['--expose-gc',worker,fixture.id,mode,String(seconds)],{cwd:root,encoding:'utf8',timeout:seconds*2500+30000,maxBuffer:1024*1024});
  if(child.status!==0)throw Error(`${fixture.id}/${mode}: ${child.stderr||child.error||child.stdout}`);
  const row={trial,...JSON.parse(child.stdout)};rows.push(row);
- console.log(`${fixture.id}/${mode}: first ${row.first_estimate_ms?.toFixed(0)??'none'} ms; ${row.samples} samples; reroot ${row.reroot?.first_estimate_ms?.toFixed(0)??'-'} ms; ${row.peak_rss_mb.toFixed(0)} MB`);
+ console.log(`${fixture.id}/${mode}: first ${row.first_estimate_ms?.toFixed(0)??'none'} ms; score by 1s ${row.first_second.score??'none'}; error ${row.first_second.absolute_error_pp?.toFixed(1)??'no reference'} pp; ${row.samples} samples; reroot ${row.reroot?.first_estimate_ms?.toFixed(0)??'-'} ms; ${row.peak_rss_mb.toFixed(0)} MB`);
 }
 const median=values=>{const v=values.filter(x=>x!==null&&x!==undefined).sort((a,b)=>a-b);return v.length?(v[Math.floor((v.length-1)/2)]+v[Math.ceil((v.length-1)/2)])/2:null;};
 const summary=cases.flatMap(f=>['baseline','hybrid'].map(mode=>{
  const r=rows.filter(row=>row.case===f.id&&row.mode===mode);
  return {case:f.id,mode,first_estimate_ms:median(r.map(x=>x.first_estimate_ms)),elapsed_ms:median(r.map(x=>x.elapsed_ms)),
   reroot_first_estimate_ms:median(r.map(x=>x.reroot?.first_estimate_ms)),reuse_hits:r.filter(x=>x.reroot?.reused).length,
+  first_second_usable:r.filter(x=>x.first_second.score!==null).length,
+  first_second_error_pp:median(r.map(x=>x.first_second.absolute_error_pp)),
+  first_second_goal_met:r.filter(x=>x.first_second.goal_met===true).length,
+  accuracy_reference_available:f.expected!==undefined,
   samples:median(r.map(x=>x.samples)),peak_rss_mb:median(r.map(x=>x.peak_rss_mb)),completed:r.filter(x=>x.done).length};
 }));
 const destination=resolve(root,arg('out')||`.local-tools/search-benchmarks/${new Date().toISOString().replace(/[:.]/g,'-')}.json`);
