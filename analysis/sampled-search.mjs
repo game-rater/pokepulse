@@ -26,9 +26,21 @@ export function exactEnding(initial,a,b,options){
 }
 export function stratumMean(cell){
  if(cell.exact!==undefined)return cell.exact;
+ if(cell.estimateStats)return stratumMean(cell.estimateStats);
  if(!cell.strata?.length)return cell.n?cell.sum/cell.n:0.5;
  const sampled=cell.strata.reduce((sum,s)=>sum+s.probability*(s.n?s.sum/s.n:0.5),0);
  return cell.warm?(cell.warm.sum+sampled*(cell.n-cell.warm.n))/cell.n:sampled;
+}
+// A rollout target changes with depth. Keep work counters across depths, but
+// replace the displayed estimator once a new depth has broad chance coverage.
+// Until then the last covered epoch remains usable; confidence always uses the
+// newest epoch so stale samples cannot justify pruning the deeper search.
+export function recordHorizonSample(cell,horizon,value,stratum=-1){
+ if(cell.confidenceStats?.horizon!==horizon)cell.confidenceStats={horizon,n:0,sum:0,strata:cell.strata?.map(s=>({probability:s.probability,n:0,sum:0}))};
+ const stats=cell.confidenceStats;stats.n++;stats.sum+=value;
+ if(stratum>=0){const s=stats.strata[stratum];s.n++;s.sum+=value;}
+ const covered=!stats.strata?.length||stats.strata.every(s=>s.n>0);
+ if(covered&&(!cell.estimateStats||horizon>=cell.estimateStats.horizon&&stats.n>=4))cell.estimateStats=stats;
 }
 function rollout(initial,a,b,seed,turnLimit,options,cell,cache,evaluator){
  const game=restoreCompleteBattle(initial),random=rng(seed);
@@ -66,13 +78,21 @@ function rollout(initial,a,b,seed,turnLimit,options,cell,cache,evaluator){
    const policy=nativeContinuationPolicy(state,cache.policies,{...options,npcWeights});
    if(!policy)return null;
    moves=drawContinuation(policy,random);
+   // Integrate a small all-terminal native turn instead of sampling its rare
+   // outcomes. This is conditional expectation, not a claim that the policy
+   // leading here is optimal. Cache both successes and ineligible endings.
+   if(policy.actions.every(a=>a.length===1)){
+    const key=state.key+'|'+moves.join(',');cache.endings??=new Map();
+    if(!cache.endings.has(key))keep(cache.endings,key,exactEnding(state,...moves,{...options,exactDeadline:options.deadline}));
+    const exact=cache.endings.get(key);if(exact!==null)return finish(exact,false);
+   }
   }
   for(let i=0;i<2;i++)if(!game.choose(`p${i+1}`,`move ${moves[i]}`))throw Error(`Sampled move selection was rejected on turn ${turn+1} for p${i+1}, slot ${moves[i]}: ${game.sides[i].choice.error}`);
   const value=terminal(game);if(value!==null)return finish(value,true);
   uncertain.unknownFirst=[false,false];uncertain.unknownHistory=[false,false];
   if(turn===0&&options.retainAfterTurn)retainedChild=options.retainAfterTurn(packed(game,initial.unknownNature,uncertain),draws>0,turnLimit-1);
  }
- return finish(continuationValue(game),false);
+ const cutoff=continuationValue(game,options);return cutoff===null?null:finish(cutoff,false);
 }
 export function samplingConfidenceBounds(cell,delta=0.01){
  if(cell.exact!==undefined)return {lower:cell.exact,upper:cell.exact,radius:0};
@@ -158,12 +178,7 @@ export function simulateSampledMovesCore(initial,options,reasons,evaluator){
    const value=rollout(initial,root.actions[0][r],root.actions[1][c],seed,horizon,options,cell,cache,evaluator);
    if(value===null)break;
    cell.sum+=value.value;if(value.terminal)cell.terminal++;
-   // A changed continuation horizon starts a new confidence epoch. Old
-   // observations remain in the display estimate but cannot overstate the
-   // confidence of the new horizon's estimator.
-   if(cell.confidenceStats?.horizon!==horizon)cell.confidenceStats={horizon,n:0,sum:0,strata:cell.strata?.map(s=>({probability:s.probability,n:0,sum:0}))};
-   cell.confidenceStats.n++;cell.confidenceStats.sum+=value.value;
-   if(value.stratum>=0){const s=cell.confidenceStats.strata[value.stratum];s.n++;s.sum+=value.value;}
+   recordHorizonSample(cell,horizon,value.value,value.stratum);
    if(value.stratum>=0){const s=cell.strata[value.stratum];s.n++;s.sum+=value.value;}
   }catch(error){if(!(error instanceof MissingInput))throw error;reasons.add(error.message);root.reasons.add(error.message);cell.unknown++;}
   cell.n++;root.total++;added++;
@@ -175,10 +190,10 @@ export function simulateSampledMovesCore(initial,options,reasons,evaluator){
  return {score:point,provisional_score:point,provisional_usable:ready,score_kind:'simulation-estimate',
   lower:0,upper:1,lower_bound:0,upper_bound:100,unresolved:1,complete:false,certified:false,approximate:true,sampling_complete:done,
   algorithm:root.npcPolicy?'npc-ai-weighted-native-rollouts':'adaptive-stratified-native-rollouts',opponent_model:root.npcPolicy?'Run & Bun community NPC move scoring; optimized player root; native turn probes for player continuations':'simultaneous minimax root; native turn probes with mixed continuation strategies',npc_move_probabilities:root.npcPolicy,move_engine:'pokemon-showdown 0.11.11 with Run & Bun overrides',
-  nodes:added,samples:root.total,samples_per_pair:Math.min(...root.cells.flat().map(c=>c.n)),sample_target_per_pair:target,rollout_turn_limit:turnLimit*2,
+  nodes:added,samples:root.total,samples_per_pair:Math.min(...root.cells.flat().map(c=>c.n)),sample_target_per_pair:target,estimate_turns:Math.min(...root.cells.flat().map(c=>c.estimateStats?.horizon||0)),rollout_turn_limit:turnLimit*2,
   elapsed_ms:performance.now()-start,budget_exhausted:!done,retained_states:cache.policies.size+cache.roots.size,root_reused:reused,
   cache_hits:cache.hits,exact_endings:cache.exact,confidence_pruned_actions:finalAllocation.pruned,sampling_confidence_delta:options.samplingDelta??0.01,proof_threshold:finalAllocation.threshold,
-  continuation_policy:'native-turn-probes-v'+CONTINUATION_VERSION,continuation_policy_probes_per_pair:2,cutoff_evaluation:'native-move-pressure; heuristic value, not a proven outcome',
+  continuation_policy:'native-turn-probes-v'+CONTINUATION_VERSION,continuation_policy_probes_per_pair:2,cutoff_evaluation:'native passive effects, action capabilities and finite resources; heuristic, not a certificate',
   omitted_moves:[],unresolved_reasons:[...reasons],input_blocked:false,partial_estimate:point===null?0.5:point/100};
 }
 

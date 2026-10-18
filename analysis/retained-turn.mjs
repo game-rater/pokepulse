@@ -1,7 +1,7 @@
 // Exact, resumable next-turn probabilities above retained deeper estimates.
 // No trainer AI. Unknown/unfinished chance mass is never renormalized.
 import {completeMoveAdapter,restoreCompleteBattle} from './native-battle.mjs';
-import {simulateSampledMovesCore,samplingConfidenceBounds} from './sampled-search.mjs';
+import {simulateSampledMovesCore,samplingConfidenceBounds,recordHorizonSample,stratumMean} from './sampled-search.mjs';
 import {matrixBounds,matrixPruning,thresholdDecision,proofThreshold} from './search.mjs';
 
 export {observationKey} from './observation-key.mjs';
@@ -105,11 +105,14 @@ export function expandTurn(graph,node,options,reasons){
  }finally{graph.processingKey=previous;}
 }
 export function turnMass(p){return p.terminalMass+p.missingMass+[...p.edges.values()].reduce((s,e)=>s+e.probability,0)+p.pending.reduce((s,e)=>s+e.probability,0);}
-function backedValue(node){
+export function backedValue(node){
  if(!node.pairs.every(row=>row.every(p=>p?.complete)))return null;
  // An expanded turn is not a solved continuation. Do not turn unvisited
  // children's neutral initialization into an apparently informed estimate.
  if(node.pairs.some(row=>row.some(p=>[...p.edges.values()].some(e=>!e.node.result?.provisional_usable&&!e.node.prior.n&&e.node.lower!==e.node.upper))))return null;
+ // A short child forecast must not replace a deeper root forecast.
+ const required=Math.max(0,(node.result?.estimate_turns||0)-1);
+ if(node.pairs.some(row=>row.some(p=>[...p.edges.values()].some(e=>e.node.lower!==e.node.upper&&(e.node.result?.estimate_turns??e.node.prior.estimateStats?.horizon??0)<required))))return null;
  const matrix=node.pairs.map(row=>row.map(p=>p.terminal+[...p.edges.values()].reduce((s,e)=>s+e.probability*e.node.value,0)));
  const v=matrixBounds(matrix,matrix,256);return (v.lower+v.upper)/2;
 }
@@ -120,7 +123,8 @@ function refine(graph,node,options,reasons,timeMs,evaluator){
   const child=turnNode(graph,state,options);
   if(!unbiased)return null;
   return value=>{child.prior.n++;child.prior.sum+=value;child.prior.horizons[horizon]=(child.prior.horizons[horizon]||0)+1;
-   if(!child.result?.provisional_usable)child.value=child.prior.sum/child.prior.n;};
+   recordHorizonSample(child.prior,horizon,value);
+   if(!child.result?.provisional_usable)child.value=stratumMean(child.prior);};
  }},reasons,evaluator);
  node.result=result;node.visits++;
  if(result.certified&&result.lower===result.upper)node.lower=node.upper=result.lower;
@@ -172,7 +176,7 @@ export function simulateRetainedTurn(initial,options,reasons,evaluator){
  if(left()>0)expandTurn(graph,node,{...options,timeMs:Math.min(left(),budget*0.15)},reasons);
  const child=selectChild(node,options);
  if(child&&left()>0)expandTurn(graph,child,{...options,timeMs:Math.min(left(),budget*0.03)},reasons);
- if(child&&left()>0)refine(graph,child,{...options,samplesPerPair:options.continuationSamplesPerPair??8},reasons,left(),evaluator);
+ if(child&&left()>0)refine(graph,child,{...options,samplesPerPair:options.continuationSamplesPerPair??options.samplesPerPair??128},reasons,left(),evaluator);
  const backup=backedValue(node);if(backup!==null)node.value=backup;
  if(reasons.size){
   result={...result,provisional_usable:false,input_blocked:true,unresolved_reasons:[...reasons]};

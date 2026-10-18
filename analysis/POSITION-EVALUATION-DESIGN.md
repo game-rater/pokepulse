@@ -52,3 +52,44 @@ The existing exact-target, live-first-result, status/item/counter rejection, wor
 All 421 tests passed. The six proved-complex cases were rerun under minimax and NPC scoring: the same three eligible cases return exact targets with zero rollouts, while status/item cases retain sampled fallback behavior. Eligible warm first estimates were 18-30 ms across these exploratory single-trial runs. Three preloaded live-worker trials published the correct 81% as the first result in 151-185 ms. Initialization is excluded from that decision timer and recorded separately.
 
 Reports: `analysis/benchmarks/shared-evaluator-minimax-2026-10-18.json`, `shared-evaluator-npc-2026-10-18.json`, and `shared-evaluator-worker-2026-10-18.json`. These measurements check for a material regression on this suite, not statistical equivalence or universal latency.
+
+## Temporal estimates and refinement
+
+`position-features.mjs` owns approximate native position features used by both
+continuation policy probes and unfinished rollout leaves. It restores isolated
+native battles to measure legal move damage before HP clipping, healing capacity,
+remaining healing/protection PP, future Struggle costs, and passive HP timelines.
+Native residual callbacks account for items, abilities, Toxic stages and timers. A repeated tick after native consumption separates renewable healing from a finite burst. Action healing records native move/drain heal events, so a berry triggered during a probe is not multiplied by move PP.
+The feature cache uses the observed mechanics key and is bounded; the original
+battle, RNG and request are never modified. Deadlines interrupt unfinished work. Action cursors and partial passive snapshots resume across slices; completed action PP is counted once. Partial caches store serialized state rather than native battle objects.
+
+The score compares logarithms of estimated survival turns, so relative endurance matters across different HP scales. Nonterminal values stay between 0.02 and 0.98.
+
+The endurance comparison is a heuristic: it combines finite resources and passive
+clocks rather than proving a legal schedule against every opponent response.
+A 32-tick passive projection and two action probes are bounded approximations.
+They cannot certify arbitrary recovery loops, setup, delayed heals or disruption.
+Proofs continue to belong to the evaluator's registered providers.
+
+Continuation policies weight a stratified binary probe by native probabilities.
+Single-row or single-column games choose optimal pure actions (or genuine ties)
+without fictitious-play pseudocounts leaking into inferior actions. General
+simultaneous games retain mixed strategies. Policy version 3 invalidates old
+continuation/root estimates.
+
+Rollout observations have depth-specific estimator epochs. Work counters remain
+cumulative, but a covered deeper epoch replaces the earlier displayed estimator
+instead of averaging incompatible short and long forecasts forever. Promotion
+requires four observations and coverage of every first-turn chance stratum when
+an earlier estimate exists. Confidence uses the newest epoch immediately, so old
+samples cannot justify pruning its unresolved depth. Retained child priors use
+the same epochs; a shorter child estimate cannot overwrite a deeper root value.
+Children may refine up to the configured sample target rather than stopping at
+eight samples before reaching a long horizon. Each pass retains its time budget.
+
+For a forced continuation whose next native turn has only terminal outcomes,
+`exactEnding` integrates its chance branches (at most 48 enumeration steps).
+This conditional expectation reduces rollout variance, including rare final
+Protect outcomes. It does not certify the policy leading to that turn, and a
+failed or interrupted enumeration falls back to ordinary sampling. This remains
+a sampling optimization, separate from registered optimal-position proofs.
