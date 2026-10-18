@@ -17,7 +17,7 @@ const cases=searchFixtures.filter(f=>(!arg('case')||f.id===arg('case'))&&(!arg('
 if(!cases.length)throw Error('Unknown benchmark case');
 for(const fixture of cases){const r=benchmarkReference(fixture,opponentModel);if(process.argv.includes('--require-reference')&&r.status==='unresolved')throw Error(`No accuracy reference: ${fixture.id}/${opponentModel}`);}
 const root=fileURLToPath(new URL('../',import.meta.url)),worker=fileURLToPath(new URL('./benchmark-retained-turn-worker.mjs',import.meta.url));
-const sourceHashes=Object.fromEntries(['analysis/sampled-moves.mjs','analysis/retained-turn.mjs','analysis/complete-moves.mjs',
+const sourceHashes=Object.fromEntries(['analysis/sampled-moves.mjs','analysis/exact-endgame.mjs','analysis/retained-turn.mjs','analysis/complete-moves.mjs',
  'analysis/search.mjs','analysis/result-contract.mjs','analysis/continuation-policy.mjs','scripts/search-benchmark-fixtures.mjs','scripts/real-battle-fixtures.mjs','scripts/accuracy-benchmark-fixtures.mjs','scripts/benchmark-oracles.mjs','scripts/reference-damage-race.mjs','scripts/benchmark-references.json',
  'vendor/showdown/dist/sim/battle-actions.js'].map(path=>[path,createHash('sha256').update(readFileSync(resolve(root,path))).digest('hex')]));
 const rows=[];

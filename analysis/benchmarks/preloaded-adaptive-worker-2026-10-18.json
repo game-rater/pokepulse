@@ -1,0 +1,98 @@
+{
+  "created_at": "2026-10-18T09:44:43.343Z",
+  "seconds": 3,
+  "trials": 3,
+  "worker_preloaded": true,
+  "source_hashes": {
+    "run-bun/search-service.mjs": "f1563a0b7ac35f24d8a711632efbd714d673c50bb7b1ebd2a0014b3cb2b5467a",
+    "run-bun/search-worker.mjs": "00c513439ac8a45fe56bff35b9a80648da5b36f991bdd1c2aa11556657e1306e",
+    "run-bun/refinement.mjs": "1c9e7005cbc824d5ed5587d3b0527528fd58c475273ebcf751c7f3598639c49d",
+    "analysis/threat.mjs": "8afbe8197c5205995701150bbd34789c95d5666d25ba44006df6b1becf9f7da8",
+    "analysis/complete-moves.mjs": "eb4fda1515b500ea536af5912421e160f868174a930716d53a25b14e2c3d53bf",
+    "analysis/retained-turn.mjs": "0c19617e6701d098426698abd28a0007321622eebebf21cfd175be628b0598c6",
+    "analysis/sampled-moves.mjs": "bfd51ca6d72b4943888030539d2414a84b12f725b3c383adbd054e2f65922f50",
+    "scripts/real-battle-fixtures.mjs": "be6f5d6f5afe59a2caefe4e7c159ea80f2f0a442e80aff33e568a4134fefb236",
+    "scripts/accuracy-benchmark-fixtures.mjs": "6f8b1d5b71170cbf94a339d4c40f0b7a12641559393aa9e8af922c207273e3a0",
+    "analysis/exact-endgame.mjs": "f51892dc279c392b40fbc6858aad3715a75a6efc3885cb3c4092655687048f80"
+  },
+  "method": "Workers explicitly preloaded; reported initial decision latency excludes separately recorded preload_ms; observed-turn measurement reuses workers.",
+  "summary": [
+    {
+      "case": "oracle-choice-adaptive",
+      "mode": "fallback",
+      "first_estimate_ms": 172.9296999999999,
+      "next_turn_estimate_ms": null,
+      "cpu_ms": 391,
+      "peak_rss_mb": 303.109375,
+      "completed": 3
+    }
+  ],
+  "rows": [
+    {
+      "trial": 0,
+      "case": "oracle-choice-adaptive",
+      "mode": "fallback",
+      "preload_ms": 1145.9860999999999,
+      "worker_preloaded": true,
+      "cold": {
+        "first_estimate_ms": 176.37080000000014,
+        "first_score": 81.00000000000007,
+        "algorithm": "exact-native-fixed-retaliation-endgame",
+        "elapsed_ms": 176.5003999999999,
+        "cpu_ms": 391,
+        "score": 81.00000000000007,
+        "complete": true,
+        "updates": 1,
+        "selected": "fallback",
+        "reused": false,
+        "samples": 0
+      },
+      "warm": null,
+      "peak_rss_mb": 303.109375
+    },
+    {
+      "trial": 1,
+      "case": "oracle-choice-adaptive",
+      "mode": "fallback",
+      "preload_ms": 921.4381000000001,
+      "worker_preloaded": true,
+      "cold": {
+        "first_estimate_ms": 159.7945000000002,
+        "first_score": 81.00000000000007,
+        "algorithm": "exact-native-fixed-retaliation-endgame",
+        "elapsed_ms": 159.87619999999993,
+        "cpu_ms": 391,
+        "score": 81.00000000000007,
+        "complete": true,
+        "updates": 1,
+        "selected": "fallback",
+        "reused": false,
+        "samples": 0
+      },
+      "warm": null,
+      "peak_rss_mb": 303.28125
+    },
+    {
+      "trial": 2,
+      "case": "oracle-choice-adaptive",
+      "mode": "fallback",
+      "preload_ms": 927.6097,
+      "worker_preloaded": true,
+      "cold": {
+        "first_estimate_ms": 172.9296999999999,
+        "first_score": 81.00000000000007,
+        "algorithm": "exact-native-fixed-retaliation-endgame",
+        "elapsed_ms": 173.02790000000027,
+        "cpu_ms": 392,
+        "score": 81.00000000000007,
+        "complete": true,
+        "updates": 1,
+        "selected": "fallback",
+        "reused": false,
+        "samples": 0
+      },
+      "warm": null,
+      "peak_rss_mb": 303.0546875
+    }
+  ]
+}

@@ -135,3 +135,5 @@ The native matchup's median first reading was approximately 328 ms disabled and 
 See [accuracy references](analysis/ACCURACY-BENCHMARK-REFERENCES.md) for exact controls, all twelve existing-case assessments, and the required reference policy for future accuracy fixtures. Use `--group=accuracy --require-reference` to reject unsolved cases. Legacy `expected` fields no longer establish an accuracy reference.
 
 Use `--family=proved-complex --require-reference` for the six harder proved controls. See [proofs and optimization opportunities](analysis/COMPLEX-PROVED-BENCHMARKS.md). `node scripts/benchmark-analytic-proofs.mjs` measures restricted proof-check cost separately from production search.
+
+`benchmark-search-race.mjs --preload` loads workers before the decision timer and records startup cost as `preload_ms`. It also records the first published score separately from the final score. See [exact endgame optimization](analysis/EXACT-ENDGAME-OPTIMIZATION.md) for domain guards, fallback behavior, and results.

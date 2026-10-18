@@ -1,3 +1,4 @@
+import {exactEndgameResult} from './exact-endgame.mjs';
 import {createRequire} from 'node:module';
 import {createHash} from 'node:crypto';
 import {searchBattle} from './search.mjs';
@@ -242,7 +243,10 @@ export function simulateCompleteMoves(snapshot,options={}){
     if(active&&sides[i].effects?.[counter]==null)reasons.add(`Live ${counter} is unavailable.`);
   if(sides.some(s=>s.current_hp===0))reasons.clear();
   const initial=reasons.size?null:createCompleteBattle(snapshot),adapter=completeMoveAdapter(reasons);
-  if(options.approximateCompleteMoves&&initial&&terminal(initial)===null)return simulateSampledMoves(initial,options,reasons);
+  if(initial&&terminal(initial)===null){
+    const solved=exactEndgameResult(initial,options,reasons);if(solved)return solved;
+    if(options.approximateCompleteMoves)return simulateSampledMoves(initial,{...options,exactEndgameChecked:true},reasons);
+  }
   const r=searchBattle(adapter,initial,{...options,session,focusedStrategy:false});
   return {score:r.upper-r.lower>=1-1e-10?null:100*r.lower,provisional_score:100*(r.partial_estimate??(r.lower+r.upper)/2),
     lower_bound:100*r.lower,upper_bound:100*r.upper,unresolved:r.upper-r.lower,score_kind:'certified-lower-bound',

@@ -1,3 +1,4 @@
+import {snapshotEndgameResult} from './exact-endgame.mjs';
 import {simulateOutlook,statusEffects} from './outlook.mjs';
 import {predictionReport} from './result-contract.mjs';
 import {readFileSync} from 'node:fs';
@@ -132,7 +133,8 @@ export function analyzeBattle(snapshot,calculator,getSpeed,actionOpportunity=()=
     'Burn and poison residual damage are modeled. Weather damage, Leech Seed, binding damage and supported timer expiry are modeled. Missing toxic counters or active-effect durations remain unresolved. Switching, full teams and unsupported move/ability callbacks remain outside the active-matchup model.',
     'Run & Bun move accuracy edits and common accuracy effects (Compound Eyes, Victory Star, Hustle, No Guard, Sand Veil, Snow Cloak, Tangled Feet, Keen Eye, Wonder Skin, Wide Lens, Bright Powder, Lax Incense, Gravity and weather) are applied. Zoom Lens, Micle Berry and one-hit KO accuracy/level restrictions are modeled. Unknown accuracy data remains unresolved. Newly inflicted sleep uses a uniform 1–3 skipped-action duration; this has not been live-verified for this ROM.'
   ];
-  const forecast=searchOptions.completeMoves&&(searchOptions.forceNativeForecast||requiresCompleteMoves(snapshot))?simulateCompleteMoves(snapshot,searchOptions):simulateOutlook(snapshot,rows[0],rows[1],mons[0],mons[1],{...searchOptions,describe,
+  const shortcut=searchOptions.completeMoves?snapshotEndgameResult(snapshot,searchOptions):null;
+  const forecast=shortcut||(searchOptions.completeMoves&&(searchOptions.forceNativeForecast||requiresCompleteMoves(snapshot))?simulateCompleteMoves(snapshot,searchOptions):simulateOutlook(snapshot,rows[0],rows[1],mons[0],mons[1],{...searchOptions,describe,
     damageKey:(state,i,j)=>{
       const independent=['Tackle','Leafage','Scratch','Pound'].includes(sides[i].build.moves[j])&&
         sides.every(s=>!s.build.item&&['','Run Away','Cotton Down','Rough Skin','Sand Veil'].includes(s.build.ability||''));
@@ -143,7 +145,7 @@ export function analyzeBattle(snapshot,calculator,getSpeed,actionOpportunity=()=
       const atk=Math.floor(mon.rawStats.atk*stage(state[i].boosts.atk||0)),def=Math.floor(mon.rawStats.def*stage(state[i].boosts.def||0));
       const base=Math.floor(Math.floor((Math.floor(2*mon.level/5)+2)*40*atk/Math.max(1,def))/50)+2;
       return Array.from({length:16},(_,roll)=>Math.max(1,Math.floor(base*(85+roll)/100)));
-    }});
+    }}));
   if(searchOptions.opponentModel==='npc-ai'){
     warnings[0]='This searches the active matchup against the Run & Bun community NPC move-scoring predictor. Random score bonuses and move ties are probability weighted; the player root chooses the best expected outcome.';
     warnings[1]='NPC AI predictions are a community model, not ROM-verified. Switching, full teams, trainer-specific AI flags and doubles are not modeled. Missing required team counts leave the estimate unresolved.';

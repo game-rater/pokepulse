@@ -1,3 +1,4 @@
+import {exactEndgameResult} from './exact-endgame.mjs';
 // Responsive approximation for complex active matchups. The native engine
 // executes every sampled turn. Only continuation move selection and unfinished
 // endings are heuristic; these values are never certified search bounds.
@@ -56,6 +57,8 @@ function rollout(initial,a,b,seed,turnLimit,options,cell,cache){
   let moves=[a,b];
   if(turn){
    const state=packed(game,initial.unknownNature,uncertain);
+   const solved=exactEndgameResult(state,options,new Set());
+   if(solved){cache.exact++;return finish(solved.score/100,false);}
    let npcWeights;
    if(options.opponentModel==='npc-ai'){
     const key=state.key+'|'+JSON.stringify(options.npcAi||{});
@@ -182,5 +185,6 @@ export function simulateSampledMovesCore(initial,options,reasons){
 }
 
 export function simulateSampledMoves(initial,options,reasons){
+ if(!options.exactEndgameChecked){const solved=exactEndgameResult(initial,options,reasons);if(solved)return solved;}
  return options.retainedTurn===false||options.opponentModel==='npc-ai'?simulateSampledMovesCore(initial,options,reasons):simulateRetainedTurn(initial,options,reasons);
 }

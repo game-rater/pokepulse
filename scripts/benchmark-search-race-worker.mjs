@@ -21,23 +21,24 @@ function args(snapshot){
 const service=new SearchService({parallel:mode==='race'});
 let peak=process.memoryUsage().rss;const memoryTimer=setInterval(()=>peak=Math.max(peak,process.memoryUsage().rss),25);
 async function measure(input,firstOnly=false){
- const start=performance.now(),cpuStart=process.cpuUsage();let first=null,last,updates=0;
+ const start=performance.now(),cpuStart=process.cpuUsage();let first=null,firstScore=null,last,updates=0;
  await new Promise((resolve,reject)=>{
   const deadline=setTimeout(resolve,seconds*1000);
   service.start(input,result=>{
    updates++;last=result;
-   if(Number.isFinite(result.display_score)&&first===null){first=performance.now()-start;if(firstOnly){clearTimeout(deadline);resolve();}}
+   if(Number.isFinite(result.display_score)&&first===null){first=performance.now()-start;firstScore=result.display_score;if(firstOnly){clearTimeout(deadline);resolve();}}
    if(result.outlook.complete){clearTimeout(deadline);resolve();}
   },error=>{clearTimeout(deadline);reject(error);});
  });
  const cpu=process.cpuUsage(cpuStart);
- return {first_estimate_ms:first,elapsed_ms:performance.now()-start,cpu_ms:(cpu.user+cpu.system)/1000,
+ return {first_estimate_ms:first,first_score:firstScore,algorithm:last?.outlook.algorithm,elapsed_ms:performance.now()-start,cpu_ms:(cpu.user+cpu.system)/1000,
   score:last?.display_score??null,complete:last?.outlook.complete||false,updates,
   selected:last?.outlook.search_race?.selected||'fallback',race:last?.outlook.search_race,
   reused:!!last?.outlook.reused_next_turn_estimate,samples:last?.outlook.samples??0};
 }
 try{
+ let preload_ms=null;if(process.argv.includes('--preload')){const start=performance.now();await service.preload();preload_ms=performance.now()-start;}
  const cold=await measure(args(fixture.snapshot));
  const warm=fixture.reroot?await measure(args(observeSimpleTurn(fixture.snapshot).observed),true):null;
- console.log(JSON.stringify({case:fixture.id,mode,cold,warm,peak_rss_mb:peak/1048576}));
+ console.log(JSON.stringify({case:fixture.id,mode,preload_ms,worker_preloaded:preload_ms!==null,cold,warm,peak_rss_mb:peak/1048576}));
 }finally{clearInterval(memoryTimer);service.cancel();}
