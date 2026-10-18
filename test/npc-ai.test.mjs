@@ -49,7 +49,7 @@ test('Missing team counts block party-sensitive NPC predictions',()=>{
  assert.equal(result.input_blocked,true);assert.equal(result.score,null);
 });
 test('NPC and minimax retained roots never share samples',()=>{
- const snapshot=searchFixtures[0].snapshot,session={};
+ const snapshot=searchFixtures.find(f=>f.id==='cheap-ending').snapshot,session={};
  const npc=simulateCompleteMoves(snapshot,{opponentModel:'npc-ai',approximateCompleteMoves:true,timeMs:10,samplesPerPair:2,session});
  assert.equal(npc.algorithm,'npc-ai-weighted-native-rollouts');
  assert.equal(npc.npc_move_probabilities[0].probability,1);

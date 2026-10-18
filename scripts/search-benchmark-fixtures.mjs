@@ -1,4 +1,5 @@
 import {createCompleteBattle,restoreCompleteBattle,installChanceTape,packed} from '../analysis/complete-moves.mjs';
+import {realBattleFixtures} from './real-battle-fixtures.mjs';
 export function mon(moves,{hp=100,spe=50,level=20,pp=20,item='',ability=''}={}){
  return {species:'Mew',current_hp:hp,actual_stats:{hp:100,atk:30,def:30,spa:30,spd:30,spe},
   build:{level,nature:'Serious',ability,item,boosts:{},moves},effects:{first_turn:false,move_history_known:true},
@@ -13,6 +14,7 @@ export const searchFixtures=[
  {id:'herdier-wingull',description:'Previous public slow-matchup reproduction',snapshot:{
   player:{species:'Herdier',current_hp:38,actual_stats:{hp:50,atk:35,def:27,spa:17,spd:27,spe:27},build:{level:15,nature:'Serious',ability:'',item:'',moves:['Leer','Covet','Baby-Doll Eyes','Bite']},effects:{first_turn:false,move_history_known:true},pp:{Leer:10,Covet:25,'Baby-Doll Eyes':10,Bite:25}},
   opponent:{species:'Wingull',current_hp:37,actual_stats:{hp:37,atk:14,def:16,spa:23,spd:16,spe:34},build:{level:13,nature:'Serious',ability:'',item:'',moves:['Water Pulse','Air Cutter','Shock Wave','Rain Dance']},effects:{first_turn:false,move_history_known:true},pp:{'Water Pulse':32,'Air Cutter':24,'Shock Wave':20,'Rain Dance':5}},field:{}}},
+ ...realBattleFixtures,
 ];
 // Synthetic observation reconstruction, exercising the same native hydrator as
 // live input. This helper intentionally targets the simple reusable fixture.
