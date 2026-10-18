@@ -11,8 +11,8 @@ const cases=arg('case')?[arg('case')]:arg('group')?searchFixtures.filter(f=>f.gr
 const modes=arg('mode')?[arg('mode')]:['fallback','race'];
 if(!cases.length||cases.some(id=>!searchFixtures.some(f=>f.id===id))||modes.some(m=>!['fallback','race'].includes(m)))throw Error('Invalid case or mode');
 const root=fileURLToPath(new URL('../',import.meta.url)),worker=fileURLToPath(new URL('./benchmark-search-race-worker.mjs',import.meta.url));
-const source_hashes=Object.fromEntries(['run-bun/search-service.mjs','run-bun/search-worker.mjs','run-bun/refinement.mjs',
- 'analysis/threat.mjs','analysis/complete-moves.mjs','analysis/retained-turn.mjs','analysis/sampled-moves.mjs','analysis/position-evaluator.mjs','analysis/native-battle.mjs','analysis/native-search.mjs','analysis/sampled-search.mjs','scripts/stall-benchmark-fixtures.mjs','scripts/stall-benchmark-oracles.mjs','scripts/real-battle-fixtures.mjs','scripts/accuracy-benchmark-fixtures.mjs','analysis/exact-endgame.mjs'].map(path=>[path,createHash('sha256').update(readFileSync(resolve(root,path))).digest('hex')]));
+const source_hashes=Object.fromEntries(['scripts/benchmark-search-race-worker.mjs','run-bun/search-service.mjs','run-bun/search-worker.mjs','run-bun/refinement.mjs',
+ 'analysis/threat.mjs','analysis/complete-moves.mjs','analysis/retained-turn.mjs','analysis/sampled-moves.mjs','analysis/position-features.mjs','analysis/continuation-policy.mjs','analysis/position-evaluator.mjs','analysis/native-battle.mjs','analysis/native-search.mjs','analysis/sampled-search.mjs','scripts/stall-benchmark-fixtures.mjs','scripts/stall-benchmark-oracles.mjs','scripts/real-battle-fixtures.mjs','scripts/accuracy-benchmark-fixtures.mjs','analysis/exact-endgame.mjs'].map(path=>[path,createHash('sha256').update(readFileSync(resolve(root,path))).digest('hex')]));
 const rows=[];
 for(let trial=0;trial<trials;trial++)for(const fixture of cases)for(const mode of trial%2?[...modes].reverse():modes){
  const result=spawnSync(process.execPath,[worker,fixture,mode,String(seconds),...(process.argv.includes('--preload')?['--preload']:[])],{cwd:root,encoding:'utf8',timeout:seconds*2500+30000});

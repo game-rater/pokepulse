@@ -1,0 +1,3216 @@
+{
+  "created_at": "2026-10-18T14:19:04.421Z",
+  "node": "v24.19.0",
+  "seconds": 3,
+  "trials": 1,
+  "opponent_model": "npc-ai",
+  "source_hashes": {
+    "scripts/benchmark-retained-turn-worker.mjs": "898be80116a977078e453ccfda87ebf99be4f141191f9b8234401fadd0effad5",
+    "analysis/sampled-moves.mjs": "27b2876c2327c71be9f37604a951ee711b5fc13b2cc9f76d44da6be62f6a1da7",
+    "analysis/position-evaluator.mjs": "ecd4b27430cd44533aeca4a3141b65b5a9bdd3b9f05230d81d0dd4352284ae0b",
+    "analysis/native-battle.mjs": "4772246187212a6282a89efa5d682e69ba07daf1ab3e0df07626047b94a475e1",
+    "analysis/native-search.mjs": "6d77bd37e8502ee45f26ac743e46818fa2fadc83add09485c82dacfab44c191f",
+    "analysis/sampled-search.mjs": "e15d869702336bb36c19d036e7115878e4426bc4e3450c5a2354d9e7ba0c4097",
+    "analysis/exact-endgame.mjs": "ad9ac3a99d6a70c55116fc73713a3063048802b89e1c3f2500ecf6bff098a0c6",
+    "analysis/retained-turn.mjs": "ad3da3608745d14d290995c3371b41c6eb603988f66824c9c479b19093b04d59",
+    "analysis/complete-moves.mjs": "461a90066f8c1a804ef5214bbc24a7a100f1756ab6662f7fb7addbfd928da9f1",
+    "analysis/search.mjs": "0758c9ec608cb5241a2bfa7eb0d16525886e7b5bd6b6fd43b03fcf00bada709f",
+    "analysis/result-contract.mjs": "d495ee9c3731e3e795c6cc56e6db2301846fbaecc899a6983bb7ebbbacc2e2b3",
+    "analysis/position-features.mjs": "e98588bcac7f3fc13a99487a4d0e37e90127f1a9f31a0d1fdc88410e4be5b862",
+    "analysis/continuation-policy.mjs": "fc12affa1a6416b906de4ca2372b72a80c64cd3d56ceb24fcbfd0a79c1bb8dc8",
+    "scripts/search-benchmark-fixtures.mjs": "c326f63b12823b9d4895fdb2fcb9ad5b0cdcb33378dbd2da2fad69183da357a6",
+    "scripts/stall-benchmark-fixtures.mjs": "5751d4f6d687dc3207822c2561be70f80064214d75b32463ed554b246b46e91c",
+    "scripts/stall-benchmark-oracles.mjs": "f592b87be213ce2d7b779f67eb4a7a73e7bf3398858f86074d6ae7a94638c252",
+    "scripts/real-battle-fixtures.mjs": "be6f5d6f5afe59a2caefe4e7c159ea80f2f0a442e80aff33e568a4134fefb236",
+    "scripts/accuracy-benchmark-fixtures.mjs": "6f8b1d5b71170cbf94a339d4c40f0b7a12641559393aa9e8af922c207273e3a0",
+    "scripts/benchmark-oracles.mjs": "90641cf33425d1830aa80b8ea196efad9dd58d2a7b270566ae456cc10e5e7266",
+    "scripts/reference-damage-race.mjs": "391d9b7b1fffcc186b8d1c9123acf280ab8e0adf120b0d2a3fff9678092a2203",
+    "scripts/benchmark-references.json": "2ad39ef18abb0c50ace0eaf80cf0216e125f1d53b94e029ee246468fcd2346f3",
+    "vendor/showdown/dist/sim/battle-actions.js": "15132d6f3347c56604b2dfb6e0e249d3b2fb4c1a223ae52c4c03f5f38979084d"
+  },
+  "method": "Isolated processes; engine initialization excluded; fixed native RNG seeds; alternating mode order; identical per-pass and sample budgets.",
+  "summary": [
+    {
+      "case": "stall-poison-clock",
+      "mode": "hybrid",
+      "opponent_model": "npc-ai",
+      "first_estimate_ms": 111.71770000000004,
+      "elapsed_ms": 2175.1806,
+      "reroot_first_estimate_ms": null,
+      "reuse_hits": 0,
+      "first_second_usable": 1,
+      "first_second_error_pp": 1,
+      "first_second_goal_met": 1,
+      "accuracy_reference_available": true,
+      "score_at_1s": 99,
+      "score_at_3s": 99,
+      "score_at_10s": 99,
+      "max_slice_ms": 111.63939999999991,
+      "samples": 128,
+      "peak_rss_mb": 169.125,
+      "completed": 1
+    },
+    {
+      "case": "stall-poison-leftovers",
+      "mode": "hybrid",
+      "opponent_model": "npc-ai",
+      "first_estimate_ms": 215.31490000000008,
+      "elapsed_ms": 3071.7684,
+      "reroot_first_estimate_ms": null,
+      "reuse_hits": 0,
+      "first_second_usable": 1,
+      "first_second_error_pp": 1.9999999999999716,
+      "first_second_goal_met": 1,
+      "accuracy_reference_available": true,
+      "score_at_1s": 98.00000000000003,
+      "score_at_3s": 99,
+      "score_at_10s": null,
+      "max_slice_ms": 111.57630000000006,
+      "samples": 105,
+      "peak_rss_mb": 236.53515625,
+      "completed": 0
+    },
+    {
+      "case": "stall-recovery-delay",
+      "mode": "hybrid",
+      "opponent_model": "npc-ai",
+      "first_estimate_ms": 119.2835,
+      "elapsed_ms": 3095.4294,
+      "reroot_first_estimate_ms": null,
+      "reuse_hits": 0,
+      "first_second_usable": 1,
+      "first_second_error_pp": 1.9999999999999716,
+      "first_second_goal_met": 1,
+      "accuracy_reference_available": true,
+      "score_at_1s": 98.00000000000003,
+      "score_at_3s": 98.00000000000003,
+      "score_at_10s": null,
+      "max_slice_ms": 119.21349999999995,
+      "samples": 33,
+      "peak_rss_mb": 277.9140625,
+      "completed": 0
+    },
+    {
+      "case": "stall-recover-protect",
+      "mode": "hybrid",
+      "opponent_model": "npc-ai",
+      "first_estimate_ms": 111.82849999999996,
+      "elapsed_ms": 3091.4691000000003,
+      "reroot_first_estimate_ms": null,
+      "reuse_hits": 0,
+      "first_second_usable": 1,
+      "first_second_error_pp": 8.274453368947576,
+      "first_second_goal_met": 1,
+      "accuracy_reference_available": true,
+      "score_at_1s": 91.72554663105242,
+      "score_at_3s": 99,
+      "score_at_10s": null,
+      "max_slice_ms": 111.71580000000006,
+      "samples": 78,
+      "peak_rss_mb": 268.0703125,
+      "completed": 0
+    },
+    {
+      "case": "stall-recover-protect-mid",
+      "mode": "hybrid",
+      "opponent_model": "npc-ai",
+      "first_estimate_ms": 214.9678,
+      "elapsed_ms": 3095.6199,
+      "reroot_first_estimate_ms": null,
+      "reuse_hits": 0,
+      "first_second_usable": 1,
+      "first_second_error_pp": 1.9999999999999716,
+      "first_second_goal_met": 1,
+      "accuracy_reference_available": true,
+      "score_at_1s": 98.00000000000003,
+      "score_at_3s": 99,
+      "score_at_10s": null,
+      "max_slice_ms": 112.42610000000002,
+      "samples": 143,
+      "peak_rss_mb": 250.76171875,
+      "completed": 0
+    },
+    {
+      "case": "stall-recover-protect-late",
+      "mode": "hybrid",
+      "opponent_model": "npc-ai",
+      "first_estimate_ms": 219.42239999999993,
+      "elapsed_ms": 1850.1798999999999,
+      "reroot_first_estimate_ms": null,
+      "reuse_hits": 0,
+      "first_second_usable": 1,
+      "first_second_error_pp": 1,
+      "first_second_goal_met": 1,
+      "accuracy_reference_available": true,
+      "score_at_1s": 99,
+      "score_at_3s": 99,
+      "score_at_10s": 99,
+      "max_slice_ms": 113.84720000000004,
+      "samples": 256,
+      "peak_rss_mb": 240.97265625,
+      "completed": 1
+    },
+    {
+      "case": "stall-pp-exhaustion",
+      "mode": "hybrid",
+      "opponent_model": "npc-ai",
+      "first_estimate_ms": 111.70609999999999,
+      "elapsed_ms": 1726.4865,
+      "reroot_first_estimate_ms": null,
+      "reuse_hits": 0,
+      "first_second_usable": 1,
+      "first_second_error_pp": 1,
+      "first_second_goal_met": 1,
+      "accuracy_reference_available": true,
+      "score_at_1s": 1,
+      "score_at_3s": 1,
+      "score_at_10s": 1,
+      "max_slice_ms": 111.60239999999999,
+      "samples": 256,
+      "peak_rss_mb": 205.7578125,
+      "completed": 1
+    },
+    {
+      "case": "stall-protect-risk",
+      "mode": "hybrid",
+      "opponent_model": "npc-ai",
+      "first_estimate_ms": 114.7115,
+      "elapsed_ms": 500.2427000000001,
+      "reroot_first_estimate_ms": null,
+      "reuse_hits": 0,
+      "first_second_usable": 1,
+      "first_second_error_pp": 2.1316282072803006e-14,
+      "first_second_goal_met": 1,
+      "accuracy_reference_available": true,
+      "score_at_1s": 33.33333333333336,
+      "score_at_3s": 33.33333333333336,
+      "score_at_10s": 33.33333333333336,
+      "max_slice_ms": 114.56970000000001,
+      "samples": 128,
+      "peak_rss_mb": 164.7734375,
+      "completed": 1
+    },
+    {
+      "case": "stall-protect-used",
+      "mode": "hybrid",
+      "opponent_model": "npc-ai",
+      "first_estimate_ms": 114.14549999999997,
+      "elapsed_ms": 399.93280000000004,
+      "reroot_first_estimate_ms": null,
+      "reuse_hits": 0,
+      "first_second_usable": 1,
+      "first_second_error_pp": 3.1086244689504383e-15,
+      "first_second_goal_met": 1,
+      "accuracy_reference_available": true,
+      "score_at_1s": 3.7037037037037006,
+      "score_at_3s": 3.7037037037037006,
+      "score_at_10s": 3.7037037037037006,
+      "max_slice_ms": 113.9923,
+      "samples": 128,
+      "peak_rss_mb": 166.69921875,
+      "completed": 1
+    },
+    {
+      "case": "stall-protect-three",
+      "mode": "hybrid",
+      "opponent_model": "npc-ai",
+      "first_estimate_ms": 110.88750000000005,
+      "elapsed_ms": 646.3301,
+      "reroot_first_estimate_ms": null,
+      "reuse_hits": 0,
+      "first_second_usable": 1,
+      "first_second_error_pp": 0.11574074074073959,
+      "first_second_goal_met": 1,
+      "accuracy_reference_available": true,
+      "score_at_1s": 3.587962962962964,
+      "score_at_3s": 3.587962962962964,
+      "score_at_10s": 3.587962962962964,
+      "max_slice_ms": 110.8039,
+      "samples": 128,
+      "peak_rss_mb": 165.63671875,
+      "completed": 1
+    },
+    {
+      "case": "stall-heal-instead",
+      "mode": "hybrid",
+      "opponent_model": "npc-ai",
+      "first_estimate_ms": 212.8048,
+      "elapsed_ms": 1188.9009,
+      "reroot_first_estimate_ms": null,
+      "reuse_hits": 0,
+      "first_second_usable": 1,
+      "first_second_error_pp": 1,
+      "first_second_goal_met": 1,
+      "accuracy_reference_available": true,
+      "score_at_1s": 99,
+      "score_at_3s": 99,
+      "score_at_10s": 99,
+      "max_slice_ms": 109.16689999999994,
+      "samples": 256,
+      "peak_rss_mb": 173.26953125,
+      "completed": 1
+    },
+    {
+      "case": "stall-lum-cure",
+      "mode": "hybrid",
+      "opponent_model": "npc-ai",
+      "first_estimate_ms": 109.47659999999996,
+      "elapsed_ms": 696.7072999999999,
+      "reroot_first_estimate_ms": null,
+      "reuse_hits": 0,
+      "first_second_usable": 1,
+      "first_second_error_pp": 1,
+      "first_second_goal_met": 1,
+      "accuracy_reference_available": true,
+      "score_at_1s": 1,
+      "score_at_3s": 1,
+      "score_at_10s": 1,
+      "max_slice_ms": 109.40679999999998,
+      "samples": 128,
+      "peak_rss_mb": 166.24609375,
+      "completed": 1
+    },
+    {
+      "case": "stall-poison-heal",
+      "mode": "hybrid",
+      "opponent_model": "npc-ai",
+      "first_estimate_ms": 112.43160000000012,
+      "elapsed_ms": 696.2601,
+      "reroot_first_estimate_ms": null,
+      "reuse_hits": 0,
+      "first_second_usable": 1,
+      "first_second_error_pp": 1,
+      "first_second_goal_met": 1,
+      "accuracy_reference_available": true,
+      "score_at_1s": 1,
+      "score_at_3s": 1,
+      "score_at_10s": 1,
+      "max_slice_ms": 111.86580000000004,
+      "samples": 128,
+      "peak_rss_mb": 165.0546875,
+      "completed": 1
+    }
+  ],
+  "rows": [
+    {
+      "trial": 0,
+      "reference": {
+        "status": "analytic",
+        "expected_percent": 100,
+        "fraction": "1/1",
+        "proof": "Incoming fixed damage is fully healed each turn; ordinary poison eventually KOs the foe. Leftovers precedes poison, with integer rounding.",
+        "turns": 9,
+        "opponent_hp_trace": [
+          121,
+          104,
+          87,
+          70,
+          53,
+          36,
+          19,
+          2,
+          0
+        ],
+        "input_sha256": "baadd933db1228f6765e21758f0e354f80299a919837663b15523d6ddd5ccb6e"
+      },
+      "case": "stall-poison-clock",
+      "mode": "hybrid",
+      "opponent_model": "npc-ai",
+      "fixture_hash": "baadd933db1228f6765e21758f0e354f80299a919837663b15523d6ddd5ccb6e",
+      "provenance": {
+        "kind": "analytic-control",
+        "sources": [
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/conditions.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/moves.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/items.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/abilities.ts"
+        ],
+        "notes": "Synthetic active-pair stall controls with independent resource/HP proofs; not recorded battles or ROM verification."
+      },
+      "checkpoints": {
+        "1000": {
+          "measured": true,
+          "score": 99,
+          "available_at_ms": 930.2743000000002
+        },
+        "3000": {
+          "measured": true,
+          "score": 99,
+          "available_at_ms": 2175.0178
+        },
+        "10000": {
+          "measured": true,
+          "score": 99,
+          "available_at_ms": 2175.0178
+        }
+      },
+      "input_blocked": false,
+      "unresolved_reasons": [],
+      "first_estimate_ms": 111.71770000000004,
+      "elapsed_ms": 2175.1806,
+      "cpu_ms": 2766,
+      "max_slice_ms": 111.63939999999991,
+      "peak_rss_mb": 169.125,
+      "score": 99,
+      "absolute_error_pp": 1,
+      "samples": 128,
+      "done": true,
+      "retained_states": 9,
+      "total_native_rollouts": 128,
+      "exact_next_turn": false,
+      "next_turn_expansions": 0,
+      "merged_states": 0,
+      "first_second": {
+        "score": 99,
+        "available_at_ms": 930.2743000000002,
+        "absolute_error_pp": 1,
+        "reference": 100,
+        "reference_kind": "analytic",
+        "goal_met": true
+      },
+      "prediction": {
+        "schema_version": 1,
+        "kind": "estimate",
+        "certificate": null,
+        "search": {
+          "status": "sample-budget-finished",
+          "resolved": false
+        },
+        "reasons": [],
+        "estimate": {
+          "score": 99,
+          "basis": "simulation-estimate"
+        }
+      },
+      "readings": [
+        {
+          "elapsed_ms": 111.71770000000004,
+          "score": 99,
+          "samples": 1,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 214.5897000000001,
+          "score": 99,
+          "samples": 5,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 316.26440000000014,
+          "score": 99,
+          "samples": 8,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 418.2532,
+          "score": 99,
+          "samples": 12,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 524.051,
+          "score": 99,
+          "samples": 17,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 626.2554000000001,
+          "score": 99,
+          "samples": 23,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 728.3991,
+          "score": 99,
+          "samples": 29,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 829.2892,
+          "score": 99,
+          "samples": 35,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 930.2743000000002,
+          "score": 99,
+          "samples": 42,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1032.042,
+          "score": 99,
+          "samples": 49,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1133.5196,
+          "score": 99,
+          "samples": 56,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1234.4989999999998,
+          "score": 99,
+          "samples": 62,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1338.9393,
+          "score": 99,
+          "samples": 69,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1440.2615,
+          "score": 99,
+          "samples": 76,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1541.6489000000001,
+          "score": 99,
+          "samples": 83,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1642.5081999999998,
+          "score": 99,
+          "samples": 90,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1743.5713,
+          "score": 99,
+          "samples": 97,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1844.8633,
+          "score": 99,
+          "samples": 104,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1946.1120999999998,
+          "score": 99,
+          "samples": 111,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 2047.4168999999997,
+          "score": 99,
+          "samples": 118,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 2148.3845,
+          "score": 99,
+          "samples": 126,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 2175.0178,
+          "score": 99,
+          "samples": 128,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        }
+      ]
+    },
+    {
+      "trial": 0,
+      "reference": {
+        "status": "analytic",
+        "expected_percent": 100,
+        "fraction": "1/1",
+        "proof": "Incoming fixed damage is fully healed each turn; ordinary poison eventually KOs the foe. Leftovers precedes poison, with integer rounding.",
+        "turns": 15,
+        "opponent_hp_trace": [
+          121,
+          112,
+          103,
+          94,
+          85,
+          76,
+          67,
+          58,
+          49,
+          40,
+          31,
+          22,
+          13,
+          4,
+          0
+        ],
+        "input_sha256": "891e472d43d1a2a03857e847a4d9ac83d96014796c3cf153569afb71f60370a8"
+      },
+      "case": "stall-poison-leftovers",
+      "mode": "hybrid",
+      "opponent_model": "npc-ai",
+      "fixture_hash": "891e472d43d1a2a03857e847a4d9ac83d96014796c3cf153569afb71f60370a8",
+      "provenance": {
+        "kind": "analytic-control",
+        "sources": [
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/conditions.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/moves.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/items.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/abilities.ts"
+        ],
+        "notes": "Synthetic active-pair stall controls with independent resource/HP proofs; not recorded battles or ROM verification."
+      },
+      "checkpoints": {
+        "1000": {
+          "measured": true,
+          "score": 98.00000000000003,
+          "available_at_ms": 932.6856
+        },
+        "3000": {
+          "measured": true,
+          "score": 99,
+          "available_at_ms": 2970.4523
+        },
+        "10000": {
+          "measured": false,
+          "score": null,
+          "available_at_ms": null
+        }
+      },
+      "input_blocked": false,
+      "unresolved_reasons": [],
+      "first_estimate_ms": 215.31490000000008,
+      "elapsed_ms": 3071.7684,
+      "cpu_ms": 3594,
+      "max_slice_ms": 111.57630000000006,
+      "peak_rss_mb": 236.53515625,
+      "score": 99,
+      "absolute_error_pp": 1,
+      "samples": 105,
+      "done": false,
+      "retained_states": 15,
+      "total_native_rollouts": 105,
+      "exact_next_turn": false,
+      "next_turn_expansions": 0,
+      "merged_states": 0,
+      "first_second": {
+        "score": 98.00000000000003,
+        "available_at_ms": 932.6856,
+        "absolute_error_pp": 1.9999999999999716,
+        "reference": 100,
+        "reference_kind": "analytic",
+        "goal_met": true
+      },
+      "prediction": {
+        "schema_version": 1,
+        "kind": "estimate",
+        "certificate": null,
+        "search": {
+          "status": "searching",
+          "resolved": false
+        },
+        "reasons": [],
+        "estimate": {
+          "score": 99,
+          "basis": "simulation-estimate"
+        }
+      },
+      "readings": [
+        {
+          "elapsed_ms": 111.64769999999999,
+          "score": null,
+          "samples": 0,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 215.31490000000008,
+          "score": 98,
+          "samples": 2,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 319.0962999999999,
+          "score": 98.00000000000001,
+          "samples": 5,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 421.087,
+          "score": 98.00000000000001,
+          "samples": 8,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 522.9144999999999,
+          "score": 98.00000000000003,
+          "samples": 12,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 626.3709999999999,
+          "score": 98.00000000000003,
+          "samples": 16,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 729.9902999999999,
+          "score": 98.00000000000001,
+          "samples": 20,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 831.0174999999999,
+          "score": 98.00000000000003,
+          "samples": 24,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 932.6856,
+          "score": 98.00000000000003,
+          "samples": 29,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1033.5399,
+          "score": 98.00000000000003,
+          "samples": 33,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1134.9454,
+          "score": 99,
+          "samples": 36,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1235.9325000000001,
+          "score": 99,
+          "samples": 38,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1337.1910999999998,
+          "score": 99,
+          "samples": 41,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1438.8956999999998,
+          "score": 99,
+          "samples": 44,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1541.2830999999999,
+          "score": 99,
+          "samples": 48,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1644.0167,
+          "score": 99,
+          "samples": 52,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1745.0557000000001,
+          "score": 99,
+          "samples": 55,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1847.0269,
+          "score": 99,
+          "samples": 59,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1949.0999,
+          "score": 99,
+          "samples": 63,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 2052.2594,
+          "score": 99,
+          "samples": 67,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 2153.6641,
+          "score": 99,
+          "samples": 71,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 2255.1916,
+          "score": 99,
+          "samples": 75,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 2356.3157,
+          "score": 99,
+          "samples": 79,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 2458.8778,
+          "score": 99,
+          "samples": 83,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 2562.3342000000002,
+          "score": 99,
+          "samples": 86,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 2665.3415999999997,
+          "score": 99,
+          "samples": 90,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 2766.6247999999996,
+          "score": 99,
+          "samples": 94,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 2868.6261999999997,
+          "score": 99,
+          "samples": 98,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 2970.4523,
+          "score": 99,
+          "samples": 101,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 3071.6304,
+          "score": 99,
+          "samples": 105,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        }
+      ]
+    },
+    {
+      "trial": 0,
+      "reference": {
+        "status": "analytic",
+        "expected_percent": 100,
+        "fraction": "1/1",
+        "proof": "Leftovers heals every possible enemy attack. After at most 25 normal actions, four recoil/poison turns finish the enemy; Splash PP lasts through all 29. An explicit five-Recover schedule survives past turn 24.",
+        "max_turns": 29,
+        "witness_turns": 28,
+        "witness_survives_turns": 25,
+        "witness_recover_turns": [
+          8,
+          12,
+          16,
+          20,
+          24
+        ],
+        "opponent_hp_trace": [
+          121,
+          112,
+          103,
+          94,
+          85,
+          76,
+          67,
+          121,
+          112,
+          103,
+          94,
+          121,
+          112,
+          103,
+          94,
+          121,
+          112,
+          103,
+          94,
+          121,
+          112,
+          103,
+          94,
+          121,
+          112,
+          68,
+          24,
+          0
+        ],
+        "input_sha256": "cae9f395d66195dbf58dca197285ad5243dd7a71dbd3a6b52b9be95390874cdb"
+      },
+      "case": "stall-recovery-delay",
+      "mode": "hybrid",
+      "opponent_model": "npc-ai",
+      "fixture_hash": "cae9f395d66195dbf58dca197285ad5243dd7a71dbd3a6b52b9be95390874cdb",
+      "provenance": {
+        "kind": "analytic-control",
+        "sources": [
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/conditions.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/moves.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/items.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/abilities.ts"
+        ],
+        "notes": "Synthetic active-pair stall controls with independent resource/HP proofs; not recorded battles or ROM verification."
+      },
+      "checkpoints": {
+        "1000": {
+          "measured": true,
+          "score": 98.00000000000003,
+          "available_at_ms": 940.2727
+        },
+        "3000": {
+          "measured": true,
+          "score": 98.00000000000003,
+          "available_at_ms": 2994.2255
+        },
+        "10000": {
+          "measured": false,
+          "score": null,
+          "available_at_ms": null
+        }
+      },
+      "input_blocked": false,
+      "unresolved_reasons": [],
+      "first_estimate_ms": 119.2835,
+      "elapsed_ms": 3095.4294,
+      "cpu_ms": 3813,
+      "max_slice_ms": 119.21349999999995,
+      "peak_rss_mb": 277.9140625,
+      "score": 98.00000000000003,
+      "absolute_error_pp": 1.9999999999999716,
+      "samples": 33,
+      "done": false,
+      "retained_states": 54,
+      "total_native_rollouts": 33,
+      "exact_next_turn": false,
+      "next_turn_expansions": 0,
+      "merged_states": 0,
+      "first_second": {
+        "score": 98.00000000000003,
+        "available_at_ms": 940.2727,
+        "absolute_error_pp": 1.9999999999999716,
+        "reference": 100,
+        "reference_kind": "analytic",
+        "goal_met": true
+      },
+      "prediction": {
+        "schema_version": 1,
+        "kind": "estimate",
+        "certificate": null,
+        "search": {
+          "status": "searching",
+          "resolved": false
+        },
+        "reasons": [],
+        "estimate": {
+          "score": 98.00000000000003,
+          "basis": "simulation-estimate"
+        }
+      },
+      "readings": [
+        {
+          "elapsed_ms": 119.2835,
+          "score": 98,
+          "samples": 4,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 224.32410000000004,
+          "score": 98,
+          "samples": 4,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 327.43349999999987,
+          "score": 98.00000000000001,
+          "samples": 9,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 429.3608999999999,
+          "score": 98.00000000000003,
+          "samples": 16,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 532.2004999999999,
+          "score": 98.00000000000003,
+          "samples": 16,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 633.7455,
+          "score": 98.00000000000003,
+          "samples": 16,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 736.5953999999999,
+          "score": 98.00000000000003,
+          "samples": 16,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 838.1959999999999,
+          "score": 98.00000000000003,
+          "samples": 17,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 940.2727,
+          "score": 98.00000000000003,
+          "samples": 18,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1043.7592,
+          "score": 98.00000000000003,
+          "samples": 18,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1146.1431,
+          "score": 98.00000000000003,
+          "samples": 18,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1246.9375999999997,
+          "score": 98.00000000000003,
+          "samples": 19,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1350.9971999999998,
+          "score": 98.00000000000001,
+          "samples": 21,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1453.1452,
+          "score": 98.00000000000001,
+          "samples": 21,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1556.9202999999998,
+          "score": 98.00000000000001,
+          "samples": 23,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1658.2606,
+          "score": 98.00000000000001,
+          "samples": 24,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1760.0792999999999,
+          "score": 98.00000000000003,
+          "samples": 28,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1862.9679999999998,
+          "score": 98.00000000000003,
+          "samples": 28,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1965.3636000000001,
+          "score": 98.00000000000003,
+          "samples": 30,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 2068.0973,
+          "score": 98.00000000000003,
+          "samples": 32,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 2169.8277,
+          "score": 98.00000000000003,
+          "samples": 32,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 2279.8223,
+          "score": 98.00000000000003,
+          "samples": 32,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 2380.7748,
+          "score": 98.00000000000003,
+          "samples": 32,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 2482.6938,
+          "score": 98.00000000000003,
+          "samples": 32,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 2584.5406,
+          "score": 98.00000000000003,
+          "samples": 32,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 2689.6511,
+          "score": 98.00000000000003,
+          "samples": 32,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 2791.1949,
+          "score": 98.00000000000003,
+          "samples": 33,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 2892.9743,
+          "score": 98.00000000000003,
+          "samples": 33,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 2994.2255,
+          "score": 98.00000000000003,
+          "samples": 33,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 3095.286,
+          "score": 98.00000000000003,
+          "samples": 33,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        }
+      ]
+    },
+    {
+      "trial": 0,
+      "reference": {
+        "status": "analytic",
+        "expected_percent": 100,
+        "fraction": "1/1",
+        "proof": "Alternate faster Recover with Protect. No Protect is consecutive; all incoming hits are fixed damage, every recovery survives, and PP lasts until ordinary poison KOs the foe.",
+        "turns": 15,
+        "minimum_player_hp": 1,
+        "opponent_hp_trace": [
+          570,
+          529,
+          488,
+          447,
+          406,
+          365,
+          324,
+          283,
+          242,
+          201,
+          160,
+          119,
+          78,
+          37,
+          0
+        ],
+        "input_sha256": "2f29c7f72f574c1aebb9c3e793823cb73210a28480e0c42c844e06a2b6b21dd8"
+      },
+      "case": "stall-recover-protect",
+      "mode": "hybrid",
+      "opponent_model": "npc-ai",
+      "fixture_hash": "2f29c7f72f574c1aebb9c3e793823cb73210a28480e0c42c844e06a2b6b21dd8",
+      "provenance": {
+        "kind": "analytic-control",
+        "sources": [
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/conditions.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/moves.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/items.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/abilities.ts"
+        ],
+        "notes": "Synthetic active-pair stall controls with independent resource/HP proofs; not recorded battles or ROM verification."
+      },
+      "checkpoints": {
+        "1000": {
+          "measured": true,
+          "score": 91.72554663105242,
+          "available_at_ms": 941.2328999999999
+        },
+        "3000": {
+          "measured": true,
+          "score": 99,
+          "available_at_ms": 2990.2252
+        },
+        "10000": {
+          "measured": false,
+          "score": null,
+          "available_at_ms": null
+        }
+      },
+      "input_blocked": false,
+      "unresolved_reasons": [],
+      "first_estimate_ms": 111.82849999999996,
+      "elapsed_ms": 3091.4691000000003,
+      "cpu_ms": 4031,
+      "max_slice_ms": 111.71580000000006,
+      "peak_rss_mb": 268.0703125,
+      "score": 99,
+      "absolute_error_pp": 1,
+      "samples": 78,
+      "done": false,
+      "retained_states": 29,
+      "total_native_rollouts": 78,
+      "exact_next_turn": false,
+      "next_turn_expansions": 0,
+      "merged_states": 0,
+      "first_second": {
+        "score": 91.72554663105242,
+        "available_at_ms": 941.2328999999999,
+        "absolute_error_pp": 8.274453368947576,
+        "reference": 100,
+        "reference_kind": "analytic",
+        "goal_met": true
+      },
+      "prediction": {
+        "schema_version": 1,
+        "kind": "estimate",
+        "certificate": null,
+        "search": {
+          "status": "searching",
+          "resolved": false
+        },
+        "reasons": [],
+        "estimate": {
+          "score": 99,
+          "basis": "simulation-estimate"
+        }
+      },
+      "readings": [
+        {
+          "elapsed_ms": 111.82849999999996,
+          "score": 88.57454506601863,
+          "samples": 7,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 218.77030000000002,
+          "score": 88.57454506601863,
+          "samples": 8,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 320.2271999999999,
+          "score": 88.57454506601863,
+          "samples": 9,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 422.98439999999994,
+          "score": 88.57454506601863,
+          "samples": 9,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 526.9443,
+          "score": 91.72554663105242,
+          "samples": 15,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 629.735,
+          "score": 91.72554663105242,
+          "samples": 25,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 736.0189999999999,
+          "score": 91.72554663105242,
+          "samples": 32,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 837.9054,
+          "score": 91.72554663105242,
+          "samples": 32,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 941.2328999999999,
+          "score": 91.72554663105242,
+          "samples": 32,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1043.1607,
+          "score": 91.72554663105242,
+          "samples": 32,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1144.4016000000001,
+          "score": 91.72554663105242,
+          "samples": 32,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1245.7406,
+          "score": 91.72554663105242,
+          "samples": 32,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1348.9584,
+          "score": 91.72554663105242,
+          "samples": 35,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1451.2809000000002,
+          "score": 98.00000000000001,
+          "samples": 39,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1552.2707,
+          "score": 98.00000000000001,
+          "samples": 40,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1654.3743,
+          "score": 98.00000000000001,
+          "samples": 40,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1756.2047000000002,
+          "score": 98.00000000000001,
+          "samples": 40,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1857.5965999999999,
+          "score": 98.00000000000001,
+          "samples": 42,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1958.8899000000001,
+          "score": 98.00000000000001,
+          "samples": 46,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 2060.2634000000003,
+          "score": 98.00000000000001,
+          "samples": 50,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 2162.5762,
+          "score": 98.00000000000003,
+          "samples": 54,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 2266.8433,
+          "score": 98.00000000000003,
+          "samples": 58,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 2368.5139,
+          "score": 98.00000000000003,
+          "samples": 62,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 2471.2093,
+          "score": 98.00000000000003,
+          "samples": 64,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 2578.4759,
+          "score": 98.00000000000003,
+          "samples": 65,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 2682.11,
+          "score": 99,
+          "samples": 68,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 2786.7517000000003,
+          "score": 99,
+          "samples": 71,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 2889.2953,
+          "score": 99,
+          "samples": 74,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 2990.2252,
+          "score": 99,
+          "samples": 75,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 3091.2744000000002,
+          "score": 99,
+          "samples": 78,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        }
+      ]
+    },
+    {
+      "trial": 0,
+      "reference": {
+        "status": "analytic",
+        "expected_percent": 100,
+        "fraction": "1/1",
+        "proof": "Alternate faster Recover with Protect. No Protect is consecutive; all incoming hits are fixed damage, every recovery survives, and PP lasts until ordinary poison KOs the foe.",
+        "turns": 7,
+        "minimum_player_hp": 262,
+        "opponent_hp_trace": [
+          242,
+          201,
+          160,
+          119,
+          78,
+          37,
+          0
+        ],
+        "input_sha256": "772cdcf098ca3411481bb7f3b5c381686896b4fc7ade4976a5e5fa44e115c541"
+      },
+      "case": "stall-recover-protect-mid",
+      "mode": "hybrid",
+      "opponent_model": "npc-ai",
+      "fixture_hash": "772cdcf098ca3411481bb7f3b5c381686896b4fc7ade4976a5e5fa44e115c541",
+      "provenance": {
+        "kind": "analytic-control",
+        "sources": [
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/conditions.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/moves.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/items.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/abilities.ts"
+        ],
+        "notes": "Synthetic active-pair stall controls with independent resource/HP proofs; not recorded battles or ROM verification."
+      },
+      "checkpoints": {
+        "1000": {
+          "measured": true,
+          "score": 98.00000000000003,
+          "available_at_ms": 943.9600000000002
+        },
+        "3000": {
+          "measured": true,
+          "score": 99,
+          "available_at_ms": 2993.8467
+        },
+        "10000": {
+          "measured": false,
+          "score": null,
+          "available_at_ms": null
+        }
+      },
+      "input_blocked": false,
+      "unresolved_reasons": [],
+      "first_estimate_ms": 214.9678,
+      "elapsed_ms": 3095.6199,
+      "cpu_ms": 4109,
+      "max_slice_ms": 112.42610000000002,
+      "peak_rss_mb": 250.76171875,
+      "score": 99,
+      "absolute_error_pp": 1,
+      "samples": 143,
+      "done": false,
+      "retained_states": 14,
+      "total_native_rollouts": 143,
+      "exact_next_turn": false,
+      "next_turn_expansions": 0,
+      "merged_states": 0,
+      "first_second": {
+        "score": 98.00000000000003,
+        "available_at_ms": 943.9600000000002,
+        "absolute_error_pp": 1.9999999999999716,
+        "reference": 100,
+        "reference_kind": "analytic",
+        "goal_met": true
+      },
+      "prediction": {
+        "schema_version": 1,
+        "kind": "estimate",
+        "certificate": null,
+        "search": {
+          "status": "searching",
+          "resolved": false
+        },
+        "reasons": [],
+        "estimate": {
+          "score": 99,
+          "basis": "simulation-estimate"
+        }
+      },
+      "readings": [
+        {
+          "elapsed_ms": 112.49720000000002,
+          "score": null,
+          "samples": 3,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 214.9678,
+          "score": 96.93721611699478,
+          "samples": 8,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 320.27930000000003,
+          "score": 96.93721611699478,
+          "samples": 8,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 430.1291,
+          "score": 96.93721611699478,
+          "samples": 9,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 534.3466999999999,
+          "score": 96.93721611699478,
+          "samples": 9,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 638.8318,
+          "score": 96.93721611699478,
+          "samples": 14,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 740.1892000000001,
+          "score": 98.00000000000001,
+          "samples": 25,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 842.7209000000001,
+          "score": 98.00000000000003,
+          "samples": 32,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 943.9600000000002,
+          "score": 98.00000000000003,
+          "samples": 32,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1045.4877000000001,
+          "score": 99,
+          "samples": 36,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1146.7481000000002,
+          "score": 99,
+          "samples": 40,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1249.2383,
+          "score": 99,
+          "samples": 41,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1351.0008000000003,
+          "score": 99,
+          "samples": 41,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1455.4832000000001,
+          "score": 99,
+          "samples": 44,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1559.1558,
+          "score": 99,
+          "samples": 49,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1661.5501000000004,
+          "score": 99,
+          "samples": 53,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1763.8098,
+          "score": 99,
+          "samples": 57,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1867.007,
+          "score": 99,
+          "samples": 61,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1974.2168000000001,
+          "score": 99,
+          "samples": 67,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 2076.2482,
+          "score": 99,
+          "samples": 71,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 2178.1183,
+          "score": 99,
+          "samples": 77,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 2281.3658,
+          "score": 99,
+          "samples": 83,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 2383.4367,
+          "score": 99,
+          "samples": 88,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 2485.1255,
+          "score": 99,
+          "samples": 95,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 2586.9502,
+          "score": 99,
+          "samples": 103,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 2688.8407,
+          "score": 99,
+          "samples": 111,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 2790.328,
+          "score": 99,
+          "samples": 119,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 2892.2478,
+          "score": 99,
+          "samples": 127,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 2993.8467,
+          "score": 99,
+          "samples": 135,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 3095.4777000000004,
+          "score": 99,
+          "samples": 143,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        }
+      ]
+    },
+    {
+      "trial": 0,
+      "reference": {
+        "status": "analytic",
+        "expected_percent": 100,
+        "fraction": "1/1",
+        "proof": "Alternate faster Recover with Protect. No Protect is consecutive; all incoming hits are fixed damage, every recovery survives, and PP lasts until ordinary poison KOs the foe.",
+        "turns": 3,
+        "minimum_player_hp": 262,
+        "opponent_hp_trace": [
+          78,
+          37,
+          0
+        ],
+        "input_sha256": "c3e27604919ae039845e9b60966598a1cee0b7ae37fe65165cc850691936348e"
+      },
+      "case": "stall-recover-protect-late",
+      "mode": "hybrid",
+      "opponent_model": "npc-ai",
+      "fixture_hash": "c3e27604919ae039845e9b60966598a1cee0b7ae37fe65165cc850691936348e",
+      "provenance": {
+        "kind": "analytic-control",
+        "sources": [
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/conditions.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/moves.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/items.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/abilities.ts"
+        ],
+        "notes": "Synthetic active-pair stall controls with independent resource/HP proofs; not recorded battles or ROM verification."
+      },
+      "checkpoints": {
+        "1000": {
+          "measured": true,
+          "score": 99,
+          "available_at_ms": 936.7962
+        },
+        "3000": {
+          "measured": true,
+          "score": 99,
+          "available_at_ms": 1850.0600000000002
+        },
+        "10000": {
+          "measured": true,
+          "score": 99,
+          "available_at_ms": 1850.0600000000002
+        }
+      },
+      "input_blocked": false,
+      "unresolved_reasons": [],
+      "first_estimate_ms": 219.42239999999993,
+      "elapsed_ms": 1850.1798999999999,
+      "cpu_ms": 2484,
+      "max_slice_ms": 113.84720000000004,
+      "peak_rss_mb": 240.97265625,
+      "score": 99,
+      "absolute_error_pp": 1,
+      "samples": 256,
+      "done": true,
+      "retained_states": 6,
+      "total_native_rollouts": 256,
+      "exact_next_turn": false,
+      "next_turn_expansions": 0,
+      "merged_states": 0,
+      "first_second": {
+        "score": 99,
+        "available_at_ms": 936.7962,
+        "absolute_error_pp": 1,
+        "reference": 100,
+        "reference_kind": "analytic",
+        "goal_met": true
+      },
+      "prediction": {
+        "schema_version": 1,
+        "kind": "estimate",
+        "certificate": null,
+        "search": {
+          "status": "sample-budget-finished",
+          "resolved": false
+        },
+        "reasons": [],
+        "estimate": {
+          "score": 99,
+          "basis": "simulation-estimate"
+        }
+      },
+      "readings": [
+        {
+          "elapsed_ms": 113.92109999999991,
+          "score": null,
+          "samples": 3,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 219.42239999999993,
+          "score": 98.00000000000001,
+          "samples": 8,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 323.29499999999985,
+          "score": 98.00000000000001,
+          "samples": 9,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 427.65280000000007,
+          "score": 98.00000000000001,
+          "samples": 14,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 529.1923999999999,
+          "score": 99,
+          "samples": 28,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 631.3237999999999,
+          "score": 99,
+          "samples": 44,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 732.7130999999999,
+          "score": 99,
+          "samples": 61,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 834.7083,
+          "score": 99,
+          "samples": 78,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 936.7962,
+          "score": 99,
+          "samples": 96,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1038.0224,
+          "score": 99,
+          "samples": 109,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1139.9464,
+          "score": 99,
+          "samples": 123,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1247.4482,
+          "score": 99,
+          "samples": 139,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1348.5559999999998,
+          "score": 99,
+          "samples": 157,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1449.5890000000002,
+          "score": 99,
+          "samples": 177,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1550.6742000000002,
+          "score": 99,
+          "samples": 196,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1652.5451999999998,
+          "score": 99,
+          "samples": 216,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1754.7742999999998,
+          "score": 99,
+          "samples": 237,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1850.0600000000002,
+          "score": 99,
+          "samples": 256,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        }
+      ]
+    },
+    {
+      "trial": 0,
+      "reference": {
+        "status": "analytic",
+        "expected_percent": 0,
+        "fraction": "0/1",
+        "proof": "Either legal ordering uses the one Recover and one Protect. At turn three the player must Struggle; even its maximum critical cannot KO, and recoil plus Seismic Toss KOs the player.",
+        "turns": 3,
+        "input_sha256": "a76cfc7c2ce5316fd27e87ec3d84b8e79c062d8bbcd812ff5854b99b9a5d1aca"
+      },
+      "case": "stall-pp-exhaustion",
+      "mode": "hybrid",
+      "opponent_model": "npc-ai",
+      "fixture_hash": "a76cfc7c2ce5316fd27e87ec3d84b8e79c062d8bbcd812ff5854b99b9a5d1aca",
+      "provenance": {
+        "kind": "analytic-control",
+        "sources": [
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/conditions.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/moves.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/items.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/abilities.ts"
+        ],
+        "notes": "Synthetic active-pair stall controls with independent resource/HP proofs; not recorded battles or ROM verification."
+      },
+      "checkpoints": {
+        "1000": {
+          "measured": true,
+          "score": 1,
+          "available_at_ms": 929.6803000000001
+        },
+        "3000": {
+          "measured": true,
+          "score": 1,
+          "available_at_ms": 1726.3219
+        },
+        "10000": {
+          "measured": true,
+          "score": 1,
+          "available_at_ms": 1726.3219
+        }
+      },
+      "input_blocked": false,
+      "unresolved_reasons": [],
+      "first_estimate_ms": 111.70609999999999,
+      "elapsed_ms": 1726.4865,
+      "cpu_ms": 2281,
+      "max_slice_ms": 111.60239999999999,
+      "peak_rss_mb": 205.7578125,
+      "score": 1,
+      "absolute_error_pp": 1,
+      "samples": 256,
+      "done": true,
+      "retained_states": 5,
+      "total_native_rollouts": 256,
+      "exact_next_turn": false,
+      "next_turn_expansions": 0,
+      "merged_states": 0,
+      "first_second": {
+        "score": 1,
+        "available_at_ms": 929.6803000000001,
+        "absolute_error_pp": 1,
+        "reference": 0,
+        "reference_kind": "analytic",
+        "goal_met": true
+      },
+      "prediction": {
+        "schema_version": 1,
+        "kind": "estimate",
+        "certificate": null,
+        "search": {
+          "status": "sample-budget-finished",
+          "resolved": false
+        },
+        "reasons": [],
+        "estimate": {
+          "score": 1,
+          "basis": "simulation-estimate"
+        }
+      },
+      "readings": [
+        {
+          "elapsed_ms": 111.70609999999999,
+          "score": 2,
+          "samples": 5,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 214.74540000000013,
+          "score": 2,
+          "samples": 9,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 317.1266999999999,
+          "score": 2,
+          "samples": 14,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 418.4376000000001,
+          "score": 1,
+          "samples": 27,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 519.9467000000001,
+          "score": 1,
+          "samples": 42,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 622.3641000000001,
+          "score": 1,
+          "samples": 59,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 726.0550999999999,
+          "score": 1,
+          "samples": 75,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 827.977,
+          "score": 1,
+          "samples": 94,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 929.6803000000001,
+          "score": 1,
+          "samples": 112,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1030.9778000000001,
+          "score": 1,
+          "samples": 130,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1132.0498000000002,
+          "score": 1,
+          "samples": 147,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1233.1822000000002,
+          "score": 1,
+          "samples": 167,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1334.8443000000002,
+          "score": 1,
+          "samples": 185,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1436.3198000000002,
+          "score": 1,
+          "samples": 204,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1540.7982000000002,
+          "score": 1,
+          "samples": 222,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1643.3341,
+          "score": 1,
+          "samples": 240,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1726.3219,
+          "score": 1,
+          "samples": 256,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        }
+      ]
+    },
+    {
+      "trial": 0,
+      "reference": {
+        "status": "analytic",
+        "expected_percent": 33.333333333333336,
+        "fraction": "1/3",
+        "proof": "Every failed Protect loses before the next Toxic tick. Multiply successive native Protect success chances 1/(3^streak).",
+        "turns": 2,
+        "protect_success_denominator": 3,
+        "input_sha256": "3328b9329f0ad5f31dd55c99af29986a9ac47e4722d3567f8bb46a70455958a9"
+      },
+      "case": "stall-protect-risk",
+      "mode": "hybrid",
+      "opponent_model": "npc-ai",
+      "fixture_hash": "3328b9329f0ad5f31dd55c99af29986a9ac47e4722d3567f8bb46a70455958a9",
+      "provenance": {
+        "kind": "analytic-control",
+        "sources": [
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/conditions.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/moves.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/items.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/abilities.ts"
+        ],
+        "notes": "Synthetic active-pair stall controls with independent resource/HP proofs; not recorded battles or ROM verification."
+      },
+      "checkpoints": {
+        "1000": {
+          "measured": true,
+          "score": 33.33333333333336,
+          "available_at_ms": 500.1040999999999
+        },
+        "3000": {
+          "measured": true,
+          "score": 33.33333333333336,
+          "available_at_ms": 500.1040999999999
+        },
+        "10000": {
+          "measured": true,
+          "score": 33.33333333333336,
+          "available_at_ms": 500.1040999999999
+        }
+      },
+      "input_blocked": false,
+      "unresolved_reasons": [],
+      "first_estimate_ms": 114.7115,
+      "elapsed_ms": 500.2427000000001,
+      "cpu_ms": 796,
+      "max_slice_ms": 114.56970000000001,
+      "peak_rss_mb": 164.7734375,
+      "score": 33.33333333333336,
+      "absolute_error_pp": 2.1316282072803006e-14,
+      "samples": 128,
+      "done": true,
+      "retained_states": 2,
+      "total_native_rollouts": 128,
+      "exact_next_turn": false,
+      "next_turn_expansions": 0,
+      "merged_states": 0,
+      "first_second": {
+        "score": 33.33333333333336,
+        "available_at_ms": 500.1040999999999,
+        "absolute_error_pp": 2.1316282072803006e-14,
+        "reference": 33.333333333333336,
+        "reference_kind": "analytic",
+        "goal_met": true
+      },
+      "prediction": {
+        "schema_version": 1,
+        "kind": "estimate",
+        "certificate": null,
+        "search": {
+          "status": "sample-budget-finished",
+          "resolved": false
+        },
+        "reasons": [],
+        "estimate": {
+          "score": 33.33333333333336,
+          "basis": "simulation-estimate"
+        }
+      },
+      "readings": [
+        {
+          "elapsed_ms": 114.7115,
+          "score": 33.33333333333333,
+          "samples": 16,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 217.12590000000012,
+          "score": 33.33333333333333,
+          "samples": 45,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 319.28239999999994,
+          "score": 33.33333333333332,
+          "samples": 74,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 420.8782,
+          "score": 33.33333333333334,
+          "samples": 104,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 500.1040999999999,
+          "score": 33.33333333333336,
+          "samples": 128,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        }
+      ]
+    },
+    {
+      "trial": 0,
+      "reference": {
+        "status": "analytic",
+        "expected_percent": 3.7037037037037037,
+        "fraction": "1/27",
+        "proof": "Every failed Protect loses before the next Toxic tick. Multiply successive native Protect success chances 1/(3^streak).",
+        "turns": 2,
+        "protect_success_denominator": 27,
+        "input_sha256": "f6d68c7ae9404a5757af03ad263dcce1caf7ab7e5fc9e40e84b81595fdc2e281"
+      },
+      "case": "stall-protect-used",
+      "mode": "hybrid",
+      "opponent_model": "npc-ai",
+      "fixture_hash": "f6d68c7ae9404a5757af03ad263dcce1caf7ab7e5fc9e40e84b81595fdc2e281",
+      "provenance": {
+        "kind": "analytic-control",
+        "sources": [
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/conditions.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/moves.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/items.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/abilities.ts"
+        ],
+        "notes": "Synthetic active-pair stall controls with independent resource/HP proofs; not recorded battles or ROM verification."
+      },
+      "checkpoints": {
+        "1000": {
+          "measured": true,
+          "score": 3.7037037037037006,
+          "available_at_ms": 399.7513999999999
+        },
+        "3000": {
+          "measured": true,
+          "score": 3.7037037037037006,
+          "available_at_ms": 399.7513999999999
+        },
+        "10000": {
+          "measured": true,
+          "score": 3.7037037037037006,
+          "available_at_ms": 399.7513999999999
+        }
+      },
+      "input_blocked": false,
+      "unresolved_reasons": [],
+      "first_estimate_ms": 114.14549999999997,
+      "elapsed_ms": 399.93280000000004,
+      "cpu_ms": 688,
+      "max_slice_ms": 113.9923,
+      "peak_rss_mb": 166.69921875,
+      "score": 3.7037037037037006,
+      "absolute_error_pp": 3.1086244689504383e-15,
+      "samples": 128,
+      "done": true,
+      "retained_states": 2,
+      "total_native_rollouts": 128,
+      "exact_next_turn": false,
+      "next_turn_expansions": 0,
+      "merged_states": 0,
+      "first_second": {
+        "score": 3.7037037037037006,
+        "available_at_ms": 399.7513999999999,
+        "absolute_error_pp": 3.1086244689504383e-15,
+        "reference": 3.7037037037037037,
+        "reference_kind": "analytic",
+        "goal_met": true
+      },
+      "prediction": {
+        "schema_version": 1,
+        "kind": "estimate",
+        "certificate": null,
+        "search": {
+          "status": "sample-budget-finished",
+          "resolved": false
+        },
+        "reasons": [],
+        "estimate": {
+          "score": 3.7037037037037006,
+          "basis": "simulation-estimate"
+        }
+      },
+      "readings": [
+        {
+          "elapsed_ms": 114.14549999999997,
+          "score": 3.703703703703705,
+          "samples": 24,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 216.9813999999999,
+          "score": 3.703703703703705,
+          "samples": 62,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 318.653,
+          "score": 3.703703703703705,
+          "samples": 100,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 399.7513999999999,
+          "score": 3.7037037037037006,
+          "samples": 128,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        }
+      ]
+    },
+    {
+      "trial": 0,
+      "reference": {
+        "status": "analytic",
+        "expected_percent": 3.7037037037037037,
+        "fraction": "1/27",
+        "proof": "Every failed Protect loses before the next Toxic tick. Multiply successive native Protect success chances 1/(3^streak).",
+        "turns": 3,
+        "protect_success_denominator": 27,
+        "input_sha256": "7e80620566feec1420073bccd1a39578e565bda339870e1f223181f751583d01"
+      },
+      "case": "stall-protect-three",
+      "mode": "hybrid",
+      "opponent_model": "npc-ai",
+      "fixture_hash": "7e80620566feec1420073bccd1a39578e565bda339870e1f223181f751583d01",
+      "provenance": {
+        "kind": "analytic-control",
+        "sources": [
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/conditions.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/moves.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/items.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/abilities.ts"
+        ],
+        "notes": "Synthetic active-pair stall controls with independent resource/HP proofs; not recorded battles or ROM verification."
+      },
+      "checkpoints": {
+        "1000": {
+          "measured": true,
+          "score": 3.587962962962964,
+          "available_at_ms": 646.2049000000001
+        },
+        "3000": {
+          "measured": true,
+          "score": 3.587962962962964,
+          "available_at_ms": 646.2049000000001
+        },
+        "10000": {
+          "measured": true,
+          "score": 3.587962962962964,
+          "available_at_ms": 646.2049000000001
+        }
+      },
+      "input_blocked": false,
+      "unresolved_reasons": [],
+      "first_estimate_ms": 110.88750000000005,
+      "elapsed_ms": 646.3301,
+      "cpu_ms": 938,
+      "max_slice_ms": 110.8039,
+      "peak_rss_mb": 165.63671875,
+      "score": 3.587962962962964,
+      "absolute_error_pp": 0.11574074074073959,
+      "samples": 128,
+      "done": true,
+      "retained_states": 3,
+      "total_native_rollouts": 128,
+      "exact_next_turn": false,
+      "next_turn_expansions": 0,
+      "merged_states": 0,
+      "first_second": {
+        "score": 3.587962962962964,
+        "available_at_ms": 646.2049000000001,
+        "absolute_error_pp": 0.11574074074073959,
+        "reference": 3.7037037037037037,
+        "reference_kind": "analytic",
+        "goal_met": true
+      },
+      "prediction": {
+        "schema_version": 1,
+        "kind": "estimate",
+        "certificate": null,
+        "search": {
+          "status": "sample-budget-finished",
+          "resolved": false
+        },
+        "reasons": [],
+        "estimate": {
+          "score": 3.587962962962964,
+          "basis": "simulation-estimate"
+        }
+      },
+      "readings": [
+        {
+          "elapsed_ms": 110.88750000000005,
+          "score": 4.166666666666666,
+          "samples": 8,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 213.9050000000001,
+          "score": 4.120879120879121,
+          "samples": 27,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 317.58820000000003,
+          "score": 3.4722222222222223,
+          "samples": 48,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 423.50210000000004,
+          "score": 3.406432748538012,
+          "samples": 71,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 525.007,
+          "score": 3.7563131313131324,
+          "samples": 97,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 626.2347000000001,
+          "score": 3.5399892646269473,
+          "samples": 123,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 646.2049000000001,
+          "score": 3.587962962962964,
+          "samples": 128,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        }
+      ]
+    },
+    {
+      "trial": 0,
+      "reference": {
+        "status": "analytic",
+        "expected_percent": 100,
+        "fraction": "1/1",
+        "proof": "Use faster Recover every turn; healing exceeds incoming fixed damage until Toxic KOs.",
+        "turns": 2,
+        "input_sha256": "974d4fb873f35e3e24e060077823112b6dbe4d2cc5ebc171195a1eb3d31116d1"
+      },
+      "case": "stall-heal-instead",
+      "mode": "hybrid",
+      "opponent_model": "npc-ai",
+      "fixture_hash": "974d4fb873f35e3e24e060077823112b6dbe4d2cc5ebc171195a1eb3d31116d1",
+      "provenance": {
+        "kind": "analytic-control",
+        "sources": [
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/conditions.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/moves.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/items.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/abilities.ts"
+        ],
+        "notes": "Synthetic active-pair stall controls with independent resource/HP proofs; not recorded battles or ROM verification."
+      },
+      "checkpoints": {
+        "1000": {
+          "measured": true,
+          "score": 99,
+          "available_at_ms": 927.8747
+        },
+        "3000": {
+          "measured": true,
+          "score": 99,
+          "available_at_ms": 1188.7812
+        },
+        "10000": {
+          "measured": true,
+          "score": 99,
+          "available_at_ms": 1188.7812
+        }
+      },
+      "input_blocked": false,
+      "unresolved_reasons": [],
+      "first_estimate_ms": 212.8048,
+      "elapsed_ms": 1188.9009,
+      "cpu_ms": 1719,
+      "max_slice_ms": 109.16689999999994,
+      "peak_rss_mb": 173.26953125,
+      "score": 99,
+      "absolute_error_pp": 1,
+      "samples": 256,
+      "done": true,
+      "retained_states": 3,
+      "total_native_rollouts": 256,
+      "exact_next_turn": false,
+      "next_turn_expansions": 0,
+      "merged_states": 0,
+      "first_second": {
+        "score": 99,
+        "available_at_ms": 927.8747,
+        "absolute_error_pp": 1,
+        "reference": 100,
+        "reference_kind": "analytic",
+        "goal_met": true
+      },
+      "prediction": {
+        "schema_version": 1,
+        "kind": "estimate",
+        "certificate": null,
+        "search": {
+          "status": "sample-budget-finished",
+          "resolved": false
+        },
+        "reasons": [],
+        "estimate": {
+          "score": 99,
+          "basis": "simulation-estimate"
+        }
+      },
+      "readings": [
+        {
+          "elapsed_ms": 109.24899999999991,
+          "score": null,
+          "samples": 3,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 212.8048,
+          "score": 99,
+          "samples": 16,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 316.7897999999999,
+          "score": 99,
+          "samples": 37,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 419.16999999999996,
+          "score": 99,
+          "samples": 58,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 522.6188000000001,
+          "score": 99,
+          "samples": 83,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 624.5566,
+          "score": 99,
+          "samples": 108,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 725.6221999999999,
+          "score": 99,
+          "samples": 134,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 826.8519,
+          "score": 99,
+          "samples": 161,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 927.8747,
+          "score": 99,
+          "samples": 186,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1029.0852,
+          "score": 99,
+          "samples": 215,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1133.2662,
+          "score": 99,
+          "samples": 243,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1188.7812,
+          "score": 99,
+          "samples": 256,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        }
+      ]
+    },
+    {
+      "trial": 0,
+      "reference": {
+        "status": "analytic",
+        "expected_percent": 0,
+        "fraction": "0/1",
+        "proof": "Lum Berry cures Toxic before any poison tick. Protect only delays; when its PP ends, Struggle cannot KO the foe and recoil KOs the player.",
+        "input_sha256": "01d640799dd50e175c2db933ed46779556e5827298b46e88289a85d7f52bdc66"
+      },
+      "case": "stall-lum-cure",
+      "mode": "hybrid",
+      "opponent_model": "npc-ai",
+      "fixture_hash": "01d640799dd50e175c2db933ed46779556e5827298b46e88289a85d7f52bdc66",
+      "provenance": {
+        "kind": "analytic-control",
+        "sources": [
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/conditions.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/moves.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/items.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/abilities.ts"
+        ],
+        "notes": "Synthetic active-pair stall controls with independent resource/HP proofs; not recorded battles or ROM verification."
+      },
+      "checkpoints": {
+        "1000": {
+          "measured": true,
+          "score": 1,
+          "available_at_ms": 696.5909
+        },
+        "3000": {
+          "measured": true,
+          "score": 1,
+          "available_at_ms": 696.5909
+        },
+        "10000": {
+          "measured": true,
+          "score": 1,
+          "available_at_ms": 696.5909
+        }
+      },
+      "input_blocked": false,
+      "unresolved_reasons": [],
+      "first_estimate_ms": 109.47659999999996,
+      "elapsed_ms": 696.7072999999999,
+      "cpu_ms": 970,
+      "max_slice_ms": 109.40679999999998,
+      "peak_rss_mb": 166.24609375,
+      "score": 1,
+      "absolute_error_pp": 1,
+      "samples": 128,
+      "done": true,
+      "retained_states": 5,
+      "total_native_rollouts": 128,
+      "exact_next_turn": false,
+      "next_turn_expansions": 0,
+      "merged_states": 0,
+      "first_second": {
+        "score": 1,
+        "available_at_ms": 696.5909,
+        "absolute_error_pp": 1,
+        "reference": 0,
+        "reference_kind": "analytic",
+        "goal_met": true
+      },
+      "prediction": {
+        "schema_version": 1,
+        "kind": "estimate",
+        "certificate": null,
+        "search": {
+          "status": "sample-budget-finished",
+          "resolved": false
+        },
+        "reasons": [],
+        "estimate": {
+          "score": 1,
+          "basis": "simulation-estimate"
+        }
+      },
+      "readings": [
+        {
+          "elapsed_ms": 109.47659999999996,
+          "score": 1,
+          "samples": 5,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 215.50069999999994,
+          "score": 1,
+          "samples": 18,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 317.45359999999994,
+          "score": 1,
+          "samples": 36,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 419.7789999999999,
+          "score": 1,
+          "samples": 57,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 522.4155999999999,
+          "score": 1,
+          "samples": 83,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 623.753,
+          "score": 1,
+          "samples": 108,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 696.5909,
+          "score": 1,
+          "samples": 128,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        }
+      ]
+    },
+    {
+      "trial": 0,
+      "reference": {
+        "status": "analytic",
+        "expected_percent": 0,
+        "fraction": "0/1",
+        "proof": "Poison Heal prevents Toxic damage and heals instead. Protect cannot win; forced Struggle cannot KO the foe and its recoil KOs the player.",
+        "input_sha256": "e1fff3f0a22a1fa11e556fea975a80cce4f3c5c0a81f9af135a00b8cb46fb65e"
+      },
+      "case": "stall-poison-heal",
+      "mode": "hybrid",
+      "opponent_model": "npc-ai",
+      "fixture_hash": "e1fff3f0a22a1fa11e556fea975a80cce4f3c5c0a81f9af135a00b8cb46fb65e",
+      "provenance": {
+        "kind": "analytic-control",
+        "sources": [
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/conditions.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/moves.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/items.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/abilities.ts"
+        ],
+        "notes": "Synthetic active-pair stall controls with independent resource/HP proofs; not recorded battles or ROM verification."
+      },
+      "checkpoints": {
+        "1000": {
+          "measured": true,
+          "score": 1,
+          "available_at_ms": 696.1065000000001
+        },
+        "3000": {
+          "measured": true,
+          "score": 1,
+          "available_at_ms": 696.1065000000001
+        },
+        "10000": {
+          "measured": true,
+          "score": 1,
+          "available_at_ms": 696.1065000000001
+        }
+      },
+      "input_blocked": false,
+      "unresolved_reasons": [],
+      "first_estimate_ms": 112.43160000000012,
+      "elapsed_ms": 696.2601,
+      "cpu_ms": 1000,
+      "max_slice_ms": 111.86580000000004,
+      "peak_rss_mb": 165.0546875,
+      "score": 1,
+      "absolute_error_pp": 1,
+      "samples": 128,
+      "done": true,
+      "retained_states": 4,
+      "total_native_rollouts": 128,
+      "exact_next_turn": false,
+      "next_turn_expansions": 0,
+      "merged_states": 0,
+      "first_second": {
+        "score": 1,
+        "available_at_ms": 696.1065000000001,
+        "absolute_error_pp": 1,
+        "reference": 0,
+        "reference_kind": "analytic",
+        "goal_met": true
+      },
+      "prediction": {
+        "schema_version": 1,
+        "kind": "estimate",
+        "certificate": null,
+        "search": {
+          "status": "sample-budget-finished",
+          "resolved": false
+        },
+        "reasons": [],
+        "estimate": {
+          "score": 1,
+          "basis": "simulation-estimate"
+        }
+      },
+      "readings": [
+        {
+          "elapsed_ms": 112.43160000000012,
+          "score": 1,
+          "samples": 6,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 217.14959999999996,
+          "score": 1,
+          "samples": 24,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 319.65010000000007,
+          "score": 1,
+          "samples": 41,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 421.90329999999994,
+          "score": 1,
+          "samples": 61,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 522.8503000000001,
+          "score": 1,
+          "samples": 82,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 624.0754999999999,
+          "score": 1,
+          "samples": 107,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 696.1065000000001,
+          "score": 1,
+          "samples": 128,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        }
+      ]
+    }
+  ]
+}

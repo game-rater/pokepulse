@@ -21,17 +21,19 @@ function args(snapshot){
 const service=new SearchService({parallel:mode==='race'});
 let peak=process.memoryUsage().rss;const memoryTimer=setInterval(()=>peak=Math.max(peak,process.memoryUsage().rss),25);
 async function measure(input,firstOnly=false){
- const start=performance.now(),cpuStart=process.cpuUsage();let first=null,firstScore=null,last,updates=0;
+ const start=performance.now(),cpuStart=process.cpuUsage();let first=null,firstScore=null,last,updates=0;const readings=[];
  await new Promise((resolve,reject)=>{
   const deadline=setTimeout(resolve,seconds*1000);
   service.start(input,result=>{
    updates++;last=result;
+   readings.push({elapsed_ms:performance.now()-start,score:result.display_score??null,algorithm:result.outlook.algorithm});
    if(Number.isFinite(result.display_score)&&first===null){first=performance.now()-start;firstScore=result.display_score;if(firstOnly){clearTimeout(deadline);resolve();}}
    if(result.outlook.complete){clearTimeout(deadline);resolve();}
   },error=>{clearTimeout(deadline);reject(error);});
  });
  const cpu=process.cpuUsage(cpuStart);
  return {first_estimate_ms:first,first_score:firstScore,algorithm:last?.outlook.algorithm,elapsed_ms:performance.now()-start,cpu_ms:(cpu.user+cpu.system)/1000,
+  first_second:readings.filter(r=>r.elapsed_ms<=1000&&Number.isFinite(r.score)).at(-1)||null,readings,
   score:last?.display_score??null,complete:last?.outlook.complete||false,updates,
   selected:last?.outlook.search_race?.selected||'fallback',race:last?.outlook.search_race,
   reused:!!last?.outlook.reused_next_turn_estimate,samples:last?.outlook.samples??0};
