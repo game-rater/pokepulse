@@ -3,11 +3,11 @@ import assert from 'node:assert/strict';
 import {accuracyFixtures} from '../scripts/accuracy-benchmark-fixtures.mjs';
 import {realBattleFixtures} from '../scripts/real-battle-fixtures.mjs';
 import {analyticOracle,benchmarkReference} from '../scripts/benchmark-oracles.mjs';
-const targets=[100,0,50,80,75,72.9,90,99.2,98.4375,93.75,80,100,81];
-for(const [i,f] of accuracyFixtures.entries())test(`${f.id}: independent exact target and both policy references`,()=>{
- assert.equal(analyticOracle(f).expected_percent,targets[i]);
+const targets={'oracle-fixed-win':100,'oracle-fixed-loss':0,'oracle-speed-tie':50,'oracle-focus-blast':80,'oracle-paralysis':75,'oracle-triple-axel':72.9,'oracle-skill-link-axel':90,'oracle-focus-three':99.2,'oracle-paralysis-three':98.4375,'oracle-sash-paralysis':93.75,'oracle-poison-window':80,'oracle-choice-guaranteed':100,'oracle-choice-adaptive':81};
+for(const f of accuracyFixtures)test(`${f.id}: independent exact target and both policy references`,()=>{
+ assert.equal(analyticOracle(f).expected_percent,targets[f.id]);
  for(const model of ['minimax','npc-ai']){
-  const r=benchmarkReference(f,model);assert.equal(r.status,'analytic');assert.equal(r.expected_percent,targets[i]);
+  const r=benchmarkReference(f,model);assert.equal(r.status,'analytic');assert.equal(r.expected_percent,targets[f.id]);
   assert.match(r.input_sha256,/^[a-f0-9]{64}$/);
  }
 });

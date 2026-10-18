@@ -19,6 +19,7 @@ test('Matrix reductions retain independent analytic values over 625 games',()=>{
   for(const row of m)row.push(Math.min(1,(row[0]+row[1])/2+0.01));
   const result=matrixBounds(m,m,256);
   assert.ok(result.lower<=value+1e-9&&result.upper>=value-1e-9,JSON.stringify({m,value,result}));
+  assert.ok(result.upper-result.lower<=0.02,'returning [0,1] for every game is not a solver');
  }
 });
 test('Recursive chance pruning skips a dominated stochastic tail without losing probability',()=>{

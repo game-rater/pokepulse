@@ -32,6 +32,18 @@ test('Recorder bounds ring size and records observations rather than inventing a
  r.recordState({player:{pp:{Tackle:9}},opponent:{hp:12}});
  assert.ok(r.events.at(-1).event.changes.some(c=>c.path==='player.pp.Tackle'));
  for(let i=0;i<50;i++)r.append('tracking',{tracking:{status:'battle'}});
- assert.ok(r.events.length<=5);assert.ok(r.bytes<=1500);
+ assert.deepEqual(r.events.map(e=>e.event.id),[48,49,50,51,52]);assert.ok(r.bytes<=1500);
  assert.equal(r.events.some(e=>e.event.kind==='selected-move'),false);
+});
+
+test('Oversized events are rejected without evicting useful retained observations',()=>{
+ const r=new BattleRecorder({directory:'unused',maxBytes:500});r.append('tracking',{tracking:{status:'battle'}});
+ const before=r.retainedEvents();r.append('oversized',{payload:'x'.repeat(1000)});
+ assert.deepEqual(r.retainedEvents(),before);assert.equal(r.bytes,Buffer.byteLength(JSON.stringify(before[0])));
+});
+
+test('Native messages are detached from caller mutation and retained within recorder age limits',()=>{
+ let now=0;const r=new BattleRecorder({directory:'unused',now:()=>now,maxAgeMs:1000});
+ const message={kind:'critical-hit',move:'Hyper Fang'};r.recordMessages([message]);message.move='Splash';
+ assert.equal(r.retainedEvents()[0].message.move,'Hyper Fang');now=1001;r.status();assert.deepEqual(r.retainedEvents(),[]);assert.equal(r.bytes,0);
 });

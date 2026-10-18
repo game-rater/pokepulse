@@ -61,7 +61,6 @@ test('Verified field flags affect damage and the modeled turn-order report; unkn
  assert.ok(score(r).outgoing_moves[0].max<base.outgoing_moves[0].max);
  // Equal-priority attacks isolate Trick Room's speed ordering from priority.
  r.writeUInt16LE(maps.move.indexOf('Tackle'),layout.battleMons+layout.battlerSize+12);
- const normalOrder=score(r);
  r.writeUInt32LE(2,layout.fieldStatuses);
  assert.equal(decode(r).snapshot.field.trick_room,true);
  assert.equal(score(r).outlook.algorithm,'bounded-stochastic-game-search');

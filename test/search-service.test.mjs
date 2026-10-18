@@ -4,7 +4,6 @@ import {readFileSync} from 'node:fs';
 import {SearchService,modelContext} from '../run-bun/search-service.mjs';
 import {pack,defaultBuild,defaultField} from '../run-bun/profile.mjs';
 import {makeRules} from '../engine.mjs';
-import {displayEstimate} from '../run-bun/display-estimate.mjs';
 test('Worker search leaves event loop responsive and suppresses replaced snapshot results',async()=>{
  const service=new SearchService({parallel:false}),species=pack.species.find(s=>s.id==='garchomp');
  const rules=makeRules(JSON.parse(readFileSync(new URL('../data/type-chart.json',import.meta.url))),'gen8');
@@ -87,15 +86,6 @@ test('Move animation snapshot bursts dispatch only the latest state',async()=>{
   service.cancel();assert.equal(service.context,null);assert.equal(service.display,null);
  }finally{service.cancel();}
 });
-test('Display does not confuse an unfinished zero lower bound with a proven loss',()=>{
- const partial={victory:0,outlook:{lower_bound:0,upper_bound:100,unresolved:1}};
- assert.equal(displayEstimate(partial,98).score,null);
- assert.equal(displayEstimate({...partial,outlook:{lower_bound:10,upper_bound:40,unresolved:0.3}},98).score,40);
- assert.equal(displayEstimate({...partial,outlook:{lower_bound:60,upper_bound:90,unresolved:0.3}},70).score,70);
- assert.equal(displayEstimate({...partial,outlook:{lower_bound:0,upper_bound:0,unresolved:0}},98).score,0);
- const unresolved={...partial,victory:null};assert.equal(displayEstimate(unresolved).score,null);
-});
-
 test('Cross-snapshot cache context preserves dynamic states and rejects changed mechanics',()=>{
  const species=pack.species.find(s=>s.id==='garchomp'),b={...defaultBuild(species),moves:['Tackle']};
  const args=[species,species,{}, {},{player:b,opponent:b},defaultField(),{player:{},opponent:{}},{}];

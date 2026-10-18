@@ -23,8 +23,8 @@ test('Without Endure a mutual knockout does not count as a player win',()=>{
  assert.equal(r.score,0);assert.equal(r.upper_bound,0);
 });
 test('Damp prevents an explosive move from self-fainting',()=>{
- const r=simulateOutlook(...scenario({damp:true}),{timeMs:2000,maxDepth:1});
- assert.equal(r.lower_bound,0);assert.equal(r.upper_bound,100);
+ const r=simulateOutlook(...scenario({damp:true}),{timeMs:2000,maxDepth:6});
+ assert.equal(r.lower_bound,100);assert.equal(r.upper_bound,100);
 });
 test('Endure does not become permanent invulnerability on later turns',()=>{
  const args=scenario();args[2][0]={...args[2][0],name:'Tackle'};

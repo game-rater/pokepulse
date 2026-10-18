@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {readFileSync,writeFileSync} from 'node:fs';
+import {readFileSync} from 'node:fs';
 import {createCompleteBattle,restoreCompleteBattle,completeMoveAdapter,completeMoveDex,requiresCompleteMoves} from '../analysis/complete-moves.mjs';
 const romMoves=JSON.parse(readFileSync(new URL('../run-bun/reference/mappings.json',import.meta.url))).move.filter(Boolean);
 const mon=(moves,extra={})=>({species:'Mew',current_hp:200,actual_stats:{hp:200,atk:40,def:40,spa:40,spd:40,spe:60},
@@ -18,7 +18,7 @@ test('Every ROM move has an executable definition and executes a full turn',()=>
   const failures=[];
   for(const name of romMoves){
     assert.equal(completeMoveDex.moves.get(name).exists,true,name);
-    try{const b=battle(mon([name]));turn(b);}catch(error){failures.push({name,error:error.message});}
+    try{const b=battle(mon([name]));const before=b.turn;turn(b);assert.ok(b.ended||b.turn>before,'accepted inputs must resolve a turn');}catch(error){failures.push({name,error:error.message});}
   }
   assert.deepEqual(failures,[]);
 });

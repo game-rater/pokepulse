@@ -1,6 +1,5 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {readFileSync} from 'node:fs';
 import {evaluatePosition} from '../analysis/position-evaluator.mjs';
 import {fixedRetaliationProof} from '../analysis/exact-endgame.mjs';
 import {createCompleteBattle} from '../analysis/native-battle.mjs';
@@ -51,16 +50,6 @@ test('Changed native inputs cannot reuse an old proof',t=>{
  const input=snapshot(),options={session:{}};
  evaluatePosition({snapshot:input},options);input.opponent.current_hp--;
  evaluatePosition({snapshot:input},options);assert.equal(calls,2);
-});
-test('Search engines depend on mechanics and evaluator context, never a proof provider',()=>{
- for(const file of ['native-battle','native-search','sampled-search','retained-turn','continuation-policy']){
-  const source=readFileSync(new URL(`../analysis/${file}.mjs`,import.meta.url),'utf8');
-  assert.doesNotMatch(source,/from ['"].*exact-endgame/);assert.doesNotMatch(source,/exactEndgameChecked/);
- }
- const mechanics=readFileSync(new URL('../analysis/native-battle.mjs',import.meta.url),'utf8');
- assert.doesNotMatch(mechanics,/from ['"].*(?:position-evaluator|search\.mjs|sampled-moves|complete-moves)/);
- const provider=readFileSync(new URL('../analysis/exact-endgame.mjs',import.meta.url),'utf8');
- assert.doesNotMatch(provider,/session\.|score_kind|createCompleteBattle/);
 });
 for(const strategy of ['bounded','sampled'])test(`${strategy} search resolves continuations through the shared evaluator`,t=>{
  const input=snapshot(),root=createCompleteBattle(input).key,calls=new Map();

@@ -6,9 +6,9 @@ import {strategyOracle} from '../scripts/strategy-benchmark-oracle.mjs';
 import {benchmarkReference} from '../scripts/benchmark-oracles.mjs';
 import {assessBenchmarkRows} from '../scripts/check-stall-benchmarks.mjs';
 import {createCompleteBattle,restoreCompleteBattle,installChanceTape,completeMoveDex} from '../analysis/native-battle.mjs';
-const targets=[18.067192286252975,98.050266969949,98.87883067131042,100,100,11.92626953125,6.25];
-for(const [i,f] of strategyFixtures.entries())test(f.id+': frozen independent probability and legal alternative actions',()=>{
- const proof=strategyOracle(f);assert.ok(Math.abs(proof.expected_percent-targets[i])<1e-10);
+const targets={'strategy-recover-1':18.067192286252975,'strategy-recover-35':98.050266969949,'strategy-recover-70':98.87883067131042,'strategy-setup-35':100,'strategy-setup-90':100,'strategy-setup-120':11.92626953125,'strategy-setup-too-late':6.25};
+for(const f of strategyFixtures)test(f.id+': frozen independent probability and legal alternative actions',()=>{
+ const proof=strategyOracle(f);assert.ok(Math.abs(proof.expected_percent-targets[f.id])<1e-10);
  assert.equal(proof.root_action_values.length,2);assert.ok(proof.states<1000);
  for(const model of ['minimax','npc-ai'])assert.equal(benchmarkReference(f,model).expected_percent,proof.expected_percent);
 });

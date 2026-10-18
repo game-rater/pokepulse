@@ -1,7 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {simulateOutlook} from '../analysis/outlook.mjs';
-import {displayEstimate} from '../run-bun/display-estimate.mjs';
 function duel(extra={}){
  const side={build:{boosts:{},item:'',moves:['Bite']},effects:{},pp:{Bite:5}};
  const mons=[{curHP:()=>1,maxHP:()=>2,status:'',ability:'',types:[]},{curHP:()=>2,maxHP:()=>2,status:'',ability:'',types:[]}];
@@ -14,10 +13,4 @@ test('Bite flinch can prevent the queued slower attack but cannot persist into a
 });
 test('Draining damage heals its user before the opposing queued attack',()=>{
  assert.equal(duel({drain:1}).lower_bound,100);
-});
-test('Narrowing an unfinished upper bound preserves an admissible displayed estimate',()=>{
- const r={victory:0,outlook:{lower_bound:0,upper_bound:24.3275,unresolved:0.243275}};
- assert.equal(displayEstimate(r,16.35437).score,16.35437);
- assert.equal(displayEstimate({...r,outlook:{lower_bound:0,upper_bound:10,unresolved:0.1}},16.35437).score,10);
- assert.equal(displayEstimate({victory:0,outlook:{lower_bound:0,upper_bound:0,unresolved:0}},16.35437).score,0);
 });

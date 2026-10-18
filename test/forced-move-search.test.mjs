@@ -25,6 +25,7 @@ test('Sampled forecasts complete continuations containing Rollout without reject
    result=simulateCompleteMoves(snapshot,{session,opponentModel,approximateCompleteMoves:true,timeMs:100});
    if(result.provisional_usable)break;
   }
+  assert.equal(result.provisional_usable,true,`${opponentModel}: a hidden provisional number is not a published prediction`);
   assert.ok(Number.isFinite(result.provisional_score),opponentModel);
  }
 });

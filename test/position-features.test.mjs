@@ -61,7 +61,8 @@ import {simulateCompleteMoves} from '../analysis/complete-moves.mjs';
 import {stallFixtures} from '../scripts/stall-benchmark-fixtures.mjs';
 test('Forced final turns integrate native rare outcomes instead of resampling them',()=>{
  const s=stallFixtures.find(f=>f.id==='stall-protect-risk').snapshot,session={};let result;
- for(let n=0;n<20;n++){result=simulateCompleteMoves(s,{session,approximateCompleteMoves:true,opponentModel:'npc-ai',passiveEndgames:false,samplesPerPair:16,timeMs:100});if(result.sampling_complete)break;}
+ for(let n=0;n<80;n++){result=simulateCompleteMoves(s,{session,approximateCompleteMoves:true,opponentModel:'npc-ai',passiveEndgames:false,samplesPerPair:16,timeMs:1000});if(result.sampling_complete)break;}
+ assert.equal(result.sampling_complete,true,'correctness is checked after the sample budget finishes');
  assert.ok(Math.abs(result.score-100/3)<1e-9);
  assert.equal(result.certified,false,'integrating a final turn does not certify heuristic policies');
 });

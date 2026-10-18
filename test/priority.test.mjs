@@ -52,5 +52,5 @@ test('Focused strategy certifies a short win across every opponent response',()=
  const session={};const adapter={key:JSON.stringify,terminal:s=>s.turn===3?1:null,
   actions:()=>[[0,1],[0,1]],transitions:(s,a,b)=>[{state:{turn:a===0?s.turn+1:s.turn,enemy:b},probability:0.6},{state:{turn:a===0?s.turn+1:s.turn,enemy:1-b},probability:0.4}]};
  const r=searchBattle(adapter,{turn:0,enemy:0},{progressive:true,focusedStrategy:true,session,maxDepth:4,timeMs:1000,evaluate:s=>s.turn/3});
- assert.equal(r.lower,1);assert.equal(r.upper,1);assert.ok(r.nodes<20);assert.ok(r.cache_hits>=0);
+ assert.equal(r.lower,1);assert.equal(r.upper,1);assert.ok(r.nodes<20);
 });
