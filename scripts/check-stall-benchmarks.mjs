@@ -9,9 +9,10 @@ export function assessBenchmarkRows(rows,fixtures){
   const f=fixtures.find(f=>f.id===row.case);if(!f)throw Error('Unknown benchmark case '+row.case);
   const reference=benchmarkReference(f,row.opponent_model);
   if(row.fixture_hash!==reference.input_sha256||row.reference?.expected_percent!==reference.expected_percent)throw Error('Stale or changed reference for '+row.case);
-  const first=row.first_second,available=Number.isFinite(first?.score)&&first.available_at_ms>0&&first.available_at_ms<=1000&&!row.input_blocked;
+  const validScore=score=>Number.isFinite(score)&&score>=0&&score<=100;
+  const first=row.first_second,available=validScore(first?.score)&&Number.isFinite(first.available_at_ms)&&first.available_at_ms>=0&&first.available_at_ms<=1000&&!row.input_blocked;
   const earlyError=available?Math.abs(first.score-reference.expected_percent):null;
-  const finalError=Number.isFinite(row.score)&&!row.input_blocked?Math.abs(row.score-reference.expected_percent):null;
+  const finalError=validScore(row.score)&&!row.input_blocked?Math.abs(row.score-reference.expected_percent):null;
   const earlyPass=available&&earlyError<=10,finalPass=finalError!==null&&finalError<=10;
   return {case:row.case,opponent_model:row.opponent_model,trial:row.trial,expected_percent:reference.expected_percent,
    score_at_one_second:available?first.score:null,error_at_one_second_pp:earlyError,final_score:row.score,final_error_pp:finalError,
