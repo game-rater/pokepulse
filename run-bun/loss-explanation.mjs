@@ -13,7 +13,7 @@ export function describeBattleEvent(e){
   'poison-damage':`${who} was hurt by poison.`, 'burn-damage':`${who} was hurt by its burn.`,
   protected:`${who} protected itself.`, 'woke-up':`${who} woke up.`,
   endured:`${who} endured the hit.`, 'survived-item':`${who} survived a hit using its item.`,
-  'capture-gap':'Some battle messages were missed because the event buffer filled.',
+  'capture-gap':e.evidence==='invalid-message-observation'?'A battle event could not be decoded; its effect is unknown.':'Some battle messages were missed because the event buffer filled.',
  };
  return texts[e.kind]||'A battle event was recorded.';
 }

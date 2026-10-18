@@ -56,8 +56,11 @@ export class MessageObserver {
    if(this.session!==journal.session){this.session=journal.session;this.last=0;}
    const fresh=journal.events.filter(e=>e.id>this.last).sort((a,b)=>a.id-b.id),events=[];
    for(const raw of fresh){
+    if(raw.id<=this.last)continue;
     if(raw.id>this.last+1)events.push({kind:'capture-gap',evidence:'message-journal-overflow',turn:raw.turn});
-    const message=decodeMessage(raw,maps);if(message)events.push({...message,event_id:raw.id});this.last=Math.max(this.last,raw.id);
+    const message=decodeMessage(raw,maps);
+    events.push(message?{...message,event_id:raw.id}:{kind:'capture-gap',evidence:'invalid-message-observation',turn:raw.turn});
+    this.last=raw.id;
    }
    this.prints.clear();return events;
   }

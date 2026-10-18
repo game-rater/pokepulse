@@ -67,9 +67,10 @@ test('Missing outcome capture produces an explicit unknown cause, never an inven
  r.recordState(before);const after=structuredClone(before);after.player.current_hp=0;after.battle_phase.kind='resolving';r.recordState(after);
  const row=r.history().entries[0];assert.match(row.knockout.cause,/not captured/);assert.ok(!row.knockout.cause.includes('critical'));
 });
-test('The generated integration journals every frame while preserving the existing RAM capture cadence',()=>{
+test('Generated Lua wires the journal protocol and read-only calls (source contract, not Lua execution)',()=>{
  const script=integrationScript('C:/test');assert.match(script,/pcall\(observeMessages\)/);assert.match(script,/frames % 15 == 0/);
  assert.match(script,/#events > 128/);assert.match(script,/resources \+ 0x24 \+ controller\*0x200/);
+ assert.ok(script.indexOf('journal:close()')>=0);assert.ok(script.indexOf("file:write('PTHREAT1'")>=0);
  assert.ok(script.indexOf('journal:close()')<script.indexOf("file:write('PTHREAT1'"));
  assert.ok(!/emu:write/.test(script));
 });
@@ -110,4 +111,38 @@ test('A confusion message before the HP update can explain its contiguous lethal
  Object.assign(events[0],{kind:'confusion-self-hit',actor:'player',actor_species:'Wooper'});
  const result=explainKnockout({player:{species:'Wooper',current_hp:20}},{player:{current_hp:0}},outcomeEvidence(events),{complete:true,consecutive:true});
  assert.match(result.cause,/hurting itself in confusion/);
+});
+
+test('A duplicated journal ID cannot produce two observed critical hits',()=>{
+ const observer=new MessageObserver(),event={...raw(),id:1};
+ const result=observer.observe([],maps,{session:'duplicate',events:[event,event]});
+ assert.deepEqual(result.map(e=>e.event_id),[1]);
+});
+
+test('An undecodable journal event remains a causal gap instead of disappearing between move and damage',()=>{
+ const observer=new MessageObserver(),events=native.cases.find(c=>c.case==='lethal-attack').events.slice(0,2).map(e=>structuredClone(e));
+ events.splice(1,0,{...events[0],code:9000});events.forEach((e,i)=>e.id=i+1);
+ const decoded=outcomeEvidence(observer.observe([],maps,{session:'invalid',events}));
+ assert.equal(decoded[1].kind,'capture-gap');
+ const result=explainKnockout({player:{species:'Wooper',current_hp:20}},{player:{current_hp:0}},decoded,{complete:true,consecutive:true});
+ assert.match(result.cause,/not captured/);
+});
+
+test('Earlier bad luck appears in the knockout review but does not carry into the next battle',()=>{
+ const r=new BattleRecorder({directory:'unused'}),before={player:mon('Wooper',['Hypnosis'],{level:20,hp:35}),opponent:mon('Rattata',['Hyper Fang'],{level:20,hp:48}),field:{},battle_phase:{kind:'selection',turn:0}};
+ r.recordState(before);r.recordMessages([decodeMessage({...raw(),code:23,move:95,attacker:0,target:1},maps)]);
+ const next=structuredClone(before);next.battle_phase.turn=1;next.player.current_hp=20;r.recordState(next);
+ const critical=decodeMessage({...raw(),turn:1,hp:[0,48]},maps);r.recordMessages([critical]);
+ const dead=structuredClone(next);dead.player.current_hp=0;dead.battle_phase.kind='resolving';r.recordState(dead);
+ assert.match(r.history().entries[0].knockout.earlier_unfavorable_events.join(' '),/Hypnosis missed/);
+ r.append('tracking',{tracking:{status:'outside-battle'}});r.recordState(before);
+ r.recordMessages([decodeMessage({...raw(),hp:[0,48]},maps)]);dead.battle_phase.turn=0;r.recordState(dead);
+ assert.deepEqual(r.history().entries[0].knockout.earlier_unfavorable_events,[]);
+});
+
+test('After a tracking disconnect, late messages cannot rewrite the recorded knockout cause',()=>{
+ const r=new BattleRecorder({directory:'unused'}),before={player:mon('Wooper',['Hypnosis'],{level:20,hp:35}),opponent:mon('Rattata',['Hyper Fang'],{level:20,hp:48}),field:{},battle_phase:{kind:'selection',turn:0}};
+ r.recordState(before);const dead=structuredClone(before);dead.player.current_hp=0;dead.battle_phase.kind='resolving';r.recordState(dead);
+ r.append('tracking',{tracking:{status:'disconnected'}});r.recordMessages([decodeMessage({...raw(),hp:[0,48]},maps)]);
+ assert.deepEqual(r.history().entries[0].battle_events,[]);assert.match(r.history().entries[0].knockout.cause,/not captured/);
 });
