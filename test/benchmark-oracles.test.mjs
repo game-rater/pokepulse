@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {accuracyFixtures} from '../scripts/accuracy-benchmark-fixtures.mjs';
 import {realBattleFixtures} from '../scripts/real-battle-fixtures.mjs';
 import {analyticOracle,benchmarkReference} from '../scripts/benchmark-oracles.mjs';
-const targets=[100,0,50,80,75,72.9,90];
+const targets=[100,0,50,80,75,72.9,90,99.2,98.4375,93.75,80,100,81];
 for(const [i,f] of accuracyFixtures.entries())test(`${f.id}: independent exact target and both policy references`,()=>{
  assert.equal(analyticOracle(f).expected_percent,targets[i]);
  for(const model of ['minimax','npc-ai']){
@@ -34,4 +34,11 @@ import {spawnSync} from 'node:child_process';
 test('Accuracy runner rejects an unresolved case before starting trials',()=>{
  const child=spawnSync(process.execPath,['scripts/benchmark-retained-turn.mjs','--case=monferno-scraggy-initial','--require-reference'],{encoding:'utf8'});
  assert.notEqual(child.status,0);assert.match(child.stderr,/No accuracy reference/);assert.equal(child.stdout,'');
+});
+
+test('Complex proofs require their survival, poison and damage conditions',()=>{
+ for(const id of ['oracle-focus-three','oracle-paralysis-three','oracle-sash-paralysis','oracle-poison-window','oracle-choice-guaranteed','oracle-choice-adaptive']){
+  const changed=structuredClone(accuracyFixtures.find(f=>f.id===id));changed.snapshot.player.current_hp=1;
+  assert.throws(()=>analyticOracle(changed),/Oracle precondition/);
+ }
 });

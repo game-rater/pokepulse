@@ -1,0 +1,68 @@
+{
+  "created_at": "2026-10-18T09:26:10.650Z",
+  "node": "v24.19.0",
+  "method": "Warm analytic proof checks with calculator damage ranges; 100 repeats; excludes module loading, worker startup and UI. Proof-domain prototype only, not a production engine speedup.",
+  "source_hashes": {
+    "scripts/benchmark-analytic-proofs.mjs": "60074532bf6af020c69b387586bd031075e45187b440dca4eaa0ffd780630f09",
+    "scripts/accuracy-benchmark-fixtures.mjs": "6f8b1d5b71170cbf94a339d4c40f0b7a12641559393aa9e8af922c207273e3a0",
+    "scripts/benchmark-oracles.mjs": "5a3eb3d63a3936d0c66df3fd9fa08c24bb508299a735f8adf7877bc126d36a6c",
+    "scripts/reference-damage-race.mjs": "391d9b7b1fffcc186b8d1c9123acf280ab8e0adf120b0d2a3fff9678092a2203",
+    "scripts/benchmark-references.json": "d72d76d734ee8d66091656059a5be4015c9347a2898e959ff2e4642501df6ea0"
+  },
+  "rows": [
+    {
+      "case": "oracle-focus-three",
+      "expected_percent": 99.2,
+      "input_sha256": "9f9cfcca77eb8a228766ba5930772aacfcef13f121c23f120bca48e0521e5737",
+      "repetitions": 100,
+      "median_ms": 0.3247000000000071,
+      "p95_ms": 1.445799999999963,
+      "max_ms": 14.123800000000074
+    },
+    {
+      "case": "oracle-paralysis-three",
+      "expected_percent": 98.4375,
+      "input_sha256": "e44ffe5168b39aedd23e2bf340e1700be58c8fc7df54df109a2bbc7da2763e2a",
+      "repetitions": 100,
+      "median_ms": 0.16705000000001746,
+      "p95_ms": 0.6154999999999973,
+      "max_ms": 5.123199999999997
+    },
+    {
+      "case": "oracle-sash-paralysis",
+      "expected_percent": 93.75,
+      "input_sha256": "e09d1915d01cb615726e3dce58e217219f0a4d06b01e8d1da7a49394a304809b",
+      "repetitions": 100,
+      "median_ms": 0.1459500000000844,
+      "p95_ms": 0.389699999999948,
+      "max_ms": 0.6806000000000267
+    },
+    {
+      "case": "oracle-poison-window",
+      "expected_percent": 80,
+      "input_sha256": "fdc2ca6dfa3aec23fea94bb75d9fbc2dda893f7a1b3a9a8f3fa98b015b0c2b5d",
+      "repetitions": 100,
+      "median_ms": 0.2268500000000131,
+      "p95_ms": 0.7078999999999951,
+      "max_ms": 3.240000000000009
+    },
+    {
+      "case": "oracle-choice-guaranteed",
+      "expected_percent": 100,
+      "input_sha256": "cfd25788a907ed04b53f20976854692a1b4b226c52d48a5280222c46c0c6536f",
+      "repetitions": 100,
+      "median_ms": 0.43559999999996535,
+      "p95_ms": 0.9772000000000389,
+      "max_ms": 3.138200000000097
+    },
+    {
+      "case": "oracle-choice-adaptive",
+      "expected_percent": 81,
+      "input_sha256": "379495ec2528e7c795e3e03539f3a141cd4c385afaca6609b6645b4eb7f80c32",
+      "repetitions": 100,
+      "median_ms": 0.42480000000000473,
+      "p95_ms": 0.8426999999999225,
+      "max_ms": 1.4652000000000953
+    }
+  ]
+}

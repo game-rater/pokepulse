@@ -1,3 +1,4 @@
+import {solveDamageRace} from './reference-damage-race.mjs';
 import {createHash} from 'node:crypto';
 import {readFileSync} from 'node:fs';
 import {completeMoveDex} from '../analysis/complete-moves.mjs';
@@ -36,6 +37,7 @@ export function analyticOracle(fixture){
   assert(p.build.level>=q.current_hp&&q.build.level>=p.current_hp,'either first hit KOs');
   return {expected_percent:50,fraction:'1/2',proof:'The first actor KOs; the fair Speed tie decides the battle.'};
  }
+ if(id.startsWith('complex-'))return complexOracle(fixture,pm,qm);
  assert(q.build.moves.join()==='Seismic Toss'&&q.build.level>=p.current_hp,'guaranteed retaliation KO');
  assert(!p.build.item&&!q.build.item,'no survival/healing items');
  if(id==='focus-blast'){
@@ -59,6 +61,59 @@ export function analyticOracle(fixture){
    proof:`Max two critical hits ${maxTwo} < HP ${q.current_hp} <= min three normal hits ${minThree}; accuracy ${id==='triple-axel'?'(9/10)^3':'9/10 with Skill Link'}.`};
  }
  throw Error(`Unknown analytic oracle ${id}`);
+}
+
+
+function complexOracle(fixture,pm,qm){
+ const {player:p,opponent:q}=fixture.snapshot,id=fixture.oracle;
+ assert(q.species==='Blissey'&&q.build.level===100&&q.build.moves.join()==='Seismic Toss','fixed 100 damage opponent');
+ assert(!q.build.item&&!q.build.status&&!q.build.ability&&!p.build.ability,'no abilities or opponent status/items');
+ assert(Object.values(p.build.boosts).every(n=>n===0)&&Object.values(q.build.boosts).every(n=>n===0),'neutral boosts');
+ assert(Object.keys(fixture.snapshot.field).length===0,'no field effects');
+ const result=(expected_percent,fraction,proof)=>({expected_percent,fraction,proof});
+ if(['complex-paralysis-three','complex-sash-paralysis'].includes(id)){
+  assert(p.build.moves.join()==='Quick Attack'&&p.build.status==='par'&&q.current_hp===1,'paralyzed priority knockout');
+  assert(range(p,q,'Quick Attack')[0]>=1&&completeMoveDex.moves.get('Quick Attack').accuracy===100,'certain hit knockout if able to act');
+  if(id==='complex-paralysis-three'){
+   assert(p.current_hp===201&&!p.build.item&&p.pp['Quick Attack']>=3,'three attempts before third retaliation');
+   return result(98.4375,'63/64','Quick Attack has priority on all three turns. Only three full-paralysis events lose: 1 - (1/4)^3.');
+  }
+  assert(p.build.item==='Focus Sash'&&p.current_hp===pm.maxHP()&&p.current_hp<=100&&p.current_hp>1,'full-health Focus Sash survives first retaliation only');
+  assert(p.pp['Quick Attack']>=2,'two attempts');
+  return result(93.75,'15/16','Priority avoids the paralysis Speed penalty. First failure consumes Focus Sash; only full paralysis on both attempts loses: 1 - (1/4)^2.');
+ }
+ assert(pm.stats.spe>qm.stats.spe,'player acts before retaliation');
+ assert(!p.build.item&&(!p.build.status||id==='complex-poison-window'&&p.build.status==='psn'),'no player items or unmodeled status');
+ const normal=range(p,q,'Focus Blast'),crit=range(p,q,'Focus Blast',true);
+ assert(completeMoveDex.moves.get('Focus Blast').accuracy===80,'80 percent Focus Blast');
+ if(['complex-focus-three','complex-poison-window'].includes(id)){
+  assert(p.build.moves.join()==='Focus Blast'&&q.current_hp===1&&normal[0]>=1,'Focus Blast always KOs if it hits');
+  if(id==='complex-focus-three'){
+   assert(p.current_hp===201&&p.pp['Focus Blast']>=3,'exactly three attempts');
+   return result(99.2,'124/125','Each miss costs 100 HP; a faster attacker at 201 HP gets three attempts: 1 - (1/5)^3.');
+  }
+  assert(p.current_hp===101&&Math.floor(pm.maxHP()/8)>=1,'miss leaves one HP before poison');
+  return result(80,'4/5','On a miss, Seismic Toss leaves one HP and end-of-turn poison KOs. Only the first attack can win.');
+ }
+ assert(p.build.moves.join()==='Focus Blast,Seismic Toss'&&p.build.level===100&&p.current_hp===101,'two actions and two move choices');
+ assert(p.pp['Focus Blast']>=2&&p.pp['Seismic Toss']>=2,'both choices available twice');
+ const outcomes=[];
+ for(const [isCrit,probability] of [[false,15/16],[true,1/16]]){
+  const damage=calculator.calculate(gen,mon(p),mon(q),new calculator.Move(gen,'Focus Blast',{isCrit})).damage;
+  assert(Array.isArray(damage)&&damage.length===16,'sixteen uniform damage rolls');
+  for(const d of damage)outcomes.push({damage:d,probability:0.8*probability/16});
+ }
+ outcomes.push({damage:0,probability:0.2});
+ const independent=solveDamageRace({playerHP:p.current_hp,opponentHP:q.current_hp,retaliation:100,moves:[
+  {outcomes},{outcomes:[{damage:100,probability:1}]}]});
+ assert(Math.abs(independent.expected_percent-(id==='complex-choice-guaranteed'?100:81))<1e-9,'finite-horizon weighted enumeration agrees with algebra');
+ if(id==='complex-choice-guaranteed'){
+  assert(q.current_hp===150&&normal[0]>=150,'one accurate Focus Blast hit or two fixed hits win');
+  return result(100,'1/1','Use Seismic Toss twice for a guaranteed win; repeated Focus Blast would win with probability 24/25.');
+ }
+ assert(id==='complex-choice-adaptive'&&q.current_hp===250,'adaptive target HP');
+ assert(normal[1]<250&&normal[0]>=150&&crit[0]>=250,'a normal hit enables fixed finish; a critical KOs');
+ return result(81,'81/100',`Focus Blast first: a hit (4/5) wins immediately or enables a guaranteed Seismic Toss finish. After a miss (1/5), only a hitting critical Focus Blast wins (4/5 * 1/16). Total 4/5 + 1/5 * 4/5 * 1/16 = 81/100. Seismic Toss first gives only 4/5. Normal damage ${normal.join('-')}; critical ${crit.join('-')}.`);
 }
 
 export function immediateLossProof(fixture){

@@ -12,8 +12,8 @@ export function referenceMon(species,moves,{level=100,hp,status='',ability='',it
   pp:Object.fromEntries(moves.map(m=>[m,completeMoveDex.moves.get(m).pp])),
   effects:{live_data:true,first_turn:false,move_history_known:true,protect_streak:0,...effects}};
 }
-function fixture(id,player,opponent,oracle,description){return {id,group:'accuracy',description,
- oracle,provenance:{kind:'analytic-control',sources:[source,mechanics],notes:'Mechanics-test-inspired Run & Bun controls, not reproductions of recorded battles.'},
+function fixture(id,player,opponent,oracle,description){return {id,group:'accuracy',...(oracle.startsWith('complex-')?{family:'proved-complex'}:{}),description,
+ oracle,provenance:{kind:'analytic-control',sources:[source,mechanics,'https://github.com/smogon/pokemon-showdown/blob/master/data/items.ts','https://github.com/smogon/pokemon-showdown/blob/master/data/conditions.ts'],notes:'Mechanics-test-inspired Run & Bun controls, not reproductions of recorded battles.'},
  snapshot:{player,opponent,field:{}}};}
 const tie=()=>referenceMon('Mew',['Seismic Toss'],{level:50,hp:50});
 export const accuracyFixtures=[
@@ -30,4 +30,16 @@ export const accuracyFixtures=[
   'triple-axel','Exactly three successful hits are needed, regardless of critical rolls'),
  fixture('oracle-skill-link-axel',referenceMon('Cinccino',['Triple Axel'],{hp:1,ability:'Skill Link'}),referenceMon('Blissey',['Seismic Toss'],{hp:330}),
   'skill-link-axel','Skill Link removes the second and third accuracy checks'),
+ fixture('oracle-focus-three',referenceMon('Alakazam',['Focus Blast'],{hp:201}),referenceMon('Blissey',['Seismic Toss'],{hp:1}),
+  'complex-focus-three','Three attempts before fixed-damage retaliation KOs'),
+ fixture('oracle-paralysis-three',referenceMon('Pikachu',['Quick Attack'],{hp:201,status:'par'}),referenceMon('Blissey',['Seismic Toss'],{hp:1}),
+  'complex-paralysis-three','Three priority opportunities with independent full paralysis'),
+ fixture('oracle-sash-paralysis',referenceMon('Pikachu',['Quick Attack'],{level:1,status:'par',item:'Focus Sash'}),referenceMon('Blissey',['Seismic Toss'],{hp:1}),
+  'complex-sash-paralysis','Focus Sash buys a second priority opportunity after full paralysis'),
+ fixture('oracle-poison-window',referenceMon('Alakazam',['Focus Blast'],{hp:101,status:'psn'}),referenceMon('Blissey',['Seismic Toss'],{hp:1}),
+  'complex-poison-window','Poison removes the second attack opportunity after a miss'),
+ fixture('oracle-choice-guaranteed',referenceMon('Alakazam',['Focus Blast','Seismic Toss'],{hp:101}),referenceMon('Blissey',['Seismic Toss'],{hp:150}),
+  'complex-choice-guaranteed','Two guaranteed fixed hits beat repeated inaccurate knockout attempts'),
+ fixture('oracle-choice-adaptive',referenceMon('Alakazam',['Focus Blast','Seismic Toss'],{hp:101}),referenceMon('Blissey',['Seismic Toss'],{hp:250}),
+  'complex-choice-adaptive','After Focus Blast, finish with Seismic Toss on a hit; retry for a critical on a miss'),
 ];

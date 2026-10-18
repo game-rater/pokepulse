@@ -303,6 +303,114 @@
           "proof": "Max two critical hits 308 < HP 330 <= min three normal hits 348; accuracy 9/10 with Skill Link."
         }
       }
+    },
+    {
+      "id": "oracle-focus-three",
+      "input_sha256": "9f9cfcca77eb8a228766ba5930772aacfcef13f121c23f120bca48e0521e5737",
+      "models": {
+        "minimax": {
+          "status": "analytic",
+          "expected_percent": 99.2,
+          "fraction": "124/125",
+          "proof": "Each miss costs 100 HP; a faster attacker at 201 HP gets three attempts: 1 - (1/5)^3."
+        },
+        "npc-ai": {
+          "status": "analytic",
+          "expected_percent": 99.2,
+          "fraction": "124/125",
+          "proof": "Each miss costs 100 HP; a faster attacker at 201 HP gets three attempts: 1 - (1/5)^3."
+        }
+      }
+    },
+    {
+      "id": "oracle-paralysis-three",
+      "input_sha256": "e44ffe5168b39aedd23e2bf340e1700be58c8fc7df54df109a2bbc7da2763e2a",
+      "models": {
+        "minimax": {
+          "status": "analytic",
+          "expected_percent": 98.4375,
+          "fraction": "63/64",
+          "proof": "Quick Attack has priority on all three turns. Only three full-paralysis events lose: 1 - (1/4)^3."
+        },
+        "npc-ai": {
+          "status": "analytic",
+          "expected_percent": 98.4375,
+          "fraction": "63/64",
+          "proof": "Quick Attack has priority on all three turns. Only three full-paralysis events lose: 1 - (1/4)^3."
+        }
+      }
+    },
+    {
+      "id": "oracle-sash-paralysis",
+      "input_sha256": "e09d1915d01cb615726e3dce58e217219f0a4d06b01e8d1da7a49394a304809b",
+      "models": {
+        "minimax": {
+          "status": "analytic",
+          "expected_percent": 93.75,
+          "fraction": "15/16",
+          "proof": "Priority avoids the paralysis Speed penalty. First failure consumes Focus Sash; only full paralysis on both attempts loses: 1 - (1/4)^2."
+        },
+        "npc-ai": {
+          "status": "analytic",
+          "expected_percent": 93.75,
+          "fraction": "15/16",
+          "proof": "Priority avoids the paralysis Speed penalty. First failure consumes Focus Sash; only full paralysis on both attempts loses: 1 - (1/4)^2."
+        }
+      }
+    },
+    {
+      "id": "oracle-poison-window",
+      "input_sha256": "fdc2ca6dfa3aec23fea94bb75d9fbc2dda893f7a1b3a9a8f3fa98b015b0c2b5d",
+      "models": {
+        "minimax": {
+          "status": "analytic",
+          "expected_percent": 80,
+          "fraction": "4/5",
+          "proof": "On a miss, Seismic Toss leaves one HP and end-of-turn poison KOs. Only the first attack can win."
+        },
+        "npc-ai": {
+          "status": "analytic",
+          "expected_percent": 80,
+          "fraction": "4/5",
+          "proof": "On a miss, Seismic Toss leaves one HP and end-of-turn poison KOs. Only the first attack can win."
+        }
+      }
+    },
+    {
+      "id": "oracle-choice-guaranteed",
+      "input_sha256": "cfd25788a907ed04b53f20976854692a1b4b226c52d48a5280222c46c0c6536f",
+      "models": {
+        "minimax": {
+          "status": "analytic",
+          "expected_percent": 100,
+          "fraction": "1/1",
+          "proof": "Use Seismic Toss twice for a guaranteed win; repeated Focus Blast would win with probability 24/25."
+        },
+        "npc-ai": {
+          "status": "analytic",
+          "expected_percent": 100,
+          "fraction": "1/1",
+          "proof": "Use Seismic Toss twice for a guaranteed win; repeated Focus Blast would win with probability 24/25."
+        }
+      }
+    },
+    {
+      "id": "oracle-choice-adaptive",
+      "input_sha256": "379495ec2528e7c795e3e03539f3a141cd4c385afaca6609b6645b4eb7f80c32",
+      "models": {
+        "minimax": {
+          "status": "analytic",
+          "expected_percent": 81,
+          "fraction": "81/100",
+          "proof": "Focus Blast first: a hit (4/5) wins immediately or enables a guaranteed Seismic Toss finish. After a miss (1/5), only a hitting critical Focus Blast wins (4/5 * 1/16). Total 4/5 + 1/5 * 4/5 * 1/16 = 81/100. Seismic Toss first gives only 4/5. Normal damage 172-204; critical 260-306."
+        },
+        "npc-ai": {
+          "status": "analytic",
+          "expected_percent": 81,
+          "fraction": "81/100",
+          "proof": "Focus Blast first: a hit (4/5) wins immediately or enables a guaranteed Seismic Toss finish. After a miss (1/5), only a hitting critical Focus Blast wins (4/5 * 1/16). Total 4/5 + 1/5 * 4/5 * 1/16 = 81/100. Seismic Toss first gives only 4/5. Normal damage 172-204; critical 260-306."
+        }
+      }
     }
   ]
 }

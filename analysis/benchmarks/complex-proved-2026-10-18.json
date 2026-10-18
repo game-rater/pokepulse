@@ -1,0 +1,1408 @@
+{
+  "created_at": "2026-10-18T09:21:42.237Z",
+  "node": "v24.19.0",
+  "seconds": 3,
+  "trials": 1,
+  "opponent_model": "minimax",
+  "source_hashes": {
+    "analysis/sampled-moves.mjs": "db4a7706215f1f1656d73885385461e3e1f69a77110c55a04a0e2bf867eebb24",
+    "analysis/retained-turn.mjs": "0c19617e6701d098426698abd28a0007321622eebebf21cfd175be628b0598c6",
+    "analysis/complete-moves.mjs": "1fb19ef46f21bf6725be0820eea197667c052219ad5518f402fca4bd2a962615",
+    "analysis/search.mjs": "0758c9ec608cb5241a2bfa7eb0d16525886e7b5bd6b6fd43b03fcf00bada709f",
+    "analysis/result-contract.mjs": "d495ee9c3731e3e795c6cc56e6db2301846fbaecc899a6983bb7ebbbacc2e2b3",
+    "analysis/continuation-policy.mjs": "10b112b98acaa092fa742f92b5a08f96825756c93857655102b5081e192cf4ab",
+    "scripts/search-benchmark-fixtures.mjs": "49acd5e19f3f41de2790e3b30f94c5f253ebcca1b612e80c3922e319e3cfa0a9",
+    "scripts/real-battle-fixtures.mjs": "be6f5d6f5afe59a2caefe4e7c159ea80f2f0a442e80aff33e568a4134fefb236",
+    "scripts/accuracy-benchmark-fixtures.mjs": "6f8b1d5b71170cbf94a339d4c40f0b7a12641559393aa9e8af922c207273e3a0",
+    "scripts/benchmark-oracles.mjs": "38e3c853a9c9e13cd568103a0228b8f046b2f1764f1a0de152866c0d14a45065",
+    "scripts/benchmark-references.json": "d72d76d734ee8d66091656059a5be4015c9347a2898e959ff2e4642501df6ea0",
+    "vendor/showdown/dist/sim/battle-actions.js": "15132d6f3347c56604b2dfb6e0e249d3b2fb4c1a223ae52c4c03f5f38979084d"
+  },
+  "method": "Isolated processes; engine initialization excluded; fixed native RNG seeds; alternating mode order; identical per-pass and sample budgets.",
+  "summary": [
+    {
+      "case": "oracle-focus-three",
+      "mode": "hybrid",
+      "opponent_model": "minimax",
+      "first_estimate_ms": 110.24879999999996,
+      "elapsed_ms": 686.4772999999999,
+      "reroot_first_estimate_ms": null,
+      "reuse_hits": 0,
+      "first_second_usable": 1,
+      "first_second_error_pp": 0.20000000000000284,
+      "first_second_goal_met": 1,
+      "accuracy_reference_available": true,
+      "score_at_1s": 99,
+      "score_at_3s": 99,
+      "score_at_10s": 99,
+      "max_slice_ms": 110.17789999999991,
+      "samples": 128,
+      "peak_rss_mb": 167.13671875,
+      "completed": 1
+    },
+    {
+      "case": "oracle-paralysis-three",
+      "mode": "hybrid",
+      "opponent_model": "minimax",
+      "first_estimate_ms": 110.42369999999994,
+      "elapsed_ms": 619.6922000000001,
+      "reroot_first_estimate_ms": null,
+      "reuse_hits": 0,
+      "first_second_usable": 1,
+      "first_second_error_pp": 1.5625,
+      "first_second_goal_met": 1,
+      "accuracy_reference_available": true,
+      "score_at_1s": 96.875,
+      "score_at_3s": 96.875,
+      "score_at_10s": 96.875,
+      "max_slice_ms": 110.33360000000005,
+      "samples": 128,
+      "peak_rss_mb": 165.7421875,
+      "completed": 1
+    },
+    {
+      "case": "oracle-sash-paralysis",
+      "mode": "hybrid",
+      "opponent_model": "minimax",
+      "first_estimate_ms": 111.22879999999998,
+      "elapsed_ms": 488.82450000000006,
+      "reroot_first_estimate_ms": null,
+      "reuse_hits": 0,
+      "first_second_usable": 1,
+      "first_second_error_pp": 0,
+      "first_second_goal_met": 1,
+      "accuracy_reference_available": true,
+      "score_at_1s": 93.75,
+      "score_at_3s": 93.75,
+      "score_at_10s": 93.75,
+      "max_slice_ms": 111.1318,
+      "samples": 128,
+      "peak_rss_mb": 165.1015625,
+      "completed": 1
+    },
+    {
+      "case": "oracle-poison-window",
+      "mode": "hybrid",
+      "opponent_model": "minimax",
+      "first_estimate_ms": 112.20339999999999,
+      "elapsed_ms": 457.9724000000001,
+      "reroot_first_estimate_ms": null,
+      "reuse_hits": 0,
+      "first_second_usable": 1,
+      "first_second_error_pp": 7.105427357601002e-14,
+      "first_second_goal_met": 1,
+      "accuracy_reference_available": true,
+      "score_at_1s": 80.00000000000007,
+      "score_at_3s": 80.00000000000007,
+      "score_at_10s": 80.00000000000007,
+      "max_slice_ms": 112.11609999999996,
+      "samples": 128,
+      "peak_rss_mb": 165.36328125,
+      "completed": 1
+    },
+    {
+      "case": "oracle-choice-guaranteed",
+      "mode": "hybrid",
+      "opponent_model": "minimax",
+      "first_estimate_ms": 114.92970000000003,
+      "elapsed_ms": 1251.6623,
+      "reroot_first_estimate_ms": null,
+      "reuse_hits": 0,
+      "first_second_usable": 1,
+      "first_second_error_pp": 4.283093463642047,
+      "first_second_goal_met": 1,
+      "accuracy_reference_available": true,
+      "score_at_1s": 95.71690653635795,
+      "score_at_3s": 99,
+      "score_at_10s": 99,
+      "max_slice_ms": 114.8469,
+      "samples": 256,
+      "peak_rss_mb": 171.73828125,
+      "completed": 1
+    },
+    {
+      "case": "oracle-choice-adaptive",
+      "mode": "hybrid",
+      "opponent_model": "minimax",
+      "first_estimate_ms": 115.35839999999996,
+      "elapsed_ms": 2382.0188,
+      "reroot_first_estimate_ms": null,
+      "reuse_hits": 0,
+      "first_second_usable": 1,
+      "first_second_error_pp": 5.720293219390754,
+      "first_second_goal_met": 1,
+      "accuracy_reference_available": true,
+      "score_at_1s": 86.72029321939075,
+      "score_at_3s": 83.24999999999999,
+      "score_at_10s": 83.24999999999999,
+      "max_slice_ms": 115.2772,
+      "samples": 256,
+      "peak_rss_mb": 251.6171875,
+      "completed": 1
+    }
+  ],
+  "rows": [
+    {
+      "trial": 0,
+      "reference": {
+        "status": "analytic",
+        "expected_percent": 99.2,
+        "fraction": "124/125",
+        "proof": "Each miss costs 100 HP; a faster attacker at 201 HP gets three attempts: 1 - (1/5)^3.",
+        "input_sha256": "9f9cfcca77eb8a228766ba5930772aacfcef13f121c23f120bca48e0521e5737"
+      },
+      "case": "oracle-focus-three",
+      "mode": "hybrid",
+      "opponent_model": "minimax",
+      "fixture_hash": "9f9cfcca77eb8a228766ba5930772aacfcef13f121c23f120bca48e0521e5737",
+      "provenance": {
+        "kind": "analytic-control",
+        "sources": [
+          "https://github.com/smogon/damage-calc/blob/master/calc/src/test/calc.test.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/moves.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/items.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/conditions.ts"
+        ],
+        "notes": "Mechanics-test-inspired Run & Bun controls, not reproductions of recorded battles."
+      },
+      "checkpoints": {
+        "1000": {
+          "measured": true,
+          "score": 99,
+          "available_at_ms": 686.3915000000001
+        },
+        "3000": {
+          "measured": true,
+          "score": 99,
+          "available_at_ms": 686.3915000000001
+        },
+        "10000": {
+          "measured": true,
+          "score": 99,
+          "available_at_ms": 686.3915000000001
+        }
+      },
+      "input_blocked": false,
+      "unresolved_reasons": [],
+      "first_estimate_ms": 110.24879999999996,
+      "elapsed_ms": 686.4772999999999,
+      "cpu_ms": 1031,
+      "max_slice_ms": 110.17789999999991,
+      "peak_rss_mb": 167.13671875,
+      "score": 99,
+      "absolute_error_pp": 0.20000000000000284,
+      "samples": 128,
+      "done": true,
+      "retained_states": 3,
+      "total_native_rollouts": 136,
+      "exact_next_turn": true,
+      "next_turn_expansions": 116,
+      "merged_states": 0,
+      "first_second": {
+        "score": 99,
+        "available_at_ms": 686.3915000000001,
+        "absolute_error_pp": 0.20000000000000284,
+        "reference": 99.2,
+        "reference_kind": "analytic",
+        "goal_met": true
+      },
+      "prediction": {
+        "schema_version": 1,
+        "kind": "estimate",
+        "certificate": null,
+        "search": {
+          "status": "sample-budget-finished",
+          "resolved": false
+        },
+        "reasons": [],
+        "estimate": {
+          "score": 99,
+          "basis": "simulation-estimate"
+        }
+      },
+      "readings": [
+        {
+          "elapsed_ms": 110.24879999999996,
+          "score": 99,
+          "samples": 21,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 213.82370000000003,
+          "score": 99,
+          "samples": 43,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 315.8596000000001,
+          "score": 99,
+          "samples": 63,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 418.5952000000001,
+          "score": 99,
+          "samples": 86,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 522.2782000000001,
+          "score": 99,
+          "samples": 114,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 597.8682,
+          "score": 99,
+          "samples": 128,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 613.9574000000001,
+          "score": 99,
+          "samples": 128,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 630.5988000000001,
+          "score": 99,
+          "samples": 128,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 648.0054000000001,
+          "score": 99,
+          "samples": 128,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 665.5812999999999,
+          "score": 99,
+          "samples": 128,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 681.8611,
+          "score": 99,
+          "samples": 128,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 686.3915000000001,
+          "score": 99,
+          "samples": 128,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": true
+        }
+      ]
+    },
+    {
+      "trial": 0,
+      "reference": {
+        "status": "analytic",
+        "expected_percent": 98.4375,
+        "fraction": "63/64",
+        "proof": "Quick Attack has priority on all three turns. Only three full-paralysis events lose: 1 - (1/4)^3.",
+        "input_sha256": "e44ffe5168b39aedd23e2bf340e1700be58c8fc7df54df109a2bbc7da2763e2a"
+      },
+      "case": "oracle-paralysis-three",
+      "mode": "hybrid",
+      "opponent_model": "minimax",
+      "fixture_hash": "e44ffe5168b39aedd23e2bf340e1700be58c8fc7df54df109a2bbc7da2763e2a",
+      "provenance": {
+        "kind": "analytic-control",
+        "sources": [
+          "https://github.com/smogon/damage-calc/blob/master/calc/src/test/calc.test.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/moves.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/items.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/conditions.ts"
+        ],
+        "notes": "Mechanics-test-inspired Run & Bun controls, not reproductions of recorded battles."
+      },
+      "checkpoints": {
+        "1000": {
+          "measured": true,
+          "score": 96.875,
+          "available_at_ms": 619.603
+        },
+        "3000": {
+          "measured": true,
+          "score": 96.875,
+          "available_at_ms": 619.603
+        },
+        "10000": {
+          "measured": true,
+          "score": 96.875,
+          "available_at_ms": 619.603
+        }
+      },
+      "input_blocked": false,
+      "unresolved_reasons": [],
+      "first_estimate_ms": 110.42369999999994,
+      "elapsed_ms": 619.6922000000001,
+      "cpu_ms": 921,
+      "max_slice_ms": 110.33360000000005,
+      "peak_rss_mb": 165.7421875,
+      "score": 96.875,
+      "absolute_error_pp": 1.5625,
+      "samples": 128,
+      "done": true,
+      "retained_states": 3,
+      "total_native_rollouts": 136,
+      "exact_next_turn": true,
+      "next_turn_expansions": 41,
+      "merged_states": 0,
+      "first_second": {
+        "score": 96.875,
+        "available_at_ms": 619.603,
+        "absolute_error_pp": 1.5625,
+        "reference": 98.4375,
+        "reference_kind": "analytic",
+        "goal_met": true
+      },
+      "prediction": {
+        "schema_version": 1,
+        "kind": "estimate",
+        "certificate": null,
+        "search": {
+          "status": "sample-budget-finished",
+          "resolved": false
+        },
+        "reasons": [],
+        "estimate": {
+          "score": 96.875,
+          "basis": "simulation-estimate"
+        }
+      },
+      "readings": [
+        {
+          "elapsed_ms": 110.42369999999994,
+          "score": 97.5,
+          "samples": 19,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 210.5095,
+          "score": 98.86363636363636,
+          "samples": 44,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 308.36990000000003,
+          "score": 99,
+          "samples": 67,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 403.4615,
+          "score": 99,
+          "samples": 88,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 498.42279999999994,
+          "score": 99,
+          "samples": 110,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 566.678,
+          "score": 99,
+          "samples": 128,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 619.603,
+          "score": 96.875,
+          "samples": 128,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": true
+        }
+      ]
+    },
+    {
+      "trial": 0,
+      "reference": {
+        "status": "analytic",
+        "expected_percent": 93.75,
+        "fraction": "15/16",
+        "proof": "Priority avoids the paralysis Speed penalty. First failure consumes Focus Sash; only full paralysis on both attempts loses: 1 - (1/4)^2.",
+        "input_sha256": "e09d1915d01cb615726e3dce58e217219f0a4d06b01e8d1da7a49394a304809b"
+      },
+      "case": "oracle-sash-paralysis",
+      "mode": "hybrid",
+      "opponent_model": "minimax",
+      "fixture_hash": "e09d1915d01cb615726e3dce58e217219f0a4d06b01e8d1da7a49394a304809b",
+      "provenance": {
+        "kind": "analytic-control",
+        "sources": [
+          "https://github.com/smogon/damage-calc/blob/master/calc/src/test/calc.test.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/moves.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/items.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/conditions.ts"
+        ],
+        "notes": "Mechanics-test-inspired Run & Bun controls, not reproductions of recorded battles."
+      },
+      "checkpoints": {
+        "1000": {
+          "measured": true,
+          "score": 93.75,
+          "available_at_ms": 488.75120000000004
+        },
+        "3000": {
+          "measured": true,
+          "score": 93.75,
+          "available_at_ms": 488.75120000000004
+        },
+        "10000": {
+          "measured": true,
+          "score": 93.75,
+          "available_at_ms": 488.75120000000004
+        }
+      },
+      "input_blocked": false,
+      "unresolved_reasons": [],
+      "first_estimate_ms": 111.22879999999998,
+      "elapsed_ms": 488.82450000000006,
+      "cpu_ms": 672,
+      "max_slice_ms": 111.1318,
+      "peak_rss_mb": 165.1015625,
+      "score": 93.75,
+      "absolute_error_pp": 0,
+      "samples": 128,
+      "done": true,
+      "retained_states": 2,
+      "total_native_rollouts": 136,
+      "exact_next_turn": true,
+      "next_turn_expansions": 41,
+      "merged_states": 0,
+      "first_second": {
+        "score": 93.75,
+        "available_at_ms": 488.75120000000004,
+        "absolute_error_pp": 0,
+        "reference": 93.75,
+        "reference_kind": "analytic",
+        "goal_met": true
+      },
+      "prediction": {
+        "schema_version": 1,
+        "kind": "estimate",
+        "certificate": null,
+        "search": {
+          "status": "sample-budget-finished",
+          "resolved": false
+        },
+        "reasons": [],
+        "estimate": {
+          "score": 93.75,
+          "basis": "simulation-estimate"
+        }
+      },
+      "readings": [
+        {
+          "elapsed_ms": 111.22879999999998,
+          "score": 95.83333333333334,
+          "samples": 23,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 207.0457,
+          "score": 95.1923076923077,
+          "samples": 52,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 302.2033,
+          "score": 93.58974358974359,
+          "samples": 77,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 395.0558,
+          "score": 93.05555555555556,
+          "samples": 108,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 461.6188000000001,
+          "score": 92.96875,
+          "samples": 128,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 488.75120000000004,
+          "score": 93.75,
+          "samples": 128,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": true
+        }
+      ]
+    },
+    {
+      "trial": 0,
+      "reference": {
+        "status": "analytic",
+        "expected_percent": 80,
+        "fraction": "4/5",
+        "proof": "On a miss, Seismic Toss leaves one HP and end-of-turn poison KOs. Only the first attack can win.",
+        "input_sha256": "fdc2ca6dfa3aec23fea94bb75d9fbc2dda893f7a1b3a9a8f3fa98b015b0c2b5d"
+      },
+      "case": "oracle-poison-window",
+      "mode": "hybrid",
+      "opponent_model": "minimax",
+      "fixture_hash": "fdc2ca6dfa3aec23fea94bb75d9fbc2dda893f7a1b3a9a8f3fa98b015b0c2b5d",
+      "provenance": {
+        "kind": "analytic-control",
+        "sources": [
+          "https://github.com/smogon/damage-calc/blob/master/calc/src/test/calc.test.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/moves.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/items.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/conditions.ts"
+        ],
+        "notes": "Mechanics-test-inspired Run & Bun controls, not reproductions of recorded battles."
+      },
+      "checkpoints": {
+        "1000": {
+          "measured": true,
+          "score": 80.00000000000007,
+          "available_at_ms": 457.86270000000013
+        },
+        "3000": {
+          "measured": true,
+          "score": 80.00000000000007,
+          "available_at_ms": 457.86270000000013
+        },
+        "10000": {
+          "measured": true,
+          "score": 80.00000000000007,
+          "available_at_ms": 457.86270000000013
+        }
+      },
+      "input_blocked": false,
+      "unresolved_reasons": [],
+      "first_estimate_ms": 112.20339999999999,
+      "elapsed_ms": 457.9724000000001,
+      "cpu_ms": 673,
+      "max_slice_ms": 112.11609999999996,
+      "peak_rss_mb": 165.36328125,
+      "score": 80.00000000000007,
+      "absolute_error_pp": 7.105427357601002e-14,
+      "samples": 128,
+      "done": true,
+      "retained_states": 1,
+      "total_native_rollouts": 128,
+      "exact_next_turn": true,
+      "next_turn_expansions": 102,
+      "merged_states": 0,
+      "first_second": {
+        "score": 80.00000000000007,
+        "available_at_ms": 457.86270000000013,
+        "absolute_error_pp": 7.105427357601002e-14,
+        "reference": 80,
+        "reference_kind": "analytic",
+        "goal_met": true
+      },
+      "prediction": {
+        "schema_version": 1,
+        "kind": "estimate",
+        "certificate": null,
+        "search": {
+          "status": "sample-budget-finished",
+          "resolved": false
+        },
+        "reasons": [],
+        "estimate": {
+          "score": 80.00000000000007,
+          "basis": "simulation-estimate"
+        }
+      },
+      "readings": [
+        {
+          "elapsed_ms": 112.20339999999999,
+          "score": 80,
+          "samples": 38,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 206.5018,
+          "score": 80,
+          "samples": 80,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 299.34220000000005,
+          "score": 80,
+          "samples": 124,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 324.38570000000004,
+          "score": 80,
+          "samples": 128,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 340.68139999999994,
+          "score": 80,
+          "samples": 128,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 357.83269999999993,
+          "score": 80,
+          "samples": 128,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 374.135,
+          "score": 80,
+          "samples": 128,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 392.54639999999995,
+          "score": 80,
+          "samples": 128,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 409.34130000000005,
+          "score": 80,
+          "samples": 128,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 425.5195000000001,
+          "score": 80,
+          "samples": 128,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 442.46000000000004,
+          "score": 80,
+          "samples": 128,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 457.86270000000013,
+          "score": 80.00000000000007,
+          "samples": 128,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": true
+        }
+      ]
+    },
+    {
+      "trial": 0,
+      "reference": {
+        "status": "analytic",
+        "expected_percent": 100,
+        "fraction": "1/1",
+        "proof": "Use Seismic Toss twice for a guaranteed win; repeated Focus Blast would win with probability 24/25.",
+        "input_sha256": "cfd25788a907ed04b53f20976854692a1b4b226c52d48a5280222c46c0c6536f"
+      },
+      "case": "oracle-choice-guaranteed",
+      "mode": "hybrid",
+      "opponent_model": "minimax",
+      "fixture_hash": "cfd25788a907ed04b53f20976854692a1b4b226c52d48a5280222c46c0c6536f",
+      "provenance": {
+        "kind": "analytic-control",
+        "sources": [
+          "https://github.com/smogon/damage-calc/blob/master/calc/src/test/calc.test.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/moves.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/items.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/conditions.ts"
+        ],
+        "notes": "Mechanics-test-inspired Run & Bun controls, not reproductions of recorded battles."
+      },
+      "checkpoints": {
+        "1000": {
+          "measured": true,
+          "score": 95.71690653635795,
+          "available_at_ms": 931.1399
+        },
+        "3000": {
+          "measured": true,
+          "score": 99,
+          "available_at_ms": 1251.567
+        },
+        "10000": {
+          "measured": true,
+          "score": 99,
+          "available_at_ms": 1251.567
+        }
+      },
+      "input_blocked": false,
+      "unresolved_reasons": [],
+      "first_estimate_ms": 114.92970000000003,
+      "elapsed_ms": 1251.6623,
+      "cpu_ms": 1687,
+      "max_slice_ms": 114.8469,
+      "peak_rss_mb": 171.73828125,
+      "score": 99,
+      "absolute_error_pp": 1,
+      "samples": 256,
+      "done": true,
+      "retained_states": 3,
+      "total_native_rollouts": 288,
+      "exact_next_turn": true,
+      "next_turn_expansions": 128,
+      "merged_states": 0,
+      "first_second": {
+        "score": 95.71690653635795,
+        "available_at_ms": 931.1399,
+        "absolute_error_pp": 4.283093463642047,
+        "reference": 100,
+        "reference_kind": "analytic",
+        "goal_met": true
+      },
+      "prediction": {
+        "schema_version": 1,
+        "kind": "estimate",
+        "certificate": null,
+        "search": {
+          "status": "sample-budget-finished",
+          "resolved": false
+        },
+        "reasons": [],
+        "estimate": {
+          "score": 99,
+          "basis": "simulation-estimate"
+        }
+      },
+      "readings": [
+        {
+          "elapsed_ms": 114.92970000000003,
+          "score": 91.48885033623318,
+          "samples": 9,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 217.1055,
+          "score": 96.59554013449328,
+          "samples": 19,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 319.81229999999994,
+          "score": 98.10863340805183,
+          "samples": 35,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 423.5689000000001,
+          "score": 98.78412147660474,
+          "samples": 54,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 525.7784,
+          "score": 96.49898639420303,
+          "samples": 79,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 627.3328,
+          "score": 96.26837310278718,
+          "samples": 102,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 728.429,
+          "score": 96.45386971734746,
+          "samples": 129,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 829.7349,
+          "score": 96.57444251681167,
+          "samples": 153,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 931.1399,
+          "score": 95.71690653635795,
+          "samples": 178,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1030.5693,
+          "score": 96.28259812589559,
+          "samples": 203,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1132.0474,
+          "score": 95.71629501120778,
+          "samples": 230,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1233.4187000000002,
+          "score": 99,
+          "samples": 251,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": true
+        },
+        {
+          "elapsed_ms": 1251.567,
+          "score": 99,
+          "samples": 256,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": true
+        }
+      ]
+    },
+    {
+      "trial": 0,
+      "reference": {
+        "status": "analytic",
+        "expected_percent": 81,
+        "fraction": "81/100",
+        "proof": "Focus Blast first: a hit (4/5) wins immediately or enables a guaranteed Seismic Toss finish. After a miss (1/5), only a hitting critical Focus Blast wins (4/5 * 1/16). Total 4/5 + 1/5 * 4/5 * 1/16 = 81/100. Seismic Toss first gives only 4/5. Normal damage 172-204; critical 260-306.",
+        "input_sha256": "379495ec2528e7c795e3e03539f3a141cd4c385afaca6609b6645b4eb7f80c32"
+      },
+      "case": "oracle-choice-adaptive",
+      "mode": "hybrid",
+      "opponent_model": "minimax",
+      "fixture_hash": "379495ec2528e7c795e3e03539f3a141cd4c385afaca6609b6645b4eb7f80c32",
+      "provenance": {
+        "kind": "analytic-control",
+        "sources": [
+          "https://github.com/smogon/damage-calc/blob/master/calc/src/test/calc.test.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/moves.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/items.ts",
+          "https://github.com/smogon/pokemon-showdown/blob/master/data/conditions.ts"
+        ],
+        "notes": "Mechanics-test-inspired Run & Bun controls, not reproductions of recorded battles."
+      },
+      "checkpoints": {
+        "1000": {
+          "measured": true,
+          "score": 86.72029321939075,
+          "available_at_ms": 934.0136
+        },
+        "3000": {
+          "measured": true,
+          "score": 83.24999999999999,
+          "available_at_ms": 2381.889
+        },
+        "10000": {
+          "measured": true,
+          "score": 83.24999999999999,
+          "available_at_ms": 2381.889
+        }
+      },
+      "input_blocked": false,
+      "unresolved_reasons": [],
+      "first_estimate_ms": 115.35839999999996,
+      "elapsed_ms": 2382.0188,
+      "cpu_ms": 3141,
+      "max_slice_ms": 115.2772,
+      "peak_rss_mb": 251.6171875,
+      "score": 83.24999999999999,
+      "absolute_error_pp": 2.249999999999986,
+      "samples": 256,
+      "done": true,
+      "retained_states": 35,
+      "total_native_rollouts": 800,
+      "exact_next_turn": true,
+      "next_turn_expansions": 293,
+      "merged_states": 0,
+      "first_second": {
+        "score": 86.72029321939075,
+        "available_at_ms": 934.0136,
+        "absolute_error_pp": 5.720293219390754,
+        "reference": 81,
+        "reference_kind": "analytic",
+        "goal_met": true
+      },
+      "prediction": {
+        "schema_version": 1,
+        "kind": "estimate",
+        "certificate": null,
+        "search": {
+          "status": "sample-budget-finished",
+          "resolved": false
+        },
+        "reasons": [],
+        "estimate": {
+          "score": 83.24999999999999,
+          "basis": "simulation-estimate"
+        }
+      },
+      "readings": [
+        {
+          "elapsed_ms": 115.35839999999996,
+          "score": 60.98853435171567,
+          "samples": 8,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 218.42439999999988,
+          "score": 75.6824295320948,
+          "samples": 14,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 320.7495999999999,
+          "score": 88.65180044831091,
+          "samples": 30,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 425.07400000000007,
+          "score": 89.36106292029147,
+          "samples": 40,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 527.6384,
+          "score": 83.206321668738,
+          "samples": 58,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 629.3924999999999,
+          "score": 83.7854140249884,
+          "samples": 71,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 731.4285,
+          "score": 82.81479504422215,
+          "samples": 84,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 832.8824999999999,
+          "score": 84.28116340254415,
+          "samples": 102,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 934.0136,
+          "score": 86.72029321939075,
+          "samples": 121,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1040.7817,
+          "score": 81.59097111195165,
+          "samples": 144,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1142.5717,
+          "score": 83.71508982980338,
+          "samples": 165,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1243.2459999999999,
+          "score": 81.74159310144957,
+          "samples": 181,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1344.2225,
+          "score": 80.05711275366498,
+          "samples": 204,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1448.0469999999998,
+          "score": 80.05065518541974,
+          "samples": 222,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1547.0305,
+          "score": 80.59638467286037,
+          "samples": 245,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1602.7068000000002,
+          "score": 80.03089169849112,
+          "samples": 256,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1624.6699999999998,
+          "score": 80.03089169849112,
+          "samples": 256,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1647.4185,
+          "score": 80.03089169849112,
+          "samples": 256,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1669.0966,
+          "score": 80.03089169849112,
+          "samples": 256,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1691.5891,
+          "score": 80.03089169849112,
+          "samples": 256,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1714.9327,
+          "score": 80.03089169849112,
+          "samples": 256,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1737.2470999999998,
+          "score": 80.03089169849112,
+          "samples": 256,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1776.3783999999998,
+          "score": 80.03089169849112,
+          "samples": 256,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1807.8255000000001,
+          "score": 80.03089169849112,
+          "samples": 256,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1833.9624999999999,
+          "score": 80.03089169849112,
+          "samples": 256,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1862.1022999999998,
+          "score": 80.03089169849112,
+          "samples": 256,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1886.0867999999998,
+          "score": 80.03089169849112,
+          "samples": 256,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1917.0597,
+          "score": 80.03089169849112,
+          "samples": 256,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1945.1566,
+          "score": 80.03089169849112,
+          "samples": 256,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1963.2348,
+          "score": 80.03089169849112,
+          "samples": 256,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 1997.6409,
+          "score": 80.03089169849112,
+          "samples": 256,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 2019.5122,
+          "score": 80.03089169849112,
+          "samples": 256,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 2052.5229,
+          "score": 80.03089169849112,
+          "samples": 256,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 2075.7677000000003,
+          "score": 80.03089169849112,
+          "samples": 256,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 2097.7484000000004,
+          "score": 80.03089169849112,
+          "samples": 256,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 2137.1877000000004,
+          "score": 80.03089169849112,
+          "samples": 256,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 2168.8532999999998,
+          "score": 80.03089169849112,
+          "samples": 256,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 2188.2216,
+          "score": 80.03089169849112,
+          "samples": 256,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 2215.6336,
+          "score": 80.03089169849112,
+          "samples": 256,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 2237.2493999999997,
+          "score": 80.03089169849112,
+          "samples": 256,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 2260.1408,
+          "score": 80.03089169849112,
+          "samples": 256,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 2286.0104,
+          "score": 80.03089169849112,
+          "samples": 256,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 2308.1931999999997,
+          "score": 80.03089169849112,
+          "samples": 256,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 2329.4646999999995,
+          "score": 80.03089169849112,
+          "samples": 256,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 2350.0729,
+          "score": 80.03089169849112,
+          "samples": 256,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": false
+        },
+        {
+          "elapsed_ms": 2370.5357000000004,
+          "score": 83.24999999999999,
+          "samples": 256,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": true
+        },
+        {
+          "elapsed_ms": 2381.889,
+          "score": 83.24999999999999,
+          "samples": 256,
+          "certainty": "estimate",
+          "certificate_width_pp": null,
+          "next_turn_expansion_complete": true
+        }
+      ]
+    }
+  ]
+}

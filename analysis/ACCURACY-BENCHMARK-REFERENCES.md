@@ -73,3 +73,7 @@ Minimax returned 99, 1, 50, 80, 75, 64.6875, and 90 percent respectively. Triple
 NPC-policy results were 99, 1, 51.5625, 80, 75, 64.6875, and 90 percent in the same order. Its Speed-tie error was 1.5625 points and Triple Axel error 8.2125 points.
 
 Both independently proved Lunatone losses returned 1% in their one-second benchmark runs, again reflecting the existing sampled-estimate cap. Their first estimates arrived at about 0.73 seconds.
+
+## More complex controls
+
+Six additional multi-turn, item/status and adaptive-strategy controls are documented in [complex proved benchmarks](COMPLEX-PROVED-BENCHMARKS.md), along with measured errors and concrete optimization opportunities. The original seven controls remain unchanged.

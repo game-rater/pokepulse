@@ -1,0 +1,45 @@
+{
+  "created_at": "2026-10-18T09:23:34.790Z",
+  "seconds": 3,
+  "trials": 1,
+  "source_hashes": {
+    "run-bun/search-service.mjs": "d473eb1468d43aef6040cee42036bfde0a62fb24d479c517fc4089145b2d4bc0",
+    "run-bun/search-worker.mjs": "480a2fd1a9c33bf729c11563f842e33b867b8b60890d049a1a2358bca60d6ee0",
+    "run-bun/refinement.mjs": "1c9e7005cbc824d5ed5587d3b0527528fd58c475273ebcf751c7f3598639c49d",
+    "analysis/retained-turn.mjs": "0c19617e6701d098426698abd28a0007321622eebebf21cfd175be628b0598c6",
+    "analysis/sampled-moves.mjs": "db4a7706215f1f1656d73885385461e3e1f69a77110c55a04a0e2bf867eebb24",
+    "scripts/real-battle-fixtures.mjs": "be6f5d6f5afe59a2caefe4e7c159ea80f2f0a442e80aff33e568a4134fefb236"
+  },
+  "method": "Isolated processes and alternating order; actual persistent SearchService workers; initial measurement includes worker startup; observed-turn measurement reuses those workers.",
+  "summary": [
+    {
+      "case": "oracle-choice-adaptive",
+      "mode": "fallback",
+      "first_estimate_ms": 1138.0773,
+      "next_turn_estimate_ms": null,
+      "cpu_ms": 1640,
+      "peak_rss_mb": 345.20703125,
+      "completed": 1
+    }
+  ],
+  "rows": [
+    {
+      "trial": 0,
+      "case": "oracle-choice-adaptive",
+      "mode": "fallback",
+      "cold": {
+        "first_estimate_ms": 1138.0773,
+        "elapsed_ms": 1261.3647999999998,
+        "cpu_ms": 1640,
+        "score": 81,
+        "complete": true,
+        "updates": 2,
+        "selected": "fallback",
+        "reused": false,
+        "samples": 0
+      },
+      "warm": null,
+      "peak_rss_mb": 345.20703125
+    }
+  ]
+}
