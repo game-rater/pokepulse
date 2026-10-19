@@ -55,6 +55,11 @@ reused and that active passive effects retain native timelines.
 
 ## Limits
 
+`reader-status.test.mjs` checks diagnostic state classification and the real
+Windows status-panel controls without opening a window. The API test uses an
+isolated reader and synthetic bridge packets to verify timestamps, staleness and
+recovery. These checks do not establish a live mGBA connection on the user's PC.
+
 `temporal-feature-model.test.mjs` exercises pure scoring independently of native
 execution. `evaluation-cache.test.mjs` covers lookup bounds/counters, feature-owner
 isolation, invalidation and resumable work. See

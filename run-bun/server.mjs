@@ -9,6 +9,7 @@ import {startBridge} from './bridge.mjs';
 import {integrationScript} from './integration.mjs';
 import {BattleRecorder} from './battle-recorder.mjs';
 import {historyDocument} from './history-view.mjs';
+import {readerStatus} from './reader-status.mjs';
 import {annotateEntryTurns} from './move-history.mjs';
 import {createHash} from 'node:crypto';
 const root = resolve('.');
@@ -20,6 +21,7 @@ engineFiles.push('analysis/bounded-cache.mjs','analysis/observation-key.mjs','an
 engineFiles.push('analysis/mechanics-contract.mjs');
 engineFiles.push('analysis/result-contract.mjs','run-bun/battle-state.mjs','analysis/strategic-endgame.mjs');
 engineFiles.push('run-bun/battle-recorder.mjs','run-bun/battle-history.mjs','run-bun/history-view.mjs','run-bun/history-app.mjs');
+engineFiles.push('run-bun/reader-status.mjs');
 engineFiles.push('run-bun/battle-messages.mjs','run-bun/loss-explanation.mjs','run-bun/integration.mjs','run-bun/bridge.mjs');
 const hashes=Object.fromEntries(await Promise.all(engineFiles.map(async file=>[file,createHash('sha256').update(await readFile(file)).digest('hex')])));
 const recorder=new BattleRecorder({directory:reportsDirectory,metadata:{engine_hashes:hashes,node:process.version,game:'Run & Bun 1.07',search_slices_ms:[150,250]}});
@@ -34,6 +36,7 @@ let effects = {player:{},opponent:{}};
 let live={};
 let cachedResult=null,lastBattle='',lastObservation='',currentPhase=null,analysisStateId=0,entryHistory={};
 let predictionError=null;
+let predictionStartedAt=null,predictionUpdatedAt=null;
 let predictionActors=null;
 const actorsOf=snapshot=>JSON.stringify([snapshot.player,snapshot.opponent].map(side=>[side.species,side.effects?.personality??null]));
 const searchService=new SearchService({parallel:process.env.POKEPULSE_SEARCH_MODE==='race'});
@@ -53,8 +56,9 @@ const listeners = new Set();
 function state(compact=false) {
   const a = pack.species.find(p => p.id === player), b = pack.species.find(p => p.id === opponent);
   const result=tracking.status==='battle'?cachedResult:null;
-  if(compact)return {optimizer,pack:{species:[a,b].map(p=>({id:p.id,name:p.name}))},player,opponent,live,tracking,result,recording_state_id:recorder.stateId,prediction_state_id:analysisStateId,battle_phase:currentPhase};
-  return {optimizer,pack,rules,player,opponent,battle,builds,field,effects,live,tracking,catalog:catalog(rules.generation),result};
+  const reader_status=readerStatus({tracking,result,battle_phase:currentPhase,prediction_error:predictionError,prediction_started_at:predictionStartedAt,prediction_updated_at:predictionUpdatedAt});
+  if(compact)return {optimizer,pack:{species:[a,b].map(p=>({id:p.id,name:p.name}))},player,opponent,live,tracking,result,reader_status,recording_state_id:recorder.stateId,prediction_state_id:analysisStateId,battle_phase:currentPhase};
+  return {optimizer,pack,rules,player,opponent,battle,builds,field,effects,live,tracking,catalog:catalog(rules.generation),result,reader_status};
 }
 function broadcast(){const snapshot=state(true);const key=JSON.stringify([tracking.status,tracking.message]);if(key!==recordedTracking){recordedTracking=key;recorder.append('tracking',{tracking});}for(const stream of listeners)stream.write(`data: ${JSON.stringify(snapshot)}\n\n`);}
 const maps=JSON.parse(await readFile('run-bun/reference/mappings.json','utf8'));
@@ -62,6 +66,7 @@ const c=catalog();
 function resetPrediction() {
   predictionActors=null;
   predictionError=null;
+  predictionStartedAt=null;
   latestSnapshot=null;latestWarnings=[];
   entryHistory={};
   searchService.cancel({keepWorkers:true});
@@ -78,7 +83,9 @@ function startPrediction(snapshot,signature,warnings) {
   const next=normalizeSnapshot(snapshot,pack,c,{source:'emulator'});
   const rootStateId=recorder.stateId;
   analysisStateId=rootStateId;
+  predictionStartedAt=Date.now();
   const {sameContext}=searchService.start(searchArgs(next),result=>{
+    predictionUpdatedAt=Date.now();
     cachedResult={
       ...result,
       pending:currentPhase?.kind!=='selection',
@@ -116,6 +123,7 @@ function observeBattle(snapshot,warnings) {
   // can briefly combine the new identity with the fainted Pokémon's zero HP.
   if(battle_phase?.kind!=='selection'&&predictionActors!==null&&actorsOf(snapshot)!==predictionActors){
     searchService.cancel({keepWorkers:true});cachedResult=null;lastBattle='';analysisStateId=0;
+    predictionStartedAt=null;
     return;
   }
   const terminal=snapshot.player.current_hp===0||snapshot.opponent.current_hp===0;
@@ -201,7 +209,9 @@ const server = http.createServer(async (req,res) => {
       let body='';for await(const chunk of req){body+=chunk;if(Buffer.byteLength(body)>2500000)throw Error('Snapshot too large.');}
       const next=normalizeSnapshot(JSON.parse(body),pack,catalog(),{source:'diagnostic'});
       searchService.cancel({keepWorkers:true});
+      predictionError=null;predictionStartedAt=Date.now();currentPhase=null;
       cachedResult=scoreBattle(...searchArgs(next),optimizer==='npc-ai'?{opponentModel:'npc-ai',forceNativeForecast:true,approximateCompleteMoves:true}:{});lastBattle='';
+      predictionUpdatedAt=Date.now();
       ({player,opponent,battle,builds,field,effects,live}=next);
       tracking={status:'battle',message:'Diagnostic snapshot · not emulator data',received_at:Date.now(),warnings:['This snapshot was submitted manually for diagnostics.']};
       cachedResult.warnings.push(...tracking.warnings);

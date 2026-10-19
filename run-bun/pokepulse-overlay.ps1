@@ -519,6 +519,9 @@ $moreMenu.Renderer = New-Object PokePulseMenuRenderer
 $moreMenu.ShowImageMargin = $false
 $moreMenu.ShowCheckMargin = $true
 $moreMenu.Font = [System.Drawing.Font]::new('Segoe UI',10)
+. (Join-Path $root 'run-bun\reader-status-panel.ps1')
+$readerStatusItem = $moreMenu.Items.Add('Connection and status')
+$readerStatusItem.Add_Click({ Show-ReaderStatusPanel $form })
 $script:npcAiEnabled = $false
 $npcAiItem = $moreMenu.Items.Add('Use NPC AI')
 $npcAiItem.CheckOnClick = $false
@@ -931,7 +934,11 @@ $timer.Add_Tick({
     try {
         $state = Invoke-RestMethod -Uri $stateUrl -TimeoutSec 1
         Update-LiveEstimate $state
-    } catch { Set-TargetScore $null;$script:outlookBounds=$null;$script:animationAnchor=$null;$script:status = 'RECONNECTING' }
+        Update-ReaderStatusPanel $state $true
+    } catch {
+        Set-TargetScore $null;$script:outlookBounds=$null;$script:animationAnchor=$null;$script:status = 'RECONNECTING'
+        Update-ReaderStatusPanel $state ($null -ne $state) $_.Exception.Message
+    }
     $form.RenderFrame()
     if($null -ne $state){ Send-DisplaySample }
 })
@@ -944,7 +951,7 @@ $script:animationTimer.Add_Tick({
 $script:windowSaveTimer = New-Object System.Windows.Forms.Timer
 $script:windowSaveTimer.Interval = 350
 $script:windowSaveTimer.Add_Tick({ $script:windowSaveTimer.Stop();Save-OverlayWindowSettings })
-$form.Add_FormClosing({ $timer.Stop();$script:animationTimer.Stop();$script:windowSaveTimer.Stop();Save-OverlayWindowSettings })
+$form.Add_FormClosing({ Close-ReaderStatusPanel;$timer.Stop();$script:animationTimer.Stop();$script:windowSaveTimer.Stop();Save-OverlayWindowSettings })
 $form.Add_Shown({
     $form.EnsureTaskbarButton()
     $script:bugHotkeyAvailable=$form.RegisterBugHotkey()

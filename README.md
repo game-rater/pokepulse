@@ -17,11 +17,15 @@ Open http://localhost:3001/. In mGBA, load your own Run & Bun game and load the 
 
 The Windows launchers belong to the packaged desktop distribution and expect its bundled files. A source checkout uses the commands above.
 
+On the desktop overlay, open **⋯ → Connection and status** to see whether the
+reader is connected, receiving fresh game data, calculating or missing required
+information. The panel includes the last game-update and prediction times.
+
 ## Scope
 
 The prediction concerns the current active matchup. It does not calculate full-team odds or plan switch-ins. Search may use sampled outcomes and heuristic continuations. Community calculator and NPC AI behavior are adapted for Run & Bun; this does not establish complete parity with the ROM.
 
-The performance goal is a useful first estimate in about one second, within ten percentage points of the eventual correct probability, followed by refinement. This is a development goal, not a guaranteed accuracy or latency specification.
+The performance goal is a useful first estimate in under 300 ms on a ready worker, within ten percentage points of the correct probability, followed by refinement. Worker startup is measured separately. This is a development goal, not a guaranteed accuracy or latency specification.
 
 ## Development
 
