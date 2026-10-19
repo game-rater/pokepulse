@@ -78,13 +78,13 @@ try {
     if ($parts.wins -ne 30 -or $parts.losses -ne 20 -or $parts.unresolved -ne 50) { throw 'Incorrect combined probability segments' }
     foreach ($mode in @('wins','losses','both','combined')) {
         Set-MeterMode $mode;$form.RenderFrame()
-        $expected=if($mode -eq 'losses'){'20.0%'}else{'30.0%'}
+        $expected=if($mode -eq 'losses'){'20%'}else{'30%'}
         if (-not @($script:textLayout | Where-Object {$_.text -eq $expected}).Count) { throw "Mode $mode disagrees with shared outcome shares" }
     }
     foreach ($verticalCase in @($false,$true)) {
         $script:vertical=$verticalCase;Update-OverlayLayout
         Set-MeterMode 'combined';$form.RenderFrame()
-        if (-not @($script:textLayout | Where-Object {$_.text -eq '30.0%'}).Count) { throw 'Combined number disagrees with the win share' }
+        if (-not @($script:textLayout | Where-Object {$_.text -eq '30%'}).Count) { throw 'Combined number disagrees with the win share' }
         $bitmap=$form.RenderBitmap()
         $bitmap.Save((Join-Path (Get-Location) ('overlay-combined-'+$verticalCase+'-preview.png')));$bitmap.Dispose()
     }

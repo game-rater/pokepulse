@@ -17,9 +17,9 @@ try {
     $script:animationDuration=$durationBefore
     $state=[pscustomobject]@{tracking=[pscustomobject]@{status='battle'};result=[pscustomobject]@{victory=75;display_score=75;outlook=[pscustomobject]@{complete=$true;lower_bound=75;upper_bound=75;unresolved=0}}}
     Update-LiveEstimate $state
-    if ((Get-OutcomeLabel 75 $true) -ne '25.0%') {throw 'Loss percentage was not complemented'}
+    if ((Get-OutcomeLabel 75 $true) -ne '25%') {throw 'Loss percentage was not complemented'}
     $script:outlookBounds=@{lower=60;upper=85;complete=$false;pending=$false}
-    if ((Get-OutcomeLabel 75) -ne '75.0%' -or (Get-OutcomeLabel 75 $true) -ne '25.0%') {throw 'Progressive labels do not match the animated values'}
+    if ((Get-OutcomeLabel 60) -ne '60%' -or (Get-OutcomeLabel 60 $true) -ne '15%') {throw 'Progressive labels do not match the shared outcome values'}
     $script:targetScore=75;$script:animating=$false
     foreach($vertical in @($false,$true)) {
         $script:vertical=$vertical;Update-OverlayLayout
@@ -44,7 +44,7 @@ try {
         }
     }
     $script:outlookBounds=@{lower=99.616;upper=99.633;complete=$true;pending=$false}
-    if((Get-OutcomeLabel 99.616) -ne '99.6%'){throw 'Resolved result still displays a rounded range'}
+    if((Get-OutcomeLabel 99.616) -ne '100%'){throw 'Resolved result still displays a rounded range'}
     $script:outlookBounds=$null
     if((Get-OutcomeLabel $null $true) -ne '--'){throw 'Missing battle produced a numeric loss estimate'}
     'PASS: six orientation/display combinations render; complemented values, persisted exclusive menu choice, resolved values and disconnected labels verified.'

@@ -53,4 +53,9 @@ controller tests execute real rendering/controller code with controlled browser
 I/O; visual layout and native overlay controls still need their separate manual
 checks in `test-ground/`.
 
+`meter-animation.test.mjs` also executes the desktop overlay's real PowerShell
+update/animation functions on Windows without loading forms or starting a
+reader. Controlled animation times verify first readings, both rails and labels,
+retargeting and resets. The browser tests control animation frames explicitly.
+
 See [the October review](../analysis/TEST-REVIEW.md) for the file-by-file audit.

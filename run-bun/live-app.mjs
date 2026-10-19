@@ -12,10 +12,10 @@ const obs=`${location.origin}/?overlay=1`;$('obs-url').textContent=obs;
 $('copy').onclick=async()=>{try{await navigator.clipboard.writeText(obs);$('copy-status').textContent='Copied.';}catch{$('copy-status').textContent=`Copy this URL: ${obs}`;}};
 let displayed=null,lastTarget=null,animation,lastEvent=Date.now(),hasLiveData=false;
 function clear(message){cancelAnimationFrame(animation);displayed=null;lastTarget=null;hasLiveData=false;$('difficulty-number').textContent='—';$('meter-fill').style.width='0%';$('meter').removeAttribute('aria-valuenow');$('meter').setAttribute('aria-valuetext',message);$('connection-status').textContent=message;$('threat-card').classList.add('paused');$('matchup').textContent='';$('explanations').replaceChildren();$('damage-report').replaceChildren();$('warnings').replaceChildren();}
-function animate(target,range=''){
- if(lastTarget!==null&&Math.abs(lastTarget-target)<0.01){$('difficulty-number').textContent=range||`${target.toFixed(1)} / 100`;return;}
- cancelAnimationFrame(animation);const from=displayed??0,start=performance.now();const duration=matchMedia('(prefers-reduced-motion: reduce)').matches?0:650;lastTarget=target;
- const frame=now=>{const t=duration?Math.min(1,(now-start)/duration):1;displayed=from+(target-from)*(1-(1-t)**3);$('difficulty-number').textContent=range||`${displayed.toFixed(1)} / 100`;$('meter-fill').style.width=`${displayed}%`;$('threat-card').style.setProperty('--threat',`hsl(${115*displayed/100} 78% 63%)`);if(t<1)animation=requestAnimationFrame(frame);};animation=requestAnimationFrame(frame);
+function animate(target){
+ if(lastTarget!==null&&Math.abs(lastTarget-target)<0.01)return;
+ cancelAnimationFrame(animation);const from=displayed??0,start=performance.now(),duration=650;lastTarget=target;
+ const frame=now=>{const t=Math.max(0,Math.min(1,(now-start)/duration));displayed=from+(target-from)*(1-(1-t)**3);const label=`${Math.round(displayed)}%`;$('difficulty-number').textContent=label;$('meter-fill').style.width=`${displayed}%`;$('meter').setAttribute('aria-valuenow',String(Math.round(displayed)));$('meter').setAttribute('aria-valuetext',label);$('threat-card').style.setProperty('--threat',`hsl(${115*displayed/100} 78% 63%)`);if(t<1)animation=requestAnimationFrame(frame);};animation=requestAnimationFrame(frame);
 }
 function list(element,rows){element.replaceChildren(...rows.map(value=>{const li=document.createElement('li');li.textContent=value;return li;}));}
 function render(s){
@@ -25,8 +25,7 @@ function render(s){
  const score=Object.hasOwn(s.result,'display_score')?s.result.display_score:s.result.victory;
  if(score===null){clear('Outlook unresolved');list($('warnings'),s.result.warnings);return;}
  hasLiveData=true;$('threat-card').classList.remove('paused');$('connection-status').textContent='';
- const label=`${Math.round(score)}%`;
- animate(score,label);$('meter').setAttribute('aria-valuenow',String(Math.round(score)));$('meter').setAttribute('aria-valuetext',label);
+ animate(score);
  const name=id=>s.pack.species.find(p=>p.id===id)?.name||id;
  $('matchup').textContent=`${name(s.player)} · ${s.live.player?.current_hp??'?'} HP  vs  ${name(s.opponent)} · ${s.live.opponent?.current_hp??'?'} HP`;
  list($('explanations'),s.result.explanations);list($('warnings'),s.result.warnings);

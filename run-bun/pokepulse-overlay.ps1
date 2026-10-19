@@ -139,7 +139,7 @@ function Set-TargetScore($value,[bool]$force=$false) {
     $next = [Math]::Max(0.0,[Math]::Min(100.0,[double]$value))
     if (-not $force -and $null -ne $script:targetScore -and [Math]::Abs($next - $script:targetScore) -lt 0.01) { return }
     $current = Get-DisplayedScore
-    if ($null -eq $current) { $current = if($null -ne $script:animationAnchor){$script:animationAnchor}else{$next} }
+    if ($null -eq $current) { $current = if($null -ne $script:animationAnchor){$script:animationAnchor}else{0.0} }
     $script:animationAnchor=$current
     $script:animationFrom = [double]$current
     $script:targetScore = $next
@@ -621,7 +621,7 @@ $moreMenu.Add_Opening({
 function Get-OutcomeLabel($score,[bool]$loss=$false,[bool]$animated=$false) {
     if ($null -eq $score) { return '--' }
 
-    $value = if ($null -ne $script:outlookBounds) { $shares=Get-CombinedSegments; if ($loss) { $shares.losses } else { $shares.wins } } elseif ($loss) { 100-$score } else { $score }
+    $value = if ($null -ne $script:outlookBounds) { $shares=Get-CombinedSegments -Animated:$animated; if ($loss) { $shares.losses } else { $shares.wins } } elseif ($loss) { 100-$score } else { $score }
     return ('{0:0}%' -f [Math]::Round($value))
 }
 function Get-ResponsiveLayout([double]$width,[double]$height,[bool]$vertical) {
@@ -658,10 +658,8 @@ function Get-CombinedSegments([switch]$Animated) {
     # Bounds certify win and loss mass; a held display estimate cannot certify either.
     if ($null -eq $script:outlookBounds) { return @{wins=0.0;losses=0.0;unresolved=100.0} }
     if ($null -ne $script:outlookBounds.point) {
-        $point=if ($Animated -and $null -ne $script:targetScore) { Get-DisplayedScore } else { [double]$script:outlookBounds.point }
-        return @{wins=$point;losses=100.0-$point;unresolved=0.0}
-    }
-    $lower=[double]$script:outlookBounds.lower;$upper=[double]$script:outlookBounds.upper
+        $lower=[double]$script:outlookBounds.point;$upper=$lower
+    } else { $lower=[double]$script:outlookBounds.lower;$upper=[double]$script:outlookBounds.upper }
     if ([double]::IsNaN($lower) -or [double]::IsNaN($upper) -or [double]::IsInfinity($lower) -or [double]::IsInfinity($upper)) { return @{wins=0.0;losses=0.0;unresolved=100.0} }
     $lower=[Math]::Max(0.0,[Math]::Min(100.0,$lower))
     $upper=[Math]::Max($lower,[Math]::Min(100.0,$upper))
