@@ -1,8 +1,11 @@
 // Conservative native-probe dependency projections. No scoring or execution.
 import {observationKey} from './observation-key.mjs';
-const reusableDefinitions=new WeakMap();
+import {BoundedCache} from './bounded-cache.mjs';
+// Only pinned immutable Dex definitions are shared across evaluation owners.
+const reusableDefinitions=new BoundedCache({name:'probe-definition-eligibility',owner:'worker-dex-metadata',limit:1024});
+export const probeDefinitionCacheStats=()=>reusableDefinitions.snapshot();
 function reusableDefinition(move){
- if(reusableDefinitions.has(move))return reusableDefinitions.get(move);
+ const cached=reusableDefinitions.get(move);if(cached!==undefined)return cached;
  const hasFunction=x=>x&&typeof x==='object'&&Object.values(x).some(v=>typeof v==='function'||hasFunction(v));
  const eligible=!(hasFunction(move)||move.multihit||move.recoil||move.mindBlownRecoil||move.hasCrashDamage||move.drain||move.self||move.selfdestruct||move.damage||move.volatileStatus||move.sideCondition||move.slotCondition||move.weather||move.terrain||move.pseudoWeather||move.category==='Status'&&!move.heal&&!move.boosts&&!move.status);
  reusableDefinitions.set(move,eligible);return eligible;

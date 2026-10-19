@@ -2,9 +2,8 @@
 import {restoreCompleteBattle,installChanceTape,nativeMoveChoices} from './native-battle.mjs';
 import {observationKey} from './observation-key.mjs';
 import {reusableProbeContext} from './feature-probe-reuse.mjs';
-import {featureCaches} from './feature-cache.mjs';
-const {profiles,damageProbes}=featureCaches;
-const keep=(cache,key,value)=>{cache.set(key,value);while(cache.size>1024)cache.delete(cache.keys().next().value);return value;};
+import {putCached} from './bounded-cache.mjs';
+const keep=(cache,key,value)=>putCached(cache,key,value,1024);
 const stopped=o=>o.shouldStop?.()||performance.now()>(o.deadline??Infinity);
 function installProbe(b,state,index){
  let first=true,weight=0.5,draws=0,ordering=0;
@@ -17,7 +16,7 @@ function installProbe(b,state,index){
  });
  const result=()=>weight;result.draws=()=>draws;return result;
 }
-function actionProfile(state,side,options,observed,probeContext){
+function actionProfile(state,side,options,observed,probeContext,{profiles,damageProbes}){
  const key=observed+'|actions|'+side;let entry=profiles.get(key);
  if(entry?.complete)return entry.result;
  const original=restoreCompleteBattle(state),p=original.sides[side].active[0],legal=nativeMoveChoices(p);
@@ -67,7 +66,7 @@ function passiveHasWork(b){
  }
  return false;
 }
-function passiveProfile(state,options,observed,initialObservation=observed,original){
+function passiveProfile(state,options,observed,initialObservation,original,{profiles}){
  const key=observed+'|passive';let entry=profiles.get(key);
  if(entry?.complete)return entry.result;
  // With no native Update/Residual handlers or duration clocks, neither actual
@@ -106,11 +105,11 @@ function passiveProfile(state,options,observed,initialObservation=observed,origi
  const net=first.map((v,i)=>v>0?Math.min(v,Math.max(0,next[i])):v),burst=first.map((v,i)=>Math.max(0,v-net[i]));
  entry.complete=true;entry.result={clock,net,burst,initial,steps:entry.turn};delete entry.saved;delete entry.seen;return entry.result;
 }
-export function probeNativePosition(state,options,key,observed){
+export function probeNativePosition(state,options,key,observed,caches){
  const b=restoreCompleteBattle(state),mon=b.sides.map(s=>s.active[0]);
  const probeContext=options.featureProbeReuse===false?null:reusableProbeContext(state);
- const actions=[actionProfile(state,0,options,key,probeContext),actionProfile(state,1,options,key,probeContext)];if(actions.some(v=>!v))return null;
- const passive=passiveProfile(state,options,key,observed,b);if(!passive)return null;
+ const actions=[actionProfile(state,0,options,key,probeContext,caches),actionProfile(state,1,options,key,probeContext,caches)];if(actions.some(v=>!v))return null;
+ const passive=passiveProfile(state,options,key,observed,b,caches);if(!passive)return null;
  const sides=mon.map(p=>({hp:p.hp,maxhp:p.maxhp,substituteHP:p.volatiles.substitute?.hp||0,stall:!!p.volatiles.stall,
   sleep:p.status==='slp'?Math.max(0,(p.statusState.time||1)-1)/(p.hasAbility('earlybird')?2:1):p.volatiles.mustrecharge?1:0}));
  sides.forEach((s,i)=>{s.speed=mon[i].getActionSpeed();});

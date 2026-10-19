@@ -2,6 +2,9 @@
 
 ## Ownership
 
+Temporal probe/scoring boundaries and lookup-cache ownership are documented in
+[Feature evaluation and caches](FEATURE-EVALUATION-DESIGN.md).
+
 `position-evaluator.mjs:evaluatePosition` is the single public orchestration entry. `analyzeBattle`, `simulateCompleteMoves` and the sampled-search compatibility facade delegate to it. It selects eligible proofs, looks up solved values, and chooses the fallback engine. Engine implementations do not import proof providers.
 
 ```mermaid

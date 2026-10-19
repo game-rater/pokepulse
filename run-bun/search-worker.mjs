@@ -2,10 +2,11 @@ import {parentPort,workerData} from 'node:worker_threads';
 import {scoreBattle} from './profile.mjs';
 import {refineUntilResolved} from './refinement.mjs';
 import {searchArguments} from './battle-state.mjs';
+import {createFeatureCaches} from '../analysis/feature-cache.mjs';
 const generation=new Int32Array(workerData.generation);
 const engineMode=workerData.engineMode||'auto';
 const halt=workerData.halt?new Int32Array(workerData.halt):null;
-let context=null,session={};
+let context=null,session={featureCaches:createFeatureCaches({owner:'prediction-worker-'+engineMode})};
 function trim(map,limit){
   if(!map)return;
   while(map.size>limit)map.delete(map.keys().next().value);
@@ -25,7 +26,8 @@ parentPort.on('message',async({version,request,budgets,modelContext})=>{
     const npcMoves=session.npcMoves;
     const positionValues=session.positionValues;
     const positionProofWork=session.positionProofWork;
-    session={...(positionProofWork?{positionProofWork}:{}),...(positionValues?{positionValues}:{}),...(cache?{sampledMoves:{cache}}:{}),...(turnGraph?{turnGraph}:{}),...(npcMoves?{npcMoves}:{})};
+    const featureCaches=session.featureCaches;
+    session={featureCaches,...(positionProofWork?{positionProofWork}:{}),...(positionValues?{positionValues}:{}),...(cache?{sampledMoves:{cache}}:{}),...(turnGraph?{turnGraph}:{}),...(npcMoves?{npcMoves}:{})};
   }
   const retained=session;
   const retainedCount=()=>(retained.graph?.size||0)+(retained.completeMoves?.graph?.size||0);

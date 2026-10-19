@@ -4,6 +4,8 @@ import {searchFixtures,observeSimpleTurn} from './search-benchmark-fixtures.mjs'
 import {predictionReport} from '../analysis/result-contract.mjs';
 import {createHash} from 'node:crypto';
 import {assessInitialEstimate} from './prediction-target.mjs';
+import {featureCacheStats} from '../analysis/feature-cache.mjs';
+import {probeDefinitionCacheStats} from '../analysis/feature-probe-reuse.mjs';
 const id=process.argv[2],mode=process.argv[3],seconds=Number(process.argv[4]||3),opponentModel=process.argv[5]||'minimax';
 const fixture=searchFixtures.find(f=>f.id===id);
 if(!fixture||!['baseline','hybrid'].includes(mode)||!Number.isFinite(seconds)||seconds<=0)throw Error('Invalid benchmark arguments');
@@ -45,7 +47,11 @@ const row={reference,case:id,mode,feature_probe_reuse:featureProbeReuse,opponent
  first_second:{score:byOneSecond?.score??null,available_at_ms:byOneSecond?.elapsed_ms??null,
   absolute_error_pp:firstSecondError,reference:expected??null,reference_kind:reference.status,
   goal_met:expected===undefined?null:!!byOneSecond&&firstSecondError<=10},
- prediction:predictionReport(result),readings};
+ prediction:predictionReport(result),readings,
+ cache_diagnostics:{features:session.featureCaches?featureCacheStats(session.featureCaches):null,
+  definitions:probeDefinitionCacheStats(),proof_values:session.positionValues?.snapshot?.()??null,
+  proof_work:session.positionProofWork?.snapshot?.()??null,
+  sampled:Object.fromEntries(Object.entries(session.sampledMoves?.cache||{}).filter(([,v])=>v?.snapshot).map(([k,v])=>[k,v.snapshot()]))}};
 if(fixture.reroot){
  const {observed}=observeSimpleTurn(fixture.snapshot);
  const rerootStart=performance.now();let next=simulateCompleteMoves(observed,{...options,session,timeMs:0,warmOnly:true}),warm=next;

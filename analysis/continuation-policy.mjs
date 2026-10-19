@@ -3,6 +3,7 @@
 import {restoreCompleteBattle,installChanceTape} from './native-battle.mjs';
 import {observationKey} from './observation-key.mjs';
 import {selectContinuationChoices} from './action-usefulness.mjs';
+import {putCached} from './bounded-cache.mjs';
 
 export const CONTINUATION_VERSION=4;
 export function continuationChoices(p,options){return selectContinuationChoices(p,options).choices;}
@@ -36,7 +37,7 @@ export function nativeContinuationPolicy(state,cache,options={}){
   const actions=selection.map(s=>s.choices.map(m=>m.slot)),actionFlags=selection.map(s=>({flags:s.flags,filtered:s.filtered,waiting:s.waiting}));
   entry={actions,actionFlags,cursor:0,matrix:actions[0].map(()=>actions[1].map(()=>0)),samples:2};
   if(actions.every(a=>a.length===1))entry.policy={actions,probabilities:[[1],[1]],matrix:null,actionFlags};
-  cache.set(key,entry);while(cache.size>2048)cache.delete(cache.keys().next().value);
+  putCached(cache,key,entry,2048);
  }
  if(entry.policy)return entry.policy;
  const count=entry.actions[0].length*entry.actions[1].length;

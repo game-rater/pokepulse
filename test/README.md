@@ -55,6 +55,12 @@ reused and that active passive effects retain native timelines.
 
 ## Limits
 
+`temporal-feature-model.test.mjs` exercises pure scoring independently of native
+execution. `evaluation-cache.test.mjs` covers lookup bounds/counters, feature-owner
+isolation, invalidation and resumable work. See
+[the feature/cache design](../analysis/FEATURE-EVALUATION-DESIGN.md) for ownership
+and diagnostic conventions.
+
 Most tests called “native” execute the vendored battle engine, not the GBA ROM.
 Independent algebra/calculator cross-checks protect selected mechanics and
 restricted probability problems. The numeric battle-message fixture was

@@ -8,11 +8,13 @@ import {fixedRetaliationProof} from './exact-endgame.mjs';
 import {strategicEndgameProof} from './strategic-endgame.mjs';
 import {simulateSampledMovesCore} from './sampled-search.mjs';
 import {simulateRetainedTurn} from './retained-turn.mjs';
+import {BoundedCache,putCached} from './bounded-cache.mjs';
+import {featureCachesFor} from './feature-cache.mjs';
 const providers=[fixedRetaliationProof,strategicEndgameProof,passiveEndgameProof];
 const nativeTerminal=completeMoveAdapter().terminal;
 function contextFor(options){
- const values=options.session?(options.session.positionValues??=new Map()):new Map();
- const work=options.session?(options.session.positionProofWork??=new Map()):new Map();
+ const values=options.session?(options.session.positionValues??=new BoundedCache({name:'proved-values',owner:'evaluation-session',limit:256})):new BoundedCache({name:'proved-values',owner:'single-evaluation',limit:256});
+ const work=options.session?(options.session.positionProofWork??=new BoundedCache({name:'proof-work',owner:'evaluation-session',limit:32})):new BoundedCache({name:'proof-work',owner:'single-evaluation',limit:32});
  const context={values,work,attempted:new Set()};
  context.continuation=(state,reasons=new Set(),overrides={})=>evaluate({state,reasons,purpose:'continuation'},{...options,...overrides},context);
  return context;
@@ -31,17 +33,17 @@ function resolveProof(state,reasons,options,context){
  for(const provider of providers){
   if(!provider.enabled(options))continue;
   const key=JSON.stringify([provider.id,state.key,options.opponentModel||'minimax',options.npcAi||null]);
-  if(context.values.has(key))return proofResult(context.values.get(key),provider,context,true);
+  const cached=context.values.get(key);if(cached!==undefined)return proofResult(cached,provider,context,true);
   if(options.warmOnly||context.attempted.has(key))continue;
   context.attempted.add(key);
   let proof;
   if(provider.start){
    let job=context.work.get(key);if(job){context.work.delete(key);context.work.set(key,job);}
-   if(!job){job=provider.start(state);if(job){context.work.set(key,job);while(context.work.size>32)context.work.delete(context.work.keys().next().value);}}
+   if(!job){job=provider.start(state);if(job)putCached(context.work,key,job,32);}
    proof=job&&provider.advance(job,options);
   }else proof=provider.solve(state,options);
   if(!proof)continue;
-  context.work.delete(key);context.values.set(key,proof);while(context.values.size>256)context.values.delete(context.values.keys().next().value);
+  context.work.delete(key);putCached(context.values,key,proof,256);
   return proofResult(proof,provider,context,false);
  }
  return null;
@@ -68,5 +70,6 @@ function evaluate(position,options,context){
  return searchNativePosition(initial,reasons,options,session,state=>{const result=context.continuation(state,reasons,{deadline});return result?result.score/100:null;});
 }
 export function evaluatePosition(position,options={}){
+ options={...options,featureCaches:featureCachesFor(options)};
  return evaluate(position,options,contextFor(options));
 }

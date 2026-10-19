@@ -5,11 +5,12 @@ import {matrixBounds,matrixPruning,thresholdDecision,proofThreshold} from './sea
 import {completeMoveDex,restoreCompleteBattle,installChanceTape,MissingInput,packed,completeMoveAdapter,nativeMoveChoices} from './native-battle.mjs';
 import {npcMoveDistribution,weightedNpcBounds} from '../run-bun/npc-ai.mjs';
 import {CONTINUATION_VERSION,continuationValue,nativeContinuationPolicy,drawContinuation} from './continuation-policy.mjs';
+import {BoundedCache,putCached} from './bounded-cache.mjs';
 function rng(seed){let x=seed>>>0||1;return ()=>{x^=x<<13;x^=x>>>17;x^=x<<5;return (x>>>0)/4294967296;};}
 function choices(p){return nativeMoveChoices(p).map(m=>({slot:m.slot,move:completeMoveDex.moves.get(m.id),usable:true}));}
 function terminal(b){return b.p1.active[0].hp<=0?0:b.p2.active[0].hp<=0?1:b.ended?(b.winner==='Player'?1:0):null;}
 // All caches use the native mechanics state key, including uncertainty markers.
-function keep(map,key,value,limit=2048){map.set(key,value);while(map.size>limit)map.delete(map.keys().next().value);return value;}
+const keep=(map,key,value,limit=2048)=>putCached(map,key,value,limit);
 export function exactEnding(initial,a,b,options){
  const adapter=completeMoveAdapter(),pending=[{state:initial,probability:1,a,b}];let value=0,count=0;
  while(pending.length){
@@ -82,9 +83,10 @@ function rollout(initial,a,b,seed,turnLimit,options,cell,cache,evaluator){
    // outcomes. This is conditional expectation, not a claim that the policy
    // leading here is optimal. Cache both successes and ineligible endings.
    if(policy.actions.every(a=>a.length===1)){
-    const key=state.key+'|'+moves.join(',');cache.endings??=new Map();
-    if(!cache.endings.has(key))keep(cache.endings,key,exactEnding(state,...moves,{...options,exactDeadline:options.deadline}));
-    const exact=cache.endings.get(key);if(exact!==null)return finish(exact,false);
+    const key=state.key+'|'+moves.join(',');cache.endings??=new BoundedCache({name:'terminal-turn-expectations',owner:'sampled-session',limit:2048});
+    let exact=cache.endings.get(key);
+    if(exact===undefined)exact=keep(cache.endings,key,exactEnding(state,...moves,{...options,exactDeadline:options.deadline}));
+    if(exact!==null)return finish(exact,false);
    }
   }
   for(let i=0;i<2;i++)if(!game.choose(`p${i+1}`,`move ${moves[i]}`))throw Error(`Sampled move selection was rejected on turn ${turn+1} for p${i+1}, slot ${moves[i]}: ${game.sides[i].choice.error}`);
@@ -146,9 +148,9 @@ export function allocation(cells,target,options={}){
 }
 export function simulateSampledMovesCore(initial,options,reasons,evaluator){
  const session=options.session?(options.opponentModel==='npc-ai'?(options.session.npcMoves??={}):(options.session.sampledMoves??={})):{};
- const cache=session.cache??={roots:new Map(),policies:new Map(),hits:0,exact:0};
+ const cache=session.cache??={roots:new BoundedCache({name:'sampled-roots',owner:'sampled-session',limit:64}),policies:new BoundedCache({name:'continuation-policies',owner:'sampled-session',limit:2048}),hits:0,exact:0};
  if(options.continuationPolicies)cache.policies=options.continuationPolicies;
- cache.npcPolicies??=new Map();
+ cache.npcPolicies??=new BoundedCache({name:'npc-policies',owner:'sampled-session',limit:2048});
  const target=options.samplesPerPair??128,turnLimit=options.rolloutTurns??12;
  const rootKey=initial.key+'|policy-v'+CONTINUATION_VERSION+'|'+turnLimit+'|'+(options.opponentModel||'minimax')+'|'+JSON.stringify(options.npcAi||{})+'|filter:'+Number(options.filterUselessTurns!==false);
  let root=cache.roots.get(rootKey),reused=!!root;

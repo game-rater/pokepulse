@@ -3,6 +3,7 @@
 import {completeMoveAdapter,restoreCompleteBattle} from './native-battle.mjs';
 import {simulateSampledMovesCore,samplingConfidenceBounds,recordHorizonSample,stratumMean} from './sampled-search.mjs';
 import {matrixBounds,matrixPruning,thresholdDecision,proofThreshold} from './search.mjs';
+import {BoundedCache} from './bounded-cache.mjs';
 
 export {observationKey} from './observation-key.mjs';
 import {observationKey} from './observation-key.mjs';
@@ -119,7 +120,7 @@ export function backedValue(node){
 function refine(graph,node,options,reasons,timeMs,evaluator){
  const previous=graph.processingKey;graph.processingKey=node.key;
  try {
- const result=evaluator?.continuation(node.state,reasons,{...options,deadline:Math.min(options.deadline??Infinity,performance.now()+Math.max(0,timeMs))})||simulateSampledMovesCore(node.state,{...options,timeMs,session:node.session,continuationPolicies:graph.continuationPolicies??=new Map(),retainAfterTurn:options.retainChildren===false?undefined:(state,unbiased,horizon)=>{
+ const result=evaluator?.continuation(node.state,reasons,{...options,deadline:Math.min(options.deadline??Infinity,performance.now()+Math.max(0,timeMs))})||simulateSampledMovesCore(node.state,{...options,timeMs,session:node.session,continuationPolicies:graph.continuationPolicies??=new BoundedCache({name:'continuation-policies',owner:'retained-graph',limit:2048}),retainAfterTurn:options.retainChildren===false?undefined:(state,unbiased,horizon)=>{
   const child=turnNode(graph,state,options);
   if(!unbiased)return null;
   return value=>{child.prior.n++;child.prior.sum+=value;child.prior.horizons[horizon]=(child.prior.horizons[horizon]||0)+1;
