@@ -1,4 +1,5 @@
 import {benchmarkReference} from './benchmark-oracles.mjs';
+import {INITIAL_ESTIMATE_TARGET_MS} from './prediction-target.mjs';
 // Run isolated, repeatable A/B cases. No ROM, save file or live capture needed.
 import {spawnSync} from 'node:child_process';
 import {mkdirSync,writeFileSync,readFileSync} from 'node:fs';
@@ -17,21 +18,24 @@ const cases=searchFixtures.filter(f=>(!arg('case')||f.id===arg('case'))&&(!arg('
 if(!cases.length)throw Error('Unknown benchmark case');
 for(const fixture of cases){const r=benchmarkReference(fixture,opponentModel);if(process.argv.includes('--require-reference')&&r.status==='unresolved')throw Error(`No accuracy reference: ${fixture.id}/${opponentModel}`);}
 const root=fileURLToPath(new URL('../',import.meta.url)),worker=fileURLToPath(new URL('./benchmark-retained-turn-worker.mjs',import.meta.url));
-const sourceHashes=Object.fromEntries(['scripts/benchmark-retained-turn-worker.mjs','analysis/sampled-moves.mjs','analysis/position-evaluator.mjs','analysis/native-battle.mjs','analysis/native-search.mjs','analysis/sampled-search.mjs','analysis/exact-endgame.mjs','analysis/retained-turn.mjs','analysis/complete-moves.mjs',
+const sourceHashes=Object.fromEntries(['scripts/benchmark-retained-turn-worker.mjs','analysis/sampled-moves.mjs','analysis/position-evaluator.mjs','analysis/native-battle.mjs','analysis/native-search.mjs','analysis/sampled-search.mjs','analysis/exact-endgame.mjs','analysis/strategic-endgame.mjs','analysis/retained-turn.mjs','analysis/complete-moves.mjs',
  'analysis/search.mjs','analysis/result-contract.mjs','analysis/passive-endgame.mjs','analysis/position-features.mjs','analysis/continuation-policy.mjs','analysis/action-usefulness.mjs','scripts/search-benchmark-fixtures.mjs','scripts/stall-benchmark-fixtures.mjs','scripts/stall-benchmark-oracles.mjs','scripts/strategy-benchmark-fixtures.mjs','scripts/strategy-benchmark-oracle.mjs','scripts/real-battle-fixtures.mjs','scripts/accuracy-benchmark-fixtures.mjs','scripts/benchmark-oracles.mjs','scripts/reference-damage-race.mjs','scripts/benchmark-references.json',
- 'vendor/showdown/dist/sim/battle-actions.js'].map(path=>[path,createHash('sha256').update(readFileSync(resolve(root,path))).digest('hex')]));
+ 'scripts/prediction-target.mjs','vendor/showdown/dist/sim/battle-actions.js'].map(path=>[path,createHash('sha256').update(readFileSync(resolve(root,path))).digest('hex')]));
 const rows=[];
 for(let trial=0;trial<trials;trial++)for(const fixture of cases)for(const mode of trial%2?[...modes].reverse():modes){
  const child=spawnSync(process.execPath,['--expose-gc',worker,fixture.id,mode,String(seconds),opponentModel],{cwd:root,encoding:'utf8',timeout:seconds*2500+30000,maxBuffer:1024*1024});
  if(child.status!==0)throw Error(`${fixture.id}/${mode}: ${child.stderr||child.error||child.stdout}`);
  const row={trial,...JSON.parse(child.stdout)};rows.push(row);
- console.log(`${fixture.id}/${mode}: first ${row.first_estimate_ms?.toFixed(0)??'none'} ms; score by 1s ${row.first_second.score??'none'}; error ${row.first_second.absolute_error_pp?.toFixed(1)??'no reference'} pp; ${row.samples} samples; reroot ${row.reroot?.first_estimate_ms?.toFixed(0)??'-'} ms; ${row.peak_rss_mb.toFixed(0)} MB`);
+ console.log(`${fixture.id}/${mode}: first ${row.first_estimate_ms?.toFixed(0)??'none'} ms; score before 300ms ${row.initial_estimate.score??'none'}; error ${row.initial_estimate.absolute_error_pp?.toFixed(1)??'no reference'} pp; ${row.samples} samples; reroot ${row.reroot?.first_estimate_ms?.toFixed(0)??'-'} ms; ${row.peak_rss_mb.toFixed(0)} MB`);
 }
 const median=values=>{const v=values.filter(x=>x!==null&&x!==undefined).sort((a,b)=>a-b);return v.length?(v[Math.floor((v.length-1)/2)]+v[Math.ceil((v.length-1)/2)])/2:null;};
 const summary=cases.flatMap(f=>modes.map(mode=>{
  const r=rows.filter(row=>row.case===f.id&&row.mode===mode);
  return {case:f.id,mode,opponent_model:opponentModel,first_estimate_ms:median(r.map(x=>x.first_estimate_ms)),elapsed_ms:median(r.map(x=>x.elapsed_ms)),
   reroot_first_estimate_ms:median(r.map(x=>x.reroot?.first_estimate_ms)),reuse_hits:r.filter(x=>x.reroot?.reused).length,
+  initial_estimate_goal_met:r.filter(x=>x.initial_estimate.goal_met===true).length,
+  initial_estimate_error_pp:median(r.map(x=>x.initial_estimate.absolute_error_pp)),
+  score_before_300ms:median(r.map(x=>x.initial_estimate.score)),
   first_second_usable:r.filter(x=>x.first_second.score!==null).length,
   first_second_error_pp:median(r.map(x=>x.first_second.absolute_error_pp)),
   first_second_goal_met:r.filter(x=>x.first_second.goal_met===true).length,
@@ -42,6 +46,6 @@ const summary=cases.flatMap(f=>modes.map(mode=>{
 }));
 const destination=resolve(root,arg('out')||`.local-tools/search-benchmarks/${new Date().toISOString().replace(/[:.]/g,'-')}.json`);
 mkdirSync(dirname(destination),{recursive:true});
-writeFileSync(destination,JSON.stringify({created_at:new Date().toISOString(),node:process.version,seconds,trials,opponent_model:opponentModel,source_hashes:sourceHashes,
+writeFileSync(destination,JSON.stringify({created_at:new Date().toISOString(),node:process.version,seconds,trials,initial_estimate_target_ms:INITIAL_ESTIMATE_TARGET_MS,opponent_model:opponentModel,source_hashes:sourceHashes,
  method:'Isolated processes; engine initialization excluded; fixed native RNG seeds; alternating mode order; identical per-pass and sample budgets.',summary,rows},null,2));
 console.log(`Saved ${destination}`);

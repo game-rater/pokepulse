@@ -63,9 +63,9 @@ test('Native recovery, setup and toxic timing agree with the reference operation
 });
 test('Shared benchmark assessment detects error, stale fingerprints and missing early output',()=>{
  const f=strategyFixtures[0],r=benchmarkReference(f),row={case:f.id,opponent_model:'minimax',fixture_hash:r.input_sha256,reference:r,
-  score:r.expected_percent,first_second:{score:r.expected_percent,available_at_ms:500}};
+  score:r.expected_percent,initial_estimate:{score:r.expected_percent,available_at_ms:200},first_second:{score:r.expected_percent,available_at_ms:500}};
  assert.equal(assessBenchmarkRows([row],strategyFixtures)[0].pass,true);
- assert.equal(assessBenchmarkRows([{...row,first_second:{score:0,available_at_ms:500}}],strategyFixtures)[0].pass,false);
- assert.equal(assessBenchmarkRows([{...row,first_second:null}],strategyFixtures)[0].pass,false);
+ assert.equal(assessBenchmarkRows([{...row,initial_estimate:{score:0,available_at_ms:200}}],strategyFixtures)[0].pass,false);
+ assert.equal(assessBenchmarkRows([{...row,initial_estimate:null}],strategyFixtures)[0].pass,false);
  assert.throws(()=>assessBenchmarkRows([{...row,fixture_hash:'bad'}],strategyFixtures),/Stale/);
 });

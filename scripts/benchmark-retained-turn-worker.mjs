@@ -3,6 +3,7 @@ import {simulateCompleteMoves,createCompleteBattle} from '../analysis/complete-m
 import {searchFixtures,observeSimpleTurn} from './search-benchmark-fixtures.mjs';
 import {predictionReport} from '../analysis/result-contract.mjs';
 import {createHash} from 'node:crypto';
+import {assessInitialEstimate} from './prediction-target.mjs';
 const id=process.argv[2],mode=process.argv[3],seconds=Number(process.argv[4]||3),opponentModel=process.argv[5]||'minimax';
 const fixture=searchFixtures.find(f=>f.id===id);
 if(!fixture||!['baseline','hybrid'].includes(mode)||!Number.isFinite(seconds)||seconds<=0)throw Error('Invalid benchmark arguments');
@@ -28,12 +29,12 @@ const cpu=process.cpuUsage(cpuStart);
 const byOneSecond=readings.filter(r=>r.elapsed_ms<=1000&&Number.isFinite(r.score)).at(-1)||null;
 const firstSecondError=byOneSecond&&expected!==undefined?Math.abs(byOneSecond.score-expected):null;
 const elapsedTotal=performance.now()-start,finished=!!(result.complete||result.sampling_complete||result.input_blocked);
-const checkpoints=Object.fromEntries([1000,3000,10000].map(ms=>{
+const checkpoints=Object.fromEntries([300,1000,3000,10000].map(ms=>{
  const measured=seconds*1000>=ms||elapsedTotal>=ms||finished;
  const reading=measured?readings.filter(r=>r.elapsed_ms<=ms&&Number.isFinite(r.score)).at(-1):null;
  return [ms,{measured,score:reading?.score??null,available_at_ms:reading?.elapsed_ms??null}];
 }));
-const row={reference,case:id,mode,opponent_model:opponentModel,fixture_hash:createHash('sha256').update(JSON.stringify(fixture.snapshot)).digest('hex'),provenance:fixture.provenance??null,checkpoints,
+const row={reference,case:id,mode,opponent_model:opponentModel,initial_estimate:assessInitialEstimate(readings,expected),fixture_hash:createHash('sha256').update(JSON.stringify(fixture.snapshot)).digest('hex'),provenance:fixture.provenance??null,checkpoints,
  input_blocked:!!result.input_blocked,unresolved_reasons:result.unresolved_reasons||[],
  first_estimate_ms:first,elapsed_ms:elapsedTotal,cpu_ms:(cpu.user+cpu.system)/1000,
  max_slice_ms:maxSlice,peak_rss_mb:peakRSS/1048576,score:result.score,absolute_error_pp:expected===undefined||result.score===null?null:Math.abs(result.score-expected),

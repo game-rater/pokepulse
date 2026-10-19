@@ -38,7 +38,7 @@ temporary directories and close only their own processes.
 `scripts/benchmark-retained-turn.mjs`, `scripts/benchmark-search-race.mjs`, and
 `scripts/benchmark-bound-pruning.mjs` measure search performance. Reference and
 stall acceptance tests validate the measurement/reporting rules. The initial
-estimate goal remains about one second and within ten percentage points, then
+estimate goal is now under 300 ms and within ten percentage points, then
 refinement; a green correctness suite does not establish that goal for every
 battle. Compare timings on the same machine under comparable load.
 
