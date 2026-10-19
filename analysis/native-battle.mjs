@@ -101,6 +101,10 @@ export function createCompleteBattle(snapshot){
     unknownHistory:sides.map(s=>!!s.effects?.live_data&&!s.effects.move_history_known&&!s.effects.last_move)};
   battle.sides.forEach((side,i)=>{
     const input=sides[i],p=side.active[0],e=input.effects||{};
+    if(e.disguise_busted===true&&!e.transformed&&['mimikyu','mimikyutotem'].includes(p.species.id)&&p.ability==='disguise'){
+      p.formeChange(p.species.id==='mimikyutotem'?'Mimikyu-Busted-Totem':'Mimikyu-Busted',battle.dex.abilities.get('disguise'),true);
+      p.abilityState.busted=true;
+    }
     if(input.actual_stats){p.maxhp=input.actual_stats.hp;p.baseMaxhp=p.maxhp;p.storedStats={...input.actual_stats};delete p.storedStats.hp;if(!e.transformed)p.baseStoredStats={...p.storedStats};}
     p.hp=input.current_hp??p.maxhp;p.fainted=p.hp<=0;
     p.boosts={atk:0,def:0,spa:0,spd:0,spe:0,accuracy:0,evasion:0,...input.build.boosts};
@@ -114,13 +118,16 @@ export function createCompleteBattle(snapshot){
     if(e.confusion_turns)addVolatile(battle,p,'confusion',{time:e.confusion_turns});
     if(e.focus_energy)addVolatile(battle,p,'focusenergy');
     if(e.protect_streak>0)addVolatile(battle,p,'stall',{duration:1,counter:3**Math.min(6,e.protect_streak)});
+    // Encore and Disable validate their start against lastMove.
+    if(e.last_move)p.lastMove=completeMoveDex.getActiveMove(e.last_move);
     if(e.taunted)addVolatile(battle,p,'taunt',{duration:e.taunt_turns});
-    if(e.encore_move)addVolatile(battle,p,'encore',{move:toID(e.encore_move),duration:e.encore_turns});
-    if(e.disabled_moves?.length)addVolatile(battle,p,'disable',{move:toID(e.disabled_moves[0]),duration:e.disable_turns});
+    // These are existing effects, not new move uses: onStart would reject an
+    // unavailable/different lastMove and could decrement their observed timer.
+    if(e.encore_move)p.volatiles.encore=battle.initEffectState({id:'encore',target:p,source:battle.sides[1-i].active[0],move:toID(e.encore_move),duration:e.encore_turns});
+    if(e.disabled_moves?.length)p.volatiles.disable=battle.initEffectState({id:'disable',target:p,source:battle.sides[1-i].active[0],move:toID(e.disabled_moves[0]),duration:e.disable_turns});
     if(e.substitute_hp)addVolatile(battle,p,'substitute',{hp:e.substitute_hp});
     if(e.leech_seed)addVolatile(battle,p,'leechseed',{source:battle.sides[1-i].active[0],sourceSlot:battle.sides[1-i].active[0].getSlot()});
     if(e.recharge)addVolatile(battle,p,'mustrecharge');
-    if(e.last_move)p.lastMove=completeMoveDex.getActiveMove(e.last_move);
     if(e.foresight)addVolatile(battle,p,'foresight');
     if(e.miracle_eye)addVolatile(battle,p,'miracleeye');
     if(e.first_turn===false){p.activeTurns=2;p.activeMoveActions=1;}
@@ -181,13 +188,25 @@ export function createCompleteBattle(snapshot){
       battle.sides[i].slotConditions[0].futuremove=battle.initEffectState({id:'futuremove',target:battle.sides[i],isSlotCondition:true,targetSlot:p.getSlot(),source,sourceSlot:source.getSlot(),move:move.id,moveData,endingTurn:battle.getOverflowedTurnCount()+f.turns-1});
     }
   }
-  battle.sides.forEach(side=>side.active[0].updateSpeed());
+  battle.sides.forEach(side=>{
+    const p=side.active[0];p.updateSpeed();
+    battle.runEvent('DisableMove',p);
+    for(const slot of p.moveSlots)battle.singleEvent('DisableMove',battle.dex.getActiveMove(slot.id),null,p);
+  });
   const previous=sides.find(s=>s.effects?.battle_last_move)?.effects.battle_last_move;
   if(previous)battle.lastMove=completeMoveDex.getActiveMove(previous);
   if(!battle.sides.some(side=>side.active[0].hp<=0))battle.makeRequest('move');
   return packed(battle,unknownNature,uncertain);
 }
-export function restoreCompleteBattle(state){return Battle.fromJSON(structuredClone(state.saved));}
+export function restoreCompleteBattle(state){
+ // The pinned deserializer already copies fields, side conditions, requests,
+ // queues and Pokémon mechanics recursively. Its two ownership exceptions are
+ // Pokémon sets and the battle log. Detach those instead of cloning everything
+ // once here and again during deserialization.
+ const saved={...state.saved,log:[...state.saved.log],sides:state.saved.sides.map(side=>({...side,
+  pokemon:side.pokemon.map(p=>({...p,set:structuredClone(p.set)}))}))};
+ return Battle.fromJSON(saved);
+}
 // Choice slots index the current native request, which can shrink to one move
 // during Rollout, charge turns, recharge or another forced action.
 export function nativeMoveChoices(pokemon){

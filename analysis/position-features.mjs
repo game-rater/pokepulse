@@ -6,15 +6,18 @@ const values=new Map(),profiles=new Map();
 const keep=(cache,key,value)=>{cache.set(key,value);while(cache.size>1024)cache.delete(cache.keys().next().value);return value;};
 const stopped=o=>o.shouldStop?.()||performance.now()>(o.deadline??Infinity);
 function installProbe(b,state,index){
- let first=true,weight=0.5;
+ let first=true,weight=0.5,draws=0,ordering=0;
+ const shuffle=b.prng.shuffle;
+ b.prng.shuffle=(...args)=>{ordering++;try{return shuffle.apply(b.prng,args);}finally{ordering--;}};
  installChanceTape(b,[],state.unknownNature||[false,false],state,branches=>{
+  if(!ordering)draws++;
   if(first&&branches.length===2){first=false;weight=branches[index].probability;return branches.slice(0,index).reduce((s,c)=>s+c.probability,0)+weight*0.5;}
   first=false;return index?0.75:0.25;
  });
- return ()=>weight;
+ const result=()=>weight;result.draws=()=>draws;return result;
 }
-function actionProfile(state,side,options){
- const key=observationKey(state)+'|actions|'+side;let entry=profiles.get(key);
+function actionProfile(state,side,options,observed){
+ const key=observed+'|actions|'+side;let entry=profiles.get(key);
  if(entry?.complete)return entry.result;
  const original=restoreCompleteBattle(state),p=original.sides[side].active[0],legal=nativeMoveChoices(p);
  const moves=legal.length?legal:[{slot:1,id:'struggle',pp:0}];
@@ -48,12 +51,12 @@ function actionProfile(state,side,options){
  }
  entry.complete=true;return result;
 }
-function passiveProfile(state,options){
- const key=observationKey(state)+'|passive';let entry=profiles.get(key);
+function passiveProfile(state,options,observed){
+ const key=observed+'|passive';let entry=profiles.get(key);
  if(entry?.complete)return entry.result;
- entry??=keep(profiles,key,{saved:state.saved,turn:0,clock:[Infinity,Infinity],initial:state.saved.sides.map(s=>s.pokemon[0].hp)});
+ entry??=keep(profiles,key,{saved:state.saved,turn:0,clock:[Infinity,Infinity],initial:state.saved.sides.map(s=>s.pokemon[0].hp),seen:new Set([observed]),randomized:false});
  const b=restoreCompleteBattle({...state,saved:entry.saved}),{initial,clock}=entry;
- installProbe(b,state,0);
+ const probe=installProbe(b,state,0);
  // Partial native timelines retain their snapshot and cursor, not a live
  // battle object. Small worker slices therefore make progress without an
  // unbounded cache of heavyweight native engines.
@@ -61,6 +64,12 @@ function passiveProfile(state,options){
   if(stopped(options)){entry.saved=b.toJSON();return null;}
   b.eachEvent('Update');b.fieldEvent('Residual');b.faintMessages();entry.turn++;
   for(let i=0;i<2;i++)if(b.sides[i].active[0].hp<=0&&clock[i]===Infinity)clock[i]=entry.turn;
+  entry.randomized ||= probe.draws()>0;
+  if(!entry.randomized&&!b.ended){
+   const next=observationKey({...state,saved:b.toJSON()});
+   if(entry.seen.has(next))break;
+   entry.seen.add(next);
+  }
  }
  if(stopped(options)){entry.saved=b.toJSON();return null;}
  const damaged=restoreCompleteBattle(state),before=damaged.sides.map(s=>{const p=s.active[0];p.hp=Math.min(p.hp,Math.max(1,Math.floor(p.maxhp/2)));return p.hp;});
@@ -73,14 +82,14 @@ function passiveProfile(state,options){
  damaged.eachEvent('Update');damaged.fieldEvent('Residual');
  const next=damaged.sides.map((s,i)=>s.active[0].hp-before[i]);
  const net=first.map((v,i)=>v>0?Math.min(v,Math.max(0,next[i])):v),burst=first.map((v,i)=>Math.max(0,v-net[i]));
- entry.complete=true;entry.result={clock,net,burst,initial};delete entry.saved;return entry.result;
+ entry.complete=true;entry.result={clock,net,burst,initial,steps:entry.turn};delete entry.saved;delete entry.seen;return entry.result;
 }
 export function nativePositionFeatures(state,options={}){
  const key=observationKey(state);if(values.has(key))return values.get(key);
  if(stopped(options))return null;
  const b=restoreCompleteBattle(state),mon=b.sides.map(s=>s.active[0]);
- const actions=[actionProfile(state,0,options),actionProfile(state,1,options)];if(actions.some(v=>!v))return null;
- const passive=passiveProfile(state,options);if(!passive)return null;
+ const actions=[actionProfile(state,0,options,key),actionProfile(state,1,options,key)];if(actions.some(v=>!v))return null;
+ const passive=passiveProfile(state,options,key);if(!passive)return null;
  const lifetime=actions.map((a,i)=>{
   const p=mon[i],incoming=actions[1-i].attack,healing=Math.max(0,passive.net[i]);
   const loss=Math.max(0,-passive.net[i],Number.isFinite(passive.clock[i])?p.hp/passive.clock[i]:0);
