@@ -8,7 +8,8 @@ const id=process.argv[2],mode=process.argv[3],seconds=Number(process.argv[4]||3)
 const fixture=searchFixtures.find(f=>f.id===id);
 if(!fixture||!['baseline','hybrid'].includes(mode)||!Number.isFinite(seconds)||seconds<=0)throw Error('Invalid benchmark arguments');
 const reference=benchmarkReference(fixture,opponentModel),expected=reference.expected_percent;
-const options={approximateCompleteMoves:true,retainedTurn:mode==='hybrid',samplesPerPair:128,timeMs:100,opponentModel};
+const featureProbeReuse=process.argv[6]!=='off';
+const options={approximateCompleteMoves:true,retainedTurn:mode==='hybrid',samplesPerPair:128,timeMs:100,opponentModel,featureProbeReuse};
 // Warm module/engine initialization equally; measurements exclude startup.
 createCompleteBattle(fixture.snapshot);global.gc?.();
 const session={},start=performance.now(),cpuStart=process.cpuUsage();
@@ -34,7 +35,7 @@ const checkpoints=Object.fromEntries([300,1000,3000,10000].map(ms=>{
  const reading=measured?readings.filter(r=>r.elapsed_ms<=ms&&Number.isFinite(r.score)).at(-1):null;
  return [ms,{measured,score:reading?.score??null,available_at_ms:reading?.elapsed_ms??null}];
 }));
-const row={reference,case:id,mode,opponent_model:opponentModel,initial_estimate:assessInitialEstimate(readings,expected),fixture_hash:createHash('sha256').update(JSON.stringify(fixture.snapshot)).digest('hex'),provenance:fixture.provenance??null,checkpoints,
+const row={reference,case:id,mode,feature_probe_reuse:featureProbeReuse,opponent_model:opponentModel,initial_estimate:assessInitialEstimate(readings,expected),fixture_hash:createHash('sha256').update(JSON.stringify(fixture.snapshot)).digest('hex'),provenance:fixture.provenance??null,checkpoints,
  input_blocked:!!result.input_blocked,unresolved_reasons:result.unresolved_reasons||[],
  first_estimate_ms:first,elapsed_ms:elapsedTotal,cpu_ms:(cpu.user+cpu.system)/1000,
  max_slice_ms:maxSlice,peak_rss_mb:peakRSS/1048576,score:result.score,absolute_error_pp:expected===undefined||result.score===null?null:Math.abs(result.score-expected),

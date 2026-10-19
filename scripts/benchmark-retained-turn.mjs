@@ -11,6 +11,8 @@ const arg=name=>process.argv.find(a=>a.startsWith('--'+name+'='))?.split('=').sl
 const quick=process.argv.includes('--quick'),seconds=Number(arg('seconds')||(quick?1:3)),trials=Number(arg('trials')||(quick?1:3));
 if(!(seconds>0&&seconds<=120&&Number.isInteger(trials)&&trials>=1&&trials<=20))throw Error('Use seconds 0–120 and trials 1–20');
 const opponentModel=arg('opponent-model')||'minimax';
+const featureProbeReuse=arg('feature-probe-reuse')||'on';
+if(!['on','off'].includes(featureProbeReuse))throw Error('Use --feature-probe-reuse=on or off');
 if(!['minimax','npc-ai'].includes(opponentModel))throw Error('Unknown opponent model');
 const modes=arg('mode')?[arg('mode')]:['baseline','hybrid'];
 if(modes.some(m=>!['baseline','hybrid'].includes(m)))throw Error('Unknown benchmark mode');
@@ -23,7 +25,7 @@ const sourceHashes=Object.fromEntries(['scripts/benchmark-retained-turn-worker.m
  'scripts/prediction-target.mjs','vendor/showdown/dist/sim/battle-actions.js'].map(path=>[path,createHash('sha256').update(readFileSync(resolve(root,path))).digest('hex')]));
 const rows=[];
 for(let trial=0;trial<trials;trial++)for(const fixture of cases)for(const mode of trial%2?[...modes].reverse():modes){
- const child=spawnSync(process.execPath,['--expose-gc',worker,fixture.id,mode,String(seconds),opponentModel],{cwd:root,encoding:'utf8',timeout:seconds*2500+30000,maxBuffer:1024*1024});
+ const child=spawnSync(process.execPath,['--expose-gc',worker,fixture.id,mode,String(seconds),opponentModel,featureProbeReuse],{cwd:root,encoding:'utf8',timeout:seconds*2500+30000,maxBuffer:1024*1024});
  if(child.status!==0)throw Error(`${fixture.id}/${mode}: ${child.stderr||child.error||child.stdout}`);
  const row={trial,...JSON.parse(child.stdout)};rows.push(row);
  console.log(`${fixture.id}/${mode}: first ${row.first_estimate_ms?.toFixed(0)??'none'} ms; score before 300ms ${row.initial_estimate.score??'none'}; error ${row.initial_estimate.absolute_error_pp?.toFixed(1)??'no reference'} pp; ${row.samples} samples; reroot ${row.reroot?.first_estimate_ms?.toFixed(0)??'-'} ms; ${row.peak_rss_mb.toFixed(0)} MB`);

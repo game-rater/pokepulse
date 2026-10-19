@@ -2,7 +2,7 @@
 
 Updated user goal: the 300 ms target supersedes the earlier one-second target. This is a development target, not a hard requirement or a guarantee for every battle:
 
-- Publish an initial usable estimate in **under 300 milliseconds** of a stable battle decision state, including a cold search.
+- Publish an initial usable estimate in **under 300 milliseconds** of a stable battle decision state, including a fresh search on a ready worker. Application and worker startup are measured separately.
 - That initial estimate should be within **10 percentage points of the correct win probability** under the selected opponent model and supported battle scope.
 - Continue refining after the first 300 ms. The existing final display target remains one percentage point, shown as a plain whole-number percentage.
 - A first prediction arriving at or after 300 ms falls short of the latency goal, even if it is accurate.

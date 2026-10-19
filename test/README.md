@@ -42,6 +42,17 @@ estimate goal is now under 300 ms and within ten percentage points, then
 refinement; a green correctness suite does not establish that goal for every
 battle. Compare timings on the same machine under comparable load.
 
+Use `--group=broad --mode=hybrid` with the retained-turn benchmark for the
+four-by-four, Herdier/Wingull and persistent-effects workloads. For a controlled
+comparison, run separately with `--feature-probe-reuse=off` and `on`. Every row
+records the setting. These cases currently lack independent probability
+references, so their latency improvements do not establish ten-point accuracy.
+
+`feature-probe-reuse.test.mjs` compares optimized capability evaluations against
+uncached native execution across first-turn outcomes, HP/PP variations and
+HP-sensitive interactions. It also verifies that eligible probes actually get
+reused and that active passive effects retain native timelines.
+
 ## Limits
 
 Most tests called “native” execute the vendored battle engine, not the GBA ROM.
