@@ -3,6 +3,33 @@
 import {restoreCompleteBattle,installChanceTape,nativeMoveChoices} from './native-battle.mjs';
 import {observationKey} from './observation-key.mjs';
 const values=new Map(),profiles=new Map();
+const damageProbes=new Map();
+const reusableDefinitions=new WeakMap();
+function reusableDefinition(move){
+ if(reusableDefinitions.has(move))return reusableDefinitions.get(move);
+ const hasFunction=x=>x&&typeof x==='object'&&Object.values(x).some(v=>typeof v==='function'||hasFunction(v));
+ const eligible=!(hasFunction(move)||move.multihit||move.recoil||move.mindBlownRecoil||move.hasCrashDamage||move.drain||move.self||move.selfdestruct||move.damage||move.volatileStatus||move.sideCondition||move.slotCondition||move.weather||move.terrain||move.pseudoWeather||move.category==='Status'&&!move.heal&&!move.boosts&&!move.status);
+ reusableDefinitions.set(move,eligible);return eligible;
+}
+function reusableProbeContext(state){
+ const s=state.saved;
+ if(s.field.weather||s.field.terrain||Object.keys(s.field.pseudoWeather||{}).length||s.sides.some(side=>side.pokemon.length!==1||Object.keys(side.sideConditions||{}).length||side.slotConditions.some(c=>Object.keys(c).length)||side.pokemon.some(p=>p.hp<=0||p.ability||p.item||Object.keys(p.volatiles).length||p.transformed)))return null;
+ const keys=new Map();
+ return (side,choice,move)=>{
+ // Declarative single-hit attacks, boosts, statuses and recovery have no
+ // additional HP readers here. Future Struggle already probes at full HP and
+ // its recoil is max-HP based. Cache native results, never a new damage formula.
+ const futureStruggle=choice.future&&move.id==='struggle';
+ if(!futureStruggle&&!reusableDefinition(move))return null;
+ const projection=move.heal?side:'attack';
+ if(!keys.has(projection)){
+ const saved={...s,lastMove:null,sides:s.sides.map((s,i)=>({...s,lastMove:null,lastEnemyMove:null,pokemon:s.pokemon.map(p=>({...p,hp:move.heal&&i===side?Math.min(p.hp,Math.max(1,Math.floor(p.maxhp/4))):p.maxhp,
+  moveSlots:[],lastMove:null,lastMoveUsed:null,activeTurns:2,activeMoveActions:1,set:{...p.set,moves:[]}}))}))};
+ keys.set(projection,observationKey({...state,saved}));
+ }
+ return keys.get(projection)+'|damage|'+side+'|'+move.id;
+ };
+}
 const keep=(cache,key,value)=>{cache.set(key,value);while(cache.size>1024)cache.delete(cache.keys().next().value);return value;};
 const stopped=o=>o.shouldStop?.()||performance.now()>(o.deadline??Infinity);
 function installProbe(b,state,index){
@@ -16,7 +43,7 @@ function installProbe(b,state,index){
  });
  const result=()=>weight;result.draws=()=>draws;return result;
 }
-function actionProfile(state,side,options,observed){
+function actionProfile(state,side,options,observed,probeContext){
  const key=observed+'|actions|'+side;let entry=profiles.get(key);
  if(entry?.complete)return entry.result;
  const original=restoreCompleteBattle(state),p=original.sides[side].active[0],legal=nativeMoveChoices(p);
@@ -27,8 +54,9 @@ function actionProfile(state,side,options,observed){
   const choice=candidates[entry.cursor];
   if(stopped(options))return null;
   const definition=original.dex.moves.get(choice.id),shield=!!definition.stallingMove&&!!definition.volatileStatus&&definition.volatileStatus!=='endure';
-  let attack=0,healing=0,recoil=0;
-  for(let index=0;index<2;index++){
+  const probeKey=probeContext?.(side,choice,definition),cached=probeKey&&damageProbes.get(probeKey);
+  let {attack=0,healing=0,recoil=0}=cached||{};
+  for(let index=0;!cached&&index<2;index++){
    const b=restoreCompleteBattle(state),source=b.sides[side].active[0],target=b.sides[1-side].active[0];
    if(source.status==='slp'){source.status='';source.statusState={};}
    // Expose potential recovery instead of treating a heal at full HP as useless.
@@ -45,16 +73,36 @@ function actionProfile(state,side,options,observed){
    attack+=(damage+Math.max(0,beforeSub-(target.volatiles.substitute?.hp||0)))*weight();
    healing+=moveHealing*weight();recoil+=selfDamage*weight();
   }
+  if(probeKey&&!cached)keep(damageProbes,probeKey,{attack,healing,recoil});
   if(choice.future||choice.id==='struggle'){result.futureAttack=attack;result.recoil=recoil;}
   if(!choice.future){const pp=choice.pp||0;result.pp+=pp;if(shield)result.protectPP+=pp;else result.otherPP+=pp;
    result.attack=Math.max(result.attack,attack);result.healing+=healing*pp;}
  }
  entry.complete=true;return result;
 }
-function passiveProfile(state,options,observed){
+function passiveHasWork(b){
+ if(b.findFieldEventHandlers(b.field,'onFieldResidual','duration').length)return true;
+ for(const side of b.sides){
+  if(b.findSideEventHandlers(side,'onSideResidual','duration').length)return true;
+  for(const p of side.active){
+   if(!p||p.hp<=0)return true;
+   if(b.findEventHandlers(p,'Update').length||b.findPokemonEventHandlers(p,'onResidual','duration').length||
+    b.findSideEventHandlers(side,'onResidual',undefined,p).length||b.findFieldEventHandlers(b.field,'onResidual',undefined,p).length||
+    b.findBattleEventHandlers('onResidual','duration',p).length)return true;
+  }
+ }
+ return false;
+}
+function passiveProfile(state,options,observed,initialObservation=observed,original){
  const key=observed+'|passive';let entry=profiles.get(key);
  if(entry?.complete)return entry.result;
- entry??=keep(profiles,key,{saved:state.saved,turn:0,clock:[Infinity,Infinity],initial:state.saved.sides.map(s=>s.pokemon[0].hp),seen:new Set([observed]),randomized:false});
+ // With no native Update/Residual handlers or duration clocks, neither actual
+ // nor wounded HP can change. Avoid rebuilding and ticking inert timelines.
+ if(options.featureProbeReuse!==false&&!entry&&original&&!passiveHasWork(original)){
+  const result={clock:[Infinity,Infinity],net:[0,0],burst:[0,0],initial:state.saved.sides.map(s=>s.pokemon[0].hp),steps:0};
+  keep(profiles,key,{complete:true,result});return result;
+ }
+ entry??=keep(profiles,key,{saved:state.saved,turn:0,clock:[Infinity,Infinity],initial:state.saved.sides.map(s=>s.pokemon[0].hp),seen:new Set([initialObservation]),randomized:false});
  const b=restoreCompleteBattle({...state,saved:entry.saved}),{initial,clock}=entry;
  const probe=installProbe(b,state,0);
  // Partial native timelines retain their snapshot and cursor, not a live
@@ -85,11 +133,12 @@ function passiveProfile(state,options,observed){
  entry.complete=true;entry.result={clock,net,burst,initial,steps:entry.turn};delete entry.saved;delete entry.seen;return entry.result;
 }
 export function nativePositionFeatures(state,options={}){
- const key=observationKey(state);if(values.has(key))return values.get(key);
+ const observed=observationKey(state),key=observed+'|probe-reuse:'+Number(options.featureProbeReuse!==false);if(values.has(key))return values.get(key);
  if(stopped(options))return null;
  const b=restoreCompleteBattle(state),mon=b.sides.map(s=>s.active[0]);
- const actions=[actionProfile(state,0,options,key),actionProfile(state,1,options,key)];if(actions.some(v=>!v))return null;
- const passive=passiveProfile(state,options,key);if(!passive)return null;
+ const probeContext=options.featureProbeReuse===false?null:reusableProbeContext(state);
+ const actions=[actionProfile(state,0,options,key,probeContext),actionProfile(state,1,options,key,probeContext)];if(actions.some(v=>!v))return null;
+ const passive=passiveProfile(state,options,key,observed,b);if(!passive)return null;
  const lifetime=actions.map((a,i)=>{
   const p=mon[i],incoming=actions[1-i].attack,healing=Math.max(0,passive.net[i]);
   const loss=Math.max(0,-passive.net[i],Number.isFinite(passive.clock[i])?p.hp/passive.clock[i]:0);
