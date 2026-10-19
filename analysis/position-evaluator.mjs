@@ -5,9 +5,10 @@ import {requiresCompleteMoves,completeMoveAdapter} from './native-battle.mjs';
 import {prepareNativePosition,searchNativePosition} from './native-search.mjs';
 import {passiveEndgameProof} from './passive-endgame.mjs';
 import {fixedRetaliationProof} from './exact-endgame.mjs';
+import {strategicEndgameProof} from './strategic-endgame.mjs';
 import {simulateSampledMovesCore} from './sampled-search.mjs';
 import {simulateRetainedTurn} from './retained-turn.mjs';
-const providers=[fixedRetaliationProof,passiveEndgameProof];
+const providers=[fixedRetaliationProof,strategicEndgameProof,passiveEndgameProof];
 const nativeTerminal=completeMoveAdapter().terminal;
 function contextFor(options){
  const values=options.session?(options.session.positionValues??=new Map()):new Map();

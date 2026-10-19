@@ -18,7 +18,7 @@ engineFiles.push('run-bun/npc-ai.mjs','vendor/npc-ai/predictor.mjs','vendor/npc-
 engineFiles.push('analysis/passive-endgame.mjs','analysis/position-features.mjs','analysis/continuation-policy.mjs','analysis/action-usefulness.mjs','analysis/exact-endgame.mjs','analysis/position-evaluator.mjs','analysis/native-battle.mjs','analysis/native-search.mjs','analysis/sampled-search.mjs');
 engineFiles.push('analysis/observation-key.mjs');
 engineFiles.push('analysis/mechanics-contract.mjs');
-engineFiles.push('analysis/result-contract.mjs','run-bun/battle-state.mjs');
+engineFiles.push('analysis/result-contract.mjs','run-bun/battle-state.mjs','analysis/strategic-endgame.mjs');
 engineFiles.push('run-bun/battle-recorder.mjs','run-bun/battle-history.mjs','run-bun/history-view.mjs','run-bun/history-app.mjs');
 engineFiles.push('run-bun/battle-messages.mjs','run-bun/loss-explanation.mjs','run-bun/integration.mjs','run-bun/bridge.mjs');
 const hashes=Object.fromEntries(await Promise.all(engineFiles.map(async file=>[file,createHash('sha256').update(await readFile(file)).digest('hex')])));
