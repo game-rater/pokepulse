@@ -11,6 +11,10 @@ function choices(p){return nativeMoveChoices(p).map(m=>({slot:m.slot,move:comple
 function terminal(b){return b.p1.active[0].hp<=0?0:b.p2.active[0].hp<=0?1:b.ended?(b.winner==='Player'?1:0):null;}
 // All caches use the native mechanics state key, including uncertainty markers.
 const keep=(map,key,value,limit=2048)=>putCached(map,key,value,limit);
+function workClock(){
+ if(typeof process.threadCpuUsage==='function'){const usage=process.threadCpuUsage();return (usage.user+usage.system)/1000;}
+ return performance.now();
+}
 export function exactEnding(initial,a,b,options){
  const adapter=completeMoveAdapter(),pending=[{state:initial,probability:1,a,b}];let value=0,count=0;
  while(pending.length){
@@ -52,6 +56,21 @@ export function rolloutHorizon(samples,branching,turnLimit=DEFAULT_ROLLOUT_TURNS
 }
 export function nextChanceStratum(strata){
  return strata.reduce((best,s,i)=>s.n<strata[best].n||s.n===strata[best].n&&s.probability>strata[best].probability?i:best,0);
+}
+// Conditional bounds on the sampled payoff table, NOT battle certificates.
+// Unvisited pairs stay [0,1]. A covered decisive row/column can determine the
+// table's point estimate without inventing values for unrelated pairs.
+export function coveredTacticalValue(cells,options={}){
+ const known=c=>{
+  if(c.unknown)return false;
+  if(c.exact!==undefined)return true;
+  const stats=c.estimateStats,terminal=c.n>0&&c.terminal===c.n;
+  return stats?.n>0&&(stats.horizon>=2||terminal)&&(!stats.strata||stats.strata.every(s=>s.n>0));
+ };
+ if(!cells.some(row=>row.some(known)))return null;
+ const lower=cells.map(row=>row.map(c=>known(c)?stratumMean(c):0)),upper=cells.map(row=>row.map(c=>known(c)?stratumMean(c):1));
+ const bounds=options.npcProbabilities?weightedNpcBounds(lower,upper,options.npcProbabilities):matrixBounds(lower,upper,128);
+ return bounds.upper-bounds.lower<=1e-12?(bounds.lower+bounds.upper)/2:null;
 }
 function rollout(initial,a,b,seed,turnLimit,options,cell,cache,evaluator){
  const game=restoreCompleteBattle(initial),random=rng(seed);
@@ -172,7 +191,7 @@ export function simulateSampledMovesCore(initial,options,reasons,evaluator){
  if(!root){
   const game=restoreCompleteBattle(initial),actions=game.sides.map(s=>{const legal=choices(s.active[0]);return legal.length?legal.map(m=>m.slot):[1];});
   const tactical=actions.map((slots,side)=>slots.map(slot=>{const move=completeMoveDex.moves.get(game.sides[side].active[0].moveSlots[slot-1].id);return move.status?4:move.volatileStatus?2:move.boosts||move.self?.boosts?1:0;}));
-  root=keep(cache.roots,rootKey,{key:initial.key,actions,tactical,cells:actions[0].map(()=>actions[1].map(()=>({n:0,sum:0,terminal:0,unknown:0}))),total:0,reasons:new Set()},64);
+  root=keep(cache.roots,rootKey,{key:initial.key,actions,tactical,tacticalMs:0,tacticalWorkMs:0,cells:actions[0].map(()=>actions[1].map(()=>({n:0,sum:0,terminal:0,unknown:0}))),total:0,reasons:new Set()},64);
   if(options.opponentModel==='npc-ai'){
    try{root.npcPolicy=npcMoveDistribution(game,options.npcAi);}catch(error){if(!(error instanceof MissingInput))throw error;root.reasons.add(error.message);}
   }
@@ -183,34 +202,44 @@ export function simulateSampledMovesCore(initial,options,reasons,evaluator){
  if(root.npcPolicy)options={...options,npcProbabilities:root.actions[1].map(slot=>root.npcPolicy.find(p=>p.slot===slot)?.probability||0)};
  Object.assign(session,root);
  const start=performance.now();options={...options,deadline:start+Math.max(1,options.timeMs??150)};let added=0,work;
+ const alreadyTactical=coveredTacticalValue(root.cells,options)!==null;
  const covered=()=>root.cells.every(row=>row.every((c,j)=>options.npcProbabilities?.[j]===0||c.n>0&&(!c.strata||c.strata.every(s=>s.n>0))));
- while(!options.warmOnly&&(work=allocation(root.cells,target,{...options,tacticalCoverage:covered(),tacticalRows:root.tactical?.[0],tacticalColumns:root.tactical?.[1]})).selected&&(added===0||performance.now()-start<(options.timeMs??150))&&!options.shouldStop?.()){
+ const pilot=()=>!options.npcProbabilities&&!covered()&&root.tacticalWorkMs<(options.tacticalPilotMs??300);
+ while(!options.warmOnly&&(work=allocation(root.cells,target,{...options,tacticalCoverage:covered()||pilot(),tacticalRows:root.tactical?.[0],tacticalColumns:root.tactical?.[1]})).selected&&(added===0||performance.now()-start<(options.timeMs??150))&&!options.shouldStop?.()){
   const {r,c}=work.selected,cell=root.cells[r][c],index=r*root.actions[1].length+c;
   const seed=(parseInt(initial.key.slice(0,8),16)^Math.imul(cell.n+1,0x9e3779b9)^Math.imul(index+1,0x85ebca6b))>>>0;
   try{
-   // Publish broad first-turn coverage before constructing deep policies for
-   // one pair. Later observations progressively replace the short forecast.
+   // Give forcing status/setup lines a bounded pilot before the expensive
+   // broad leaf evaluations. Unsuccessful pilots yield back to broad coverage.
    const branching=root.actions[0].length*root.actions[1].length>1;
    const initialCoverage=covered();
-   const horizon=branching&&!initialCoverage?1:rolloutHorizon(cell.n,branching,turnLimit);
-   const value=rollout(initial,root.actions[0][r],root.actions[1][c],seed,horizon,options,cell,cache,evaluator);
+   const tacticalPilot=pilot()&&((root.tactical?.[0][r]||0)+(root.tactical?.[1][c]||0)>0);
+   const horizon=tacticalPilot?turnLimit:branching&&!initialCoverage?1:rolloutHorizon(cell.n,branching,turnLimit);
+   const rolloutStart=performance.now(),workStart=tacticalPilot?workClock():0;
+   let value;
+   try{value=rollout(initial,root.actions[0][r],root.actions[1][c],seed,horizon,options,cell,cache,evaluator);}
+   finally{if(tacticalPilot){root.tacticalMs+=performance.now()-rolloutStart;root.tacticalWorkMs+=workClock()-workStart;}}
    if(value===null)break;
    cell.sum+=value.value;if(value.terminal)cell.terminal++;
    recordHorizonSample(cell,horizon,value.value,value.stratum,value.terminal);
    if(value.stratum>=0){const s=cell.strata[value.stratum];s.n++;s.sum+=value.value;}
   }catch(error){if(!(error instanceof MissingInput))throw error;reasons.add(error.message);root.reasons.add(error.message);cell.unknown++;}
   cell.n++;root.total++;added++;
+  if(!alreadyTactical&&!reasons.size&&!covered()&&coveredTacticalValue(root.cells,options)!==null)break;
  }
  session.total=root.total;
- const ready=root.cells.every(row=>row.every((c,j)=>options.npcProbabilities?.[j]===0||c.n>0&&c.unknown===0&&(!c.strata||c.strata.every(s=>s.n>0))));
- const matrix=root.cells.map(row=>row.map(stratumMean)),value=options.npcProbabilities?weightedNpcBounds(matrix,matrix,options.npcProbabilities):matrixBounds(matrix,matrix,512),point=ready?Math.max(1,Math.min(99,50*(value.lower+value.upper))):null;
+ const fullCoverage=root.cells.every(row=>row.every((c,j)=>options.npcProbabilities?.[j]===0||c.n>0&&c.unknown===0&&(!c.strata||c.strata.every(s=>s.n>0))));
+ const tacticalValue=reasons.size?null:coveredTacticalValue(root.cells,options),ready=fullCoverage||tacticalValue!==null;
+ const estimateTurns=!fullCoverage&&tacticalValue!==null?Math.max(...root.cells.flat().map(c=>c.estimateStats?.horizon||0)):Math.min(...root.cells.flat().map(c=>c.estimateStats?.horizon||0));
+ const matrix=root.cells.map(row=>row.map(stratumMean)),value=options.npcProbabilities?weightedNpcBounds(matrix,matrix,options.npcProbabilities):matrixBounds(matrix,matrix,512),point=ready?Math.max(1,Math.min(99,tacticalValue!==null?100*tacticalValue:50*(value.lower+value.upper))):null;
  const finalAllocation=allocation(root.cells,target,options),done=!finalAllocation.selected;
  return {score:point,provisional_score:point,provisional_usable:ready,score_kind:'simulation-estimate',
   lower:0,upper:1,lower_bound:0,upper_bound:100,unresolved:1,complete:false,certified:false,approximate:true,sampling_complete:done,
   algorithm:root.npcPolicy?'npc-ai-weighted-native-rollouts':'adaptive-stratified-native-rollouts',opponent_model:root.npcPolicy?'Run & Bun community NPC move scoring; optimized player root; native turn probes for player continuations':'simultaneous minimax root; native turn probes with mixed continuation strategies',npc_move_probabilities:root.npcPolicy,move_engine:'pokemon-showdown 0.11.11 with Run & Bun overrides',
-  nodes:added,samples:root.total,samples_per_pair:Math.min(...root.cells.flat().map(c=>c.n)),sample_target_per_pair:target,estimate_turns:Math.min(...root.cells.flat().map(c=>c.estimateStats?.horizon||0)),rollout_turn_limit:turnLimit,
+  nodes:added,samples:root.total,samples_per_pair:Math.min(...root.cells.flat().map(c=>c.n)),sample_target_per_pair:target,estimate_turns:estimateTurns,rollout_turn_limit:turnLimit,
   elapsed_ms:performance.now()-start,budget_exhausted:!done,retained_states:cache.policies.size+cache.roots.size,root_reused:reused,
   cache_hits:cache.hits,exact_endings:cache.exact,confidence_pruned_actions:finalAllocation.pruned,sampling_confidence_delta:options.samplingDelta??0.01,proof_threshold:finalAllocation.threshold,
+  full_root_coverage:fullCoverage,early_tactical_estimate:!fullCoverage&&tacticalValue!==null,tactical_pilot_ms:root.tacticalMs,tactical_pilot_work_ms:root.tacticalWorkMs,
   continuation_policy:'native-turn-probes-v'+CONTINUATION_VERSION,continuation_policy_probes_per_pair:2,cutoff_evaluation:'native passive effects, action capabilities and finite resources; heuristic, not a certificate',
   omitted_moves:[],unresolved_reasons:[...reasons],input_blocked:false,partial_estimate:point===null?0.5:point/100};
 }

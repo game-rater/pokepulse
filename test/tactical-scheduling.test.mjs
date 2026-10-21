@@ -1,9 +1,55 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {continuationStrategies,nativeContinuationPolicy,continuationPolicyValue} from '../analysis/continuation-policy.mjs';
-import {rolloutHorizon,allocation,recordHorizonSample,stratumMean,DEFAULT_ROLLOUT_TURNS,nextChanceStratum} from '../analysis/sampled-search.mjs';
-import {createCompleteBattle,restoreCompleteBattle,installChanceTape} from '../analysis/complete-moves.mjs';
+import {rolloutHorizon,allocation,recordHorizonSample,stratumMean,DEFAULT_ROLLOUT_TURNS,nextChanceStratum,coveredTacticalValue} from '../analysis/sampled-search.mjs';
+import {createCompleteBattle,restoreCompleteBattle,installChanceTape,simulateCompleteMoves} from '../analysis/complete-moves.mjs';
+import {createFeatureCaches} from '../analysis/feature-cache.mjs';
 import {referenceMon} from '../scripts/accuracy-benchmark-fixtures.mjs';
+const unvisited=()=>({n:0,sum:0,unknown:0});
+const observed=value=>({n:3,sum:3*value,unknown:0,estimateStats:{horizon:4,n:3,sum:3*value}});
+test('A covered decisive reply determines an early estimate while unrelated pairs remain unknown',()=>{
+ assert.equal(coveredTacticalValue([[observed(0),unvisited()],[observed(0),unvisited()]]),0);
+ assert.equal(coveredTacticalValue([[observed(1),observed(1)],[unvisited(),unvisited()]]),1);
+ assert.equal(coveredTacticalValue([[observed(0),unvisited()],[unvisited(),unvisited()]]),null,'every player reply must be covered');
+ assert.equal(coveredTacticalValue([[observed(1),unvisited()],[unvisited(),unvisited()]]),null,'every opponent reply must be covered');
+});
+test('Early tactical estimates preserve missing chance mass, depth and fixed NPC weights',()=>{
+ const rare=observed(0);rare.estimateStats.strata=[{n:1,sum:0,probability:0.9},{n:0,sum:0,probability:0.1}];
+ assert.equal(coveredTacticalValue([[rare,unvisited()],[observed(0),unvisited()]]),null);
+ const shallow=observed(0);shallow.estimateStats.horizon=1;
+ assert.equal(coveredTacticalValue([[shallow,unvisited()],[observed(0),unvisited()]]),null);
+ const cells=[[observed(0),unvisited()],[observed(0),unvisited()]];
+ assert.equal(coveredTacticalValue(cells,{npcProbabilities:[0.5,0.5]}),null);
+ assert.equal(coveredTacticalValue(cells,{npcProbabilities:[1,0]}),0);
+ const blocked=observed(0);blocked.unknown=1;
+ assert.equal(coveredTacticalValue([[blocked,unvisited()],[observed(0),unvisited()]]),null);
+});
+for(const reversed of [false,true])test(`Tactical pilot finds a sleep-finisher across all replies without unrelated leaf evaluation (${reversed?'player':'opponent'})`,()=>{
+ const target=referenceMon('Farfetch’d-Galar',['Pluck','Brutal Swing','Focus Energy','Rock Smash'],{level:21,hp:50,ability:'Inner Focus',item:'Leek'});
+ const attacker=referenceMon('Breloom',['Wake-Up Slap','Bullet Seed','Mach Punch','Spore'],{level:19,ability:'Poison Heal',item:'Toxic Orb'});
+ const snapshot={player:reversed?attacker:target,opponent:reversed?target:attacker,field:{}},session={featureCaches:createFeatureCaches()};let r;
+ // Test work ordering, not a wall-clock threshold under concurrent suite load.
+ for(let pass=0;pass<10;pass++){
+  r=simulateCompleteMoves(snapshot,{session,approximateCompleteMoves:true,retainedTurn:false,timeMs:1000,tacticalPilotMs:Infinity});
+  if(r.provisional_usable)break;
+ }
+ assert.equal(r.score,reversed?99:1);assert.equal(r.early_tactical_estimate,true);assert.equal(r.full_root_coverage,false);
+ assert.equal(r.samples,12,'four replies, each covering three native sleep durations');
+ assert.equal(r.estimate_turns,4,'unvisited irrelevant pairs do not erase the tactical horizon');
+ assert.equal(session.featureCaches.values.size,0,'unrelated heuristic leaves must not gate a decisive line');
+ assert.equal(r.certified,false);assert.equal(r.complete,false);assert.equal(r.lower_bound,0);assert.equal(r.upper_bound,100);
+});
+test('An exhausted tactical pilot yields to ordinary broad move coverage',()=>{
+ const target=referenceMon('Farfetch’d-Galar',['Pluck','Brutal Swing','Focus Energy','Rock Smash'],{level:21,hp:50,ability:'Inner Focus',item:'Leek'});
+ const attacker=referenceMon('Breloom',['Wake-Up Slap','Bullet Seed','Mach Punch','Spore'],{level:19,ability:'Poison Heal',item:'Toxic Orb'});
+ const session={};let r;
+ const oneSample=()=>session.sampledMoves?.cells.some(row=>row.some(c=>c.n>0));
+ for(let pass=0;pass<10&&!oneSample();pass++)r=simulateCompleteMoves({player:target,opponent:attacker,field:{}},{session,approximateCompleteMoves:true,retainedTurn:false,timeMs:1000,tacticalPilotMs:0,shouldStop:oneSample});
+ assert.equal(session.sampledMoves.cells[0][0].n,1);
+ assert.equal(session.sampledMoves.cells[2][3].n,0);
+ assert.equal(r.tactical_pilot_ms,0);
+ assert.equal(r.early_tactical_estimate,false);
+});
 
 test('Four-turn tactical coverage follows the broad pass and never grows to long rollouts',()=>{
  assert.equal(DEFAULT_ROLLOUT_TURNS,4);

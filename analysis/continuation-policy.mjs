@@ -5,7 +5,7 @@ import {observationKey} from './observation-key.mjs';
 import {selectContinuationChoices} from './action-usefulness.mjs';
 import {putCached} from './bounded-cache.mjs';
 
-export const CONTINUATION_VERSION=6;
+export const CONTINUATION_VERSION=7;
 export function continuationChoices(p,options){return selectContinuationChoices(p,options).choices;}
 function random(seed){let x=seed>>>0||1;return ()=>{x^=x<<13;x^=x>>>17;x^=x<<5;return (x>>>0)/4294967296;};}
 function terminal(b){const [p,q]=b.sides.map(s=>s.active[0]);return p.hp<=0?0:q.hp<=0?1:b.ended?(b.winner==='Player'?1:0):null;}
@@ -45,6 +45,21 @@ export function continuationPolicyValue(policy){
  if(!policy.matrix)return null;
  return policy.matrix.reduce((sum,row,i)=>sum+policy.probabilities[0][i]*row.reduce((s,v,j)=>s+v*policy.probabilities[1][j],0),0);
 }
+function probeTurn(state,observed,entry,cursor){
+ const index=Math.floor(cursor/entry.samples),i=index%entry.actions[0].length,j=Math.floor(index/entry.actions[0].length);
+ const b=restoreCompleteBattle(state),draw=random(parseInt(observed.slice(0,8),16)^Math.imul(cursor+1,0x9e3779b9));
+ let first=true,weight=1/entry.samples;
+ installChanceTape(b,[],state.unknownNature,state,branches=>{
+  const index=cursor%entry.samples;
+  if(first&&branches.length===2){first=false;weight=branches[index].probability;return branches.slice(0,index).reduce((s,c)=>s+c.probability,0)+weight*0.5;}
+  first=false;return draw();
+ });
+ for(let side=0;side<2;side++)if(!b.choose(`p${side+1}`,`move ${entry.actions[side][side?j:i]}`))throw Error('Native continuation move rejected: '+b.sides[side].choice.error);
+ return {b,i,j,weight,end:terminal(b)};
+}
+function terminalPolicy(entry,side,index){
+ return {actions:entry.actions,probabilities:entry.actions.map((slots,s)=>slots.map((_,i)=>s===side?Number(i===index):1/slots.length)),matrix:null,estimatedValue:side===0?1:0,actionFlags:entry.actionFlags};
+}
 export function nativeContinuationPolicy(state,cache,options={}){
  const observed=observationKey(state);
  const key=observed+'|policy-v'+CONTINUATION_VERSION+'|'+JSON.stringify(options.npcWeights||null)+'|filter:'+Number(options.filterUselessTurns!==false);
@@ -52,24 +67,36 @@ export function nativeContinuationPolicy(state,cache,options={}){
  if(!entry){
   const b=restoreCompleteBattle(state),selection=b.sides.map((s,i)=>selectContinuationChoices(s.active[0],{filterUselessTurns:options.filterUselessTurns!==false&&!(i===1&&options.npcWeights)}));
   const actions=selection.map(s=>s.choices.map(m=>m.slot)),actionFlags=selection.map(s=>({flags:s.flags,filtered:s.filtered,waiting:s.waiting}));
-  entry={actions,actionFlags,cursor:0,matrix:actions[0].map(()=>actions[1].map(()=>0)),terminalColumns:actions[1].map(()=>true),samples:2};
+  entry={actions,actionFlags,cursor:0,matrix:actions[0].map(()=>actions[1].map(()=>0)),samples:2,
+   scan:0,scanOrder:Array.from({length:actions[0].length*actions[1].length},(_,i)=>i),terminalPairs:actions[0].map(()=>actions[1].map(()=>true)),terminalValues:actions[0].map(()=>actions[1].map(()=>0)),
+   terminalRows:actions[0].map(()=>true),terminalColumns:actions[1].map(()=>true),rowCounts:actions[0].map(()=>0),columnCounts:actions[1].map(()=>0)};
   if(actions.every(a=>a.length===1))entry.policy={actions,probabilities:[[1],[1]],matrix:null,actionFlags};
   putCached(cache,key,entry,2048);
  }
  if(entry.policy)return entry.policy;
  const count=entry.actions[0].length*entry.actions[1].length;
+ // Check immediate native terminal replies before expensive heuristic leaves.
+ // No native battle objects are retained: unfinished pairs replay their same
+ // probe seed when feature evaluation begins. Both sides get the same test.
+ while(!options.npcWeights&&entry.scan<count*entry.samples){
+  if(options.shouldStop?.()||performance.now()>(options.deadline??Infinity))return null;
+  const cursor=entry.scanOrder[Math.floor(entry.scan/entry.samples)]*entry.samples+entry.scan%entry.samples;
+  const {i,j,weight,end}=probeTurn(state,observed,entry,cursor);entry.scan++;
+  entry.terminalPairs[i][j]&&=end!==null;
+  if(end!==null)entry.terminalValues[i][j]+=end*weight;
+  entry.terminalRows[i]&&=end===1;entry.terminalColumns[j]&&=end===0;
+  entry.rowCounts[i]++;entry.columnCounts[j]++;
+  // An anchor KO for the player asks for the rest of that row first. An
+  // anchor loss already follows column order. Seeds remain pair-specific.
+  if(entry.scan===entry.samples&&entry.terminalRows[0])entry.scanOrder.sort((a,b)=>Number(b%entry.actions[0].length===0)-Number(a%entry.actions[0].length===0));
+  if(entry.terminalRows[i]&&entry.rowCounts[i]===entry.actions[1].length*entry.samples)return entry.policy=terminalPolicy(entry,0,i);
+  if(entry.terminalColumns[j]&&entry.columnCounts[j]===entry.actions[0].length*entry.samples)return entry.policy=terminalPolicy(entry,1,j);
+ }
  while(entry.cursor<count*entry.samples){
   if(options.shouldStop?.()||performance.now()>(options.deadline??Infinity))return null;
   const index=Math.floor(entry.cursor/entry.samples),i=index%entry.actions[0].length,j=Math.floor(index/entry.actions[0].length);
-  const b=restoreCompleteBattle(state),draw=random(parseInt(observed.slice(0,8),16)^Math.imul(entry.cursor+1,0x9e3779b9));
-  let first=true,weight=1/entry.samples;
-  installChanceTape(b,[],state.unknownNature,state,branches=>{
-   const index=entry.cursor%entry.samples;
-   if(first&&branches.length===2){first=false;weight=branches[index].probability;return branches.slice(0,index).reduce((s,c)=>s+c.probability,0)+weight*0.5;}
-   first=false;return draw();
-  });
-  for(let side=0;side<2;side++)if(!b.choose(`p${side+1}`,`move ${entry.actions[side][side?j:i]}`))throw Error('Native continuation move rejected: '+b.sides[side].choice.error);
-  const end=terminal(b);entry.terminalColumns[j]&&=end===0;
+  if(!options.npcWeights&&entry.terminalPairs[i][j]){entry.matrix[i][j]=entry.terminalValues[i][j];entry.cursor+=entry.samples;continue;}
+  const {b,weight,end}=probeTurn(state,observed,entry,entry.cursor);
   let value=end??continuationValue(b,options);
   if(value===null)return null;
   if(terminal(b)===null){
@@ -80,13 +107,6 @@ export function nativeContinuationPolicy(state,cache,options={}){
    value=value*0.98+0.01+0.01*Math.max(-1,Math.min(1,progress));
   }
   entry.matrix[i][j]+=value*weight;entry.cursor++;
-  // A sampled terminal reply against every player action already determines
-  // the probe policy. Do not spend the slice evaluating unrelated replies.
-  // This is only policy selection; it does not certify battle probability.
-  if(!options.npcWeights&&entry.cursor% (entry.actions[0].length*entry.samples)===0&&entry.terminalColumns[j]){
-   entry.policy={actions:entry.actions,probabilities:[entry.actions[0].map(()=>1/entry.actions[0].length),entry.actions[1].map((_,c)=>Number(c===j))],matrix:null,estimatedValue:0,actionFlags:entry.actionFlags};
-   return entry.policy;
-  }
  }
  const weights=options.npcWeights&&entry.actions[1].map(slot=>options.npcWeights.find(m=>m.slot===slot)?.probability||0);
  entry.policy={actions:entry.actions,probabilities:continuationStrategies(entry.matrix,weights),matrix:entry.matrix,actionFlags:entry.actionFlags};
