@@ -4,6 +4,10 @@
 The registry changes search order only. It supplies no damage, probability,
 legality, guaranteed-win certificate or NPC action prediction.
 
+The broader [strategy survey](STRATEGY-SURVEY.md) records 72 additional candidate
+entries, including overlaps and missing conditions. It is a sourced research
+backlog, not 72 newly implemented runtime patterns.
+
 ## Families
 
 | Setup | Later steps |
