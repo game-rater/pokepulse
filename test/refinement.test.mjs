@@ -2,6 +2,12 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {refineUntilResolved} from '../run-bun/refinement.mjs';
 import {searchBattle} from '../analysis/search.mjs';
+test('Live-style bounded refinement spends later passes at the same short depth',async()=>{
+ const depths=[];
+ await refineUntilResolved({depthLimit:4,pauseMs:0,obsolete:()=>depths.length>=10,
+  run:options=>{depths.push(options.maxDepth);return {outlook:{elapsed_ms:20,budget_exhausted:false}};},publish:()=>{}});
+ assert.deepEqual(depths,Array(10).fill(4));
+});
 
 test('Missing live input stops refinement after publishing the unresolved result',async()=>{
   let runs=0,published=0;

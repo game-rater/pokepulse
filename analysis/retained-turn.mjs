@@ -1,7 +1,7 @@
 // Exact, resumable next-turn probabilities above retained deeper estimates.
 // No trainer AI. Unknown/unfinished chance mass is never renormalized.
 import {completeMoveAdapter,restoreCompleteBattle} from './native-battle.mjs';
-import {simulateSampledMovesCore,samplingConfidenceBounds,recordHorizonSample,stratumMean} from './sampled-search.mjs';
+import {simulateSampledMovesCore,samplingConfidenceBounds,recordHorizonSample,stratumMean,DEFAULT_ROLLOUT_TURNS} from './sampled-search.mjs';
 import {matrixBounds,matrixPruning,thresholdDecision,proofThreshold} from './search.mjs';
 import {BoundedCache} from './bounded-cache.mjs';
 
@@ -26,7 +26,7 @@ function remember(graph,key,node){
  return node;
 }
 export function turnNode(graph,state,options={}){
- const key=observationKey(state)+'|'+(options.rolloutTurns??12);
+ const key=observationKey(state)+'|'+(options.rolloutTurns??DEFAULT_ROLLOUT_TURNS);
  let node=graph.nodes.get(key);
  if(node){graph.hits++;return node;}
  const actions=completeMoveAdapter().actions(state);
@@ -120,13 +120,22 @@ export function backedValue(node){
 function refine(graph,node,options,reasons,timeMs,evaluator){
  const previous=graph.processingKey;graph.processingKey=node.key;
  try {
- const result=evaluator?.continuation(node.state,reasons,{...options,deadline:Math.min(options.deadline??Infinity,performance.now()+Math.max(0,timeMs))})||simulateSampledMovesCore(node.state,{...options,timeMs,session:node.session,continuationPolicies:graph.continuationPolicies??=new BoundedCache({name:'continuation-policies',owner:'retained-graph',limit:2048}),retainAfterTurn:options.retainChildren===false?undefined:(state,unbiased,horizon)=>{
+ const previousResult=node.result;
+ let result=evaluator?.continuation(node.state,reasons,{...options,deadline:Math.min(options.deadline??Infinity,performance.now()+Math.max(0,timeMs))})||simulateSampledMovesCore(node.state,{...options,timeMs,session:node.session,continuationPolicies:graph.continuationPolicies??=new BoundedCache({name:'continuation-policies',owner:'retained-graph',limit:2048}),retainAfterTurn:options.retainChildren===false?undefined:(state,unbiased,horizon)=>{
   const child=turnNode(graph,state,options);
   if(!unbiased)return null;
   return value=>{child.prior.n++;child.prior.sum+=value;child.prior.horizons[horizon]=(child.prior.horizons[horizon]||0)+1;
    recordHorizonSample(child.prior,horizon,value);
    if(!child.result?.provisional_usable)child.value=stratumMean(child.prior);};
  }},reasons,evaluator);
+ // Rerooting gives a retained child one extra turn of horizon. Its old
+ // covered forecast remains usable while the new horizon builds coverage.
+ // Keep its sample count separate: those observations are not new-depth work.
+ if(previousResult?.provisional_usable&&!result.provisional_usable&&!result.input_blocked&&!reasons.size){
+  result={...result,score:previousResult.score,provisional_score:previousResult.score,provisional_usable:true,
+   estimate_turns:previousResult.estimate_turns,retained_forecast:true,
+   retained_forecast_samples:previousResult.retained_forecast_samples??previousResult.samples};
+ }
  node.result=result;node.visits++;
  if(result.certified&&result.lower===result.upper)node.lower=node.upper=result.lower;
  graph.rollouts=(graph.rollouts||0)+(result.certified?0:result.nodes);
@@ -177,7 +186,8 @@ export function simulateRetainedTurn(initial,options,reasons,evaluator){
  if(left()>0)expandTurn(graph,node,{...options,timeMs:Math.min(left(),budget*0.15)},reasons);
  const child=selectChild(node,options);
  if(child&&left()>0)expandTurn(graph,child,{...options,timeMs:Math.min(left(),budget*0.03)},reasons);
- if(child&&left()>0)refine(graph,child,{...options,samplesPerPair:options.continuationSamplesPerPair??options.samplesPerPair??128},reasons,left(),evaluator);
+ // The retained edge already consumed one turn of the tactical horizon.
+ if(child&&left()>0)refine(graph,child,{...options,rolloutTurns:Math.max(1,(options.rolloutTurns??DEFAULT_ROLLOUT_TURNS)-1),samplesPerPair:options.continuationSamplesPerPair??options.samplesPerPair??128},reasons,left(),evaluator);
  const backup=backedValue(node);if(backup!==null)node.value=backup;
  if(reasons.size){
   result={...result,provisional_usable:false,input_blocked:true,unresolved_reasons:[...reasons]};
@@ -186,7 +196,7 @@ export function simulateRetainedTurn(initial,options,reasons,evaluator){
  return report(node,result,reused,added,graph,start,options);
 }
 function emptyResult(options){return {complete:false,certified:false,approximate:true,sampling_complete:false,lower:0,upper:1,lower_bound:0,upper_bound:100,
- unresolved:1,score_kind:'simulation-estimate',samples:0,samples_per_pair:0,sample_target_per_pair:options.samplesPerPair??128,rollout_turn_limit:options.rolloutTurns??12,
+ unresolved:1,score_kind:'simulation-estimate',samples:0,samples_per_pair:0,sample_target_per_pair:options.samplesPerPair??128,rollout_turn_limit:options.rolloutTurns??DEFAULT_ROLLOUT_TURNS,
  input_blocked:false,omitted_moves:[],unresolved_reasons:[],move_engine:'pokemon-showdown 0.11.11 with Run & Bun overrides'};}
 function report(node,result,reused,added,graph,start,options={}){
  if(result.certified&&result.complete&&!result.input_blocked)return {...result,root_reused:reused||result.root_reused,retained_states:graph.nodes.size,elapsed_ms:performance.now()-start};

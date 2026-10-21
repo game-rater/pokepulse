@@ -14,10 +14,13 @@ test('Worker search leaves event loop responsive and suppresses replaced snapsho
   service.start(args,()=>obsolete++,()=>{},[200,500,1000,2000,3000]);
   const result=await new Promise((resolve,reject)=>{
    const timeout=setTimeout(()=>reject(Error('Worker timed out')),15000);
-   service.start(args,r=>{if(r.outlook.complete){clearTimeout(timeout);resolve(r);}},e=>{clearTimeout(timeout);reject(e);},[200,500,1000,2000,3000]);
+   service.start(args,r=>{if(r.outlook.approximate&&Number.isFinite(r.display_score)){clearTimeout(timeout);resolve(r);}},e=>{clearTimeout(timeout);reject(e);},[200,500,1000,2000,3000]);
   });
-  assert.equal(obsolete,0);assert.ok(ticks>0);assert.equal(result.victory,50);
-  assert.equal(result.outlook.algorithm,'bounded-stochastic-game-search');
+  assert.equal(obsolete,0);assert.ok(ticks>0);
+  assert.ok(Math.abs(result.victory-50)<=10,`initial sampled forecast ${result.victory} stays within the ten-point target of symmetric 50% odds`);
+  assert.equal(result.outlook.algorithm,'retained-next-turn-native-hybrid');
+  assert.equal(result.outlook.certified,false);
+  assert.equal(result.outlook.rollout_turn_limit,4);
  }finally{clearInterval(timer);service.cancel();}
 });
 
@@ -97,7 +100,7 @@ test('Cross-snapshot cache context preserves dynamic states and rejects changed 
  next[6].player.taunted=true;assert.notEqual(modelContext(next),original);
 });
 
-test('Worker keeps publishing an unresolved state after three passes and cancels cleanly',async()=>{
+test('Short-search fallback identifies missing sleep timing and stops without inventing a forecast',async()=>{
  const service=new SearchService({parallel:false,settleMs:0}),args=winningArgs();
  args[4].player.status='slp'; // Unknown wake-up timing remains unresolved; exhausted PP now uses Struggle.
  const passes=[];
@@ -106,8 +109,12 @@ test('Worker keeps publishing an unresolved state after three passes and cancels
    const timeout=setTimeout(()=>reject(Error('Continuous worker timed out')),15000);
    service.start(args,result=>{
     passes.push(result.outlook.refinement_pass);
-    assert.equal(result.refining,true);
-    if(passes.length===5){service.cancel();clearTimeout(timeout);resolve();}
+    if(result.outlook.input_blocked){
+     assert.equal(result.refining,false);
+     assert.ok(result.outlook.unresolved_reasons.some(reason=>reason.includes('wake-up counter')));
+     assert.equal(result.display_score,null);
+     service.cancel();clearTimeout(timeout);resolve();
+    }else assert.equal(result.refining,true);
    },error=>{clearTimeout(timeout);reject(error);},[10]);
   });
   assert.deepEqual(passes,[1,2,3,4,5]);assert.equal(service.worker,null);

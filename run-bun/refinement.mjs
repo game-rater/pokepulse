@@ -1,9 +1,11 @@
 // Time slices bound responsiveness, not the lifetime of a battle search.
 import {setImmediate, setTimeout} from 'node:timers/promises';
 
-export async function refineUntilResolved({run,publish,obsolete,budgets=[150,250],pauseMs=50}) {
+export const LIVE_SEARCH_DEPTH_LIMIT=4;
+export async function refineUntilResolved({run,publish,obsolete,budgets=[150,250],pauseMs=50,depthLimit=Infinity}) {
   if(!budgets.length||budgets.some(ms=>!Number.isFinite(ms)||ms<=0))throw Error('Search time slices must be positive.');
-  let depth=4;
+  if(depthLimit!==Infinity&&(!Number.isInteger(depthLimit)||depthLimit<1))throw Error('Search depth limit must be a positive integer.');
+  let depth=Math.min(4,depthLimit);
   for(let pass=0;!obsolete();pass++) {
     const timeMs=budgets[Math.min(pass,budgets.length-1)];
     // Cover short continuations across actions before spending a slice down
@@ -15,7 +17,7 @@ export async function refineUntilResolved({run,publish,obsolete,budgets=[150,250
     if(result.outlook.complete||result.outlook.input_blocked||result.outlook.sampling_complete||result.outlook.search_paused)return;
     // A horizon may remain expensive even after several passes. Deepen anyway
     // so shallow unresolved leaves cannot permanently stall the search.
-    if(!result.outlook.budget_exhausted||(pass+1)%4===0)depth=depth<128?depth*2:depth+32;
+    if(!result.outlook.budget_exhausted||(pass+1)%4===0)depth=Math.min(depthLimit,depth<128?depth*2:depth+32);
     // Yield so queued state changes can replace this search. An unsupported
     // continuation can return immediately; avoid spinning on it at full CPU.
     if(result.outlook.elapsed_ms<10&&pauseMs)await setTimeout(pauseMs);

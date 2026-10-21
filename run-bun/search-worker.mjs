@@ -1,6 +1,6 @@
 import {parentPort,workerData} from 'node:worker_threads';
 import {scoreBattle} from './profile.mjs';
-import {refineUntilResolved} from './refinement.mjs';
+import {refineUntilResolved,LIVE_SEARCH_DEPTH_LIMIT} from './refinement.mjs';
 import {searchArguments} from './battle-state.mjs';
 import {createFeatureCaches} from '../analysis/feature-cache.mjs';
 const generation=new Int32Array(workerData.generation);
@@ -32,10 +32,9 @@ parentPort.on('message',async({version,request,budgets,modelContext})=>{
   const retained=session;
   const retainedCount=()=>(retained.graph?.size||0)+(retained.completeMoves?.graph?.size||0);
   let exactPasses=0;
-  const actionPairs=args[4].player.moves.length*args[4].opponent.moves.length;
   const run=options=>{
     const npc=args[7]?.opponent_model==='npc-ai';
-    const forceNativeForecast=npc||engineMode==='hybrid'||engineMode==='auto'&&(!!retained.nativeFallback||!!retained.turnGraph?.nodes.size||(actionPairs>=4&&exactPasses>=4));
+    const forceNativeForecast=npc||engineMode==='hybrid'||engineMode==='auto'&&(!!retained.nativeFallback||!!retained.turnGraph?.nodes.size||exactPasses>=4);
     if(forceNativeForecast)retained.nativeFallback=true;
     const result=scoreBattle(...args,{...options,opponentModel:npc?'npc-ai':'minimax',npcAi:args[7]?.npc_ai,forceNativeForecast,progressive:true,approximateCompleteMoves:npc||engineMode!=='exact',session:retained,
       shouldStop:()=>obsolete()||performance.now()>=deadline||(engineMode==='exact'&&retainedCount()>=20000)});
@@ -61,7 +60,7 @@ parentPort.on('message',async({version,request,budgets,modelContext})=>{
       if(warm.outlook.complete)return;
     }
   }
-  await refineUntilResolved({run,obsolete,budgets,publish:(result,pass)=>{
+  await refineUntilResolved({run,obsolete,budgets,depthLimit:LIVE_SEARCH_DEPTH_LIMIT,publish:(result,pass)=>{
     publish(result,pass);
     // Depth-specific memo entries may be evicted. State certificates survive
     // across passes and turns so completed work is never discarded here.

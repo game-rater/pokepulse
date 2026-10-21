@@ -5,7 +5,7 @@ import {observationKey} from './observation-key.mjs';
 import {selectContinuationChoices} from './action-usefulness.mjs';
 import {putCached} from './bounded-cache.mjs';
 
-export const CONTINUATION_VERSION=5;
+export const CONTINUATION_VERSION=6;
 export function continuationChoices(p,options){return selectContinuationChoices(p,options).choices;}
 function random(seed){let x=seed>>>0||1;return ()=>{x^=x<<13;x^=x>>>17;x^=x<<5;return (x>>>0)/4294967296;};}
 function terminal(b){const [p,q]=b.sides.map(s=>s.active[0]);return p.hp<=0?0:q.hp<=0?1:b.ended?(b.winner==='Player'?1:0):null;}
@@ -36,6 +36,14 @@ export function continuationStrategies(matrix,weights){
   p[rv.indexOf(Math.max(...rv))]++;q[cv.indexOf(Math.min(...cv))]++;
  }
  return [p.map(v=>v/p.reduce((s,x)=>s+x,0)),q.map(v=>v/q.reduce((s,x)=>s+x,0))];
+}
+// Integrate the already-probed action table at the rollout horizon rather
+// than drawing another action pair and executing that same turn again.
+// These are heuristic/sample values, not certified game bounds.
+export function continuationPolicyValue(policy){
+ if(policy.estimatedValue!==undefined)return policy.estimatedValue;
+ if(!policy.matrix)return null;
+ return policy.matrix.reduce((sum,row,i)=>sum+policy.probabilities[0][i]*row.reduce((s,v,j)=>s+v*policy.probabilities[1][j],0),0);
 }
 export function nativeContinuationPolicy(state,cache,options={}){
  const observed=observationKey(state);
@@ -76,7 +84,7 @@ export function nativeContinuationPolicy(state,cache,options={}){
   // the probe policy. Do not spend the slice evaluating unrelated replies.
   // This is only policy selection; it does not certify battle probability.
   if(!options.npcWeights&&entry.cursor% (entry.actions[0].length*entry.samples)===0&&entry.terminalColumns[j]){
-   entry.policy={actions:entry.actions,probabilities:[entry.actions[0].map(()=>1/entry.actions[0].length),entry.actions[1].map((_,c)=>Number(c===j))],matrix:null,actionFlags:entry.actionFlags};
+   entry.policy={actions:entry.actions,probabilities:[entry.actions[0].map(()=>1/entry.actions[0].length),entry.actions[1].map((_,c)=>Number(c===j))],matrix:null,estimatedValue:0,actionFlags:entry.actionFlags};
    return entry.policy;
   }
  }

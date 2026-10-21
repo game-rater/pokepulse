@@ -1,18 +1,31 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {continuationStrategies,nativeContinuationPolicy} from '../analysis/continuation-policy.mjs';
-import {rolloutHorizon,allocation,recordHorizonSample,stratumMean} from '../analysis/sampled-search.mjs';
+import {continuationStrategies,nativeContinuationPolicy,continuationPolicyValue} from '../analysis/continuation-policy.mjs';
+import {rolloutHorizon,allocation,recordHorizonSample,stratumMean,DEFAULT_ROLLOUT_TURNS,nextChanceStratum} from '../analysis/sampled-search.mjs';
 import {createCompleteBattle,restoreCompleteBattle,installChanceTape} from '../analysis/complete-moves.mjs';
 import {referenceMon} from '../scripts/accuracy-benchmark-fixtures.mjs';
 
-test('Two-turn coverage follows one broad root sample instead of four',()=>{
- assert.equal(rolloutHorizon(0,true,12),1);
- for(let n=1;n<8;n++)assert.equal(rolloutHorizon(n,true,12),2);
- assert.equal(rolloutHorizon(8,true,12),4);
- assert.equal(rolloutHorizon(16,true,12),12);
- assert.equal(rolloutHorizon(32,true,12,true),24);
+test('Four-turn tactical coverage follows the broad pass and never grows to long rollouts',()=>{
+ assert.equal(DEFAULT_ROLLOUT_TURNS,4);
+ assert.equal(rolloutHorizon(0,true),1);
+ for(const n of [1,2,7,8,16,32,128,1000])assert.equal(rolloutHorizon(n,true),4);
  assert.equal(rolloutHorizon(1,true,1),1);
- assert.equal(rolloutHorizon(0,false,12),12);
+ assert.equal(rolloutHorizon(0,false),4);
+ assert.equal(rolloutHorizon(128,true,4),4,'an explicitly configured depth never doubles');
+});
+test('The last-turn action table is integrated without sampling a new action pair',()=>{
+ assert.equal(continuationPolicyValue({matrix:[[0,1],[0.4,0.4]],probabilities:[[0,1],[0.5,0.5]]}),0.4);
+ assert.equal(continuationPolicyValue({matrix:[[0,1]],probabilities:[[1],[0.25,0.75]]}),0.75);
+ assert.equal(continuationPolicyValue({matrix:null,estimatedValue:0}),0);
+ assert.equal(continuationPolicyValue({matrix:null,probabilities:[[1],[1]]}),null,'unprobed forced actions still execute natively');
+});
+test('Common chance outcomes go first without starving or reweighting rare outcomes',()=>{
+ const strata=[{n:0,sum:0,probability:1/16},{n:0,sum:0,probability:15/16}];
+ assert.equal(nextChanceStratum(strata),1);
+ strata[1].n=1;
+ assert.equal(nextChanceStratum(strata),0);
+ strata[0].n=1;strata[0].sum=1;
+ assert.equal(stratumMean({strata}),1/16);
 });
 test('A decisive reply receives no losing-move pseudocounts in either orientation',()=>{
  assert.deepEqual(continuationStrategies([[0,0.4],[0,1]]),[[0.5,0.5],[1,0]]);
@@ -46,6 +59,7 @@ test('A sleeping target cannot distract the policy from a guaranteed Wake-Up Sla
   const policy=nativeContinuationPolicy(state,new Map());
   const side=reverse?0:1,slot=policy.actions[side].indexOf(1);
   assert.equal(policy.probabilities[side][slot],1);
+  assert.equal(continuationPolicyValue(policy),reverse?1:0);
  }
 });
 test('Spore then Wake-Up Slap defeats each available reply at both chance extremes',()=>{

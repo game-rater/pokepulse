@@ -4,7 +4,7 @@
 import {matrixBounds,matrixPruning,thresholdDecision,proofThreshold} from './search.mjs';
 import {completeMoveDex,restoreCompleteBattle,installChanceTape,MissingInput,packed,completeMoveAdapter,nativeMoveChoices} from './native-battle.mjs';
 import {npcMoveDistribution,weightedNpcBounds} from '../run-bun/npc-ai.mjs';
-import {CONTINUATION_VERSION,continuationValue,nativeContinuationPolicy,drawContinuation} from './continuation-policy.mjs';
+import {CONTINUATION_VERSION,continuationValue,nativeContinuationPolicy,drawContinuation,continuationPolicyValue} from './continuation-policy.mjs';
 import {BoundedCache,putCached} from './bounded-cache.mjs';
 function rng(seed){let x=seed>>>0||1;return ()=>{x^=x<<13;x^=x>>>17;x^=x<<5;return (x>>>0)/4294967296;};}
 function choices(p){return nativeMoveChoices(p).map(m=>({slot:m.slot,move:completeMoveDex.moves.get(m.id),usable:true}));}
@@ -46,8 +46,12 @@ export function recordHorizonSample(cell,horizon,value,stratum=-1,terminal=false
  const decisive=stats.allTerminal&&(stats.sum===0||stats.sum===stats.n);
  if(covered&&(!cell.estimateStats||horizon>=cell.estimateStats.horizon&&(stats.n>=4||decisive)))cell.estimateStats=stats;
 }
-export function rolloutHorizon(samples,branching,turnLimit,longHorizon=false){
- return branching&&samples<1?1:branching&&samples<8?Math.min(2,turnLimit):branching&&samples<16?Math.min(4,turnLimit):longHorizon?turnLimit*2:turnLimit;
+export const DEFAULT_ROLLOUT_TURNS=4;
+export function rolloutHorizon(samples,branching,turnLimit=DEFAULT_ROLLOUT_TURNS){
+ return branching&&samples<1?1:turnLimit;
+}
+export function nextChanceStratum(strata){
+ return strata.reduce((best,s,i)=>s.n<strata[best].n||s.n===strata[best].n&&s.probability>strata[best].probability?i:best,0);
 }
 function rollout(initial,a,b,seed,turnLimit,options,cell,cache,evaluator){
  const game=restoreCompleteBattle(initial),random=rng(seed);
@@ -63,7 +67,7 @@ function rollout(initial,a,b,seed,turnLimit,options,cell,cache,evaluator){
    cell.strata??=branches.map(c=>({probability:c.probability,n:0,sum:0}));
    // Allocate equally across strata, then combine their means with the actual
    // native probabilities. Rare outcomes are never counted as common ones.
-   stratum=cell.strata.reduce((best,s,i)=>s.n<cell.strata[best].n?i:best,0);
+   stratum=nextChanceStratum(cell.strata);
    return branches.slice(0,stratum).reduce((s,c)=>s+c.probability,0)+branches[stratum].probability*random();
   }
   return random();
@@ -84,6 +88,10 @@ function rollout(initial,a,b,seed,turnLimit,options,cell,cache,evaluator){
    }
    const policy=nativeContinuationPolicy(state,cache.policies,{...options,npcWeights});
    if(!policy)return null;
+   if(turn===turnLimit-1){
+    const value=continuationPolicyValue(policy);
+    if(value!==null)return finish(value,false);
+   }
    moves=drawContinuation(policy,random);
    // Integrate a small all-terminal native turn instead of sampling its rare
    // outcomes. This is conditional expectation, not a claim that the policy
@@ -158,7 +166,7 @@ export function simulateSampledMovesCore(initial,options,reasons,evaluator){
  const cache=session.cache??={roots:new BoundedCache({name:'sampled-roots',owner:'sampled-session',limit:64}),policies:new BoundedCache({name:'continuation-policies',owner:'sampled-session',limit:2048}),hits:0,exact:0};
  if(options.continuationPolicies)cache.policies=options.continuationPolicies;
  cache.npcPolicies??=new BoundedCache({name:'npc-policies',owner:'sampled-session',limit:2048});
- const target=options.samplesPerPair??128,turnLimit=options.rolloutTurns??12;
+ const target=options.samplesPerPair??128,turnLimit=options.rolloutTurns??DEFAULT_ROLLOUT_TURNS;
  const rootKey=initial.key+'|policy-v'+CONTINUATION_VERSION+'|'+turnLimit+'|'+(options.opponentModel||'minimax')+'|'+JSON.stringify(options.npcAi||{})+'|filter:'+Number(options.filterUselessTurns!==false);
  let root=cache.roots.get(rootKey),reused=!!root;
  if(!root){
@@ -177,16 +185,14 @@ export function simulateSampledMovesCore(initial,options,reasons,evaluator){
  const start=performance.now();options={...options,deadline:start+Math.max(1,options.timeMs??150)};let added=0,work;
  const covered=()=>root.cells.every(row=>row.every((c,j)=>options.npcProbabilities?.[j]===0||c.n>0&&(!c.strata||c.strata.every(s=>s.n>0))));
  while(!options.warmOnly&&(work=allocation(root.cells,target,{...options,tacticalCoverage:covered(),tacticalRows:root.tactical?.[0],tacticalColumns:root.tactical?.[1]})).selected&&(added===0||performance.now()-start<(options.timeMs??150))&&!options.shouldStop?.()){
-  const {r,c,close}=work.selected,cell=root.cells[r][c],index=r*root.actions[1].length+c;
+  const {r,c}=work.selected,cell=root.cells[r][c],index=r*root.actions[1].length+c;
   const seed=(parseInt(initial.key.slice(0,8),16)^Math.imul(cell.n+1,0x9e3779b9)^Math.imul(index+1,0x85ebca6b))>>>0;
   try{
-   // Higher sample counts on competitive pairs also get a longer continuation.
-   if(close&&cell.n>=32)cell.longHorizon=true;
    // Publish broad first-turn coverage before constructing deep policies for
    // one pair. Later observations progressively replace the short forecast.
    const branching=root.actions[0].length*root.actions[1].length>1;
    const initialCoverage=covered();
-   const horizon=branching&&!initialCoverage?1:rolloutHorizon(cell.n,branching,turnLimit,cell.longHorizon);
+   const horizon=branching&&!initialCoverage?1:rolloutHorizon(cell.n,branching,turnLimit);
    const value=rollout(initial,root.actions[0][r],root.actions[1][c],seed,horizon,options,cell,cache,evaluator);
    if(value===null)break;
    cell.sum+=value.value;if(value.terminal)cell.terminal++;
@@ -202,7 +208,7 @@ export function simulateSampledMovesCore(initial,options,reasons,evaluator){
  return {score:point,provisional_score:point,provisional_usable:ready,score_kind:'simulation-estimate',
   lower:0,upper:1,lower_bound:0,upper_bound:100,unresolved:1,complete:false,certified:false,approximate:true,sampling_complete:done,
   algorithm:root.npcPolicy?'npc-ai-weighted-native-rollouts':'adaptive-stratified-native-rollouts',opponent_model:root.npcPolicy?'Run & Bun community NPC move scoring; optimized player root; native turn probes for player continuations':'simultaneous minimax root; native turn probes with mixed continuation strategies',npc_move_probabilities:root.npcPolicy,move_engine:'pokemon-showdown 0.11.11 with Run & Bun overrides',
-  nodes:added,samples:root.total,samples_per_pair:Math.min(...root.cells.flat().map(c=>c.n)),sample_target_per_pair:target,estimate_turns:Math.min(...root.cells.flat().map(c=>c.estimateStats?.horizon||0)),rollout_turn_limit:turnLimit*2,
+  nodes:added,samples:root.total,samples_per_pair:Math.min(...root.cells.flat().map(c=>c.n)),sample_target_per_pair:target,estimate_turns:Math.min(...root.cells.flat().map(c=>c.estimateStats?.horizon||0)),rollout_turn_limit:turnLimit,
   elapsed_ms:performance.now()-start,budget_exhausted:!done,retained_states:cache.policies.size+cache.roots.size,root_reused:reused,
   cache_hits:cache.hits,exact_endings:cache.exact,confidence_pruned_actions:finalAllocation.pruned,sampling_confidence_delta:options.samplingDelta??0.01,proof_threshold:finalAllocation.threshold,
   continuation_policy:'native-turn-probes-v'+CONTINUATION_VERSION,continuation_policy_probes_per_pair:2,cutoff_evaluation:'native passive effects, action capabilities and finite resources; heuristic, not a certificate',

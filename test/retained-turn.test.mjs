@@ -48,9 +48,15 @@ test('Observed next-turn root immediately publishes retained evidence without a 
  assert.equal(warm.reused_next_turn_estimate,true);assert.equal(warm.provisional_usable,true);assert.equal(warm.nodes,0);
  assert.ok(warm.samples>0||warm.continuation_samples>0);assert.equal(warm.certified,false);
  const node=[...session.turnGraph.nodes.values()].find(n=>observationKey(n.state)===observationKey(createCompleteBattle(observed)));
- const savedSamples=node.result?.samples||0;
+ const previousEpochs=[...node.session.sampledMoves.cache.roots.values()].map(root=>({root,total:root.total}));
  const refined=simulateCompleteMoves(observed,{...options,samplesPerPair:16,timeMs:100});
- assert.ok(refined.samples>=savedSamples);assert.equal(refined.root_reused,true);
+ assert.equal(refined.provisional_usable,true);assert.equal(refined.root_reused,true);
+ // A rerooted child can start a fresh, longer horizon. Its new-depth sample
+ // count need not exceed the old epoch's count, but old work must survive.
+ for(const {root,total} of previousEpochs){
+  assert.ok([...node.session.sampledMoves.cache.roots.values()].includes(root));
+  assert.ok(root.total>=total);
+ }
 });
 test('Retained native snapshots stay within the configured node limit',()=>{
  const g=graph(4),snapshot=reusable();
