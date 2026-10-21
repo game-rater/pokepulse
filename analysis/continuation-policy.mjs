@@ -4,8 +4,9 @@ import {restoreCompleteBattle,installChanceTape} from './native-battle.mjs';
 import {observationKey} from './observation-key.mjs';
 import {selectContinuationChoices} from './action-usefulness.mjs';
 import {putCached} from './bounded-cache.mjs';
+import {strategyOrdering} from './strategy-registry.mjs';
 
-export const CONTINUATION_VERSION=7;
+export const CONTINUATION_VERSION=8;
 export function continuationChoices(p,options){return selectContinuationChoices(p,options).choices;}
 function random(seed){let x=seed>>>0||1;return ()=>{x^=x<<13;x^=x>>>17;x^=x<<5;return (x>>>0)/4294967296;};}
 function terminal(b){const [p,q]=b.sides.map(s=>s.active[0]);return p.hp<=0?0:q.hp<=0?1:b.ended?(b.winner==='Player'?1:0):null;}
@@ -67,8 +68,12 @@ export function nativeContinuationPolicy(state,cache,options={}){
  if(!entry){
   const b=restoreCompleteBattle(state),selection=b.sides.map((s,i)=>selectContinuationChoices(s.active[0],{filterUselessTurns:options.filterUselessTurns!==false&&!(i===1&&options.npcWeights)}));
   const actions=selection.map(s=>s.choices.map(m=>m.slot)),actionFlags=selection.map(s=>({flags:s.flags,filtered:s.filtered,waiting:s.waiting}));
+  const hints=b.sides.map((s,i)=>strategyOrdering(s.active[0],selection[i].choices));
+  const order=Array.from({length:actions[0].length*actions[1].length},(_,i)=>i).sort((a,c)=>{
+   const rank=k=>hints[0].priorities[k%actions[0].length]+hints[1].priorities[Math.floor(k/actions[0].length)];return rank(c)-rank(a);
+  });
   entry={actions,actionFlags,cursor:0,matrix:actions[0].map(()=>actions[1].map(()=>0)),samples:2,
-   scan:0,scanOrder:Array.from({length:actions[0].length*actions[1].length},(_,i)=>i),terminalPairs:actions[0].map(()=>actions[1].map(()=>true)),terminalValues:actions[0].map(()=>actions[1].map(()=>0)),
+   scan:0,scanOrder:[...order],evalOrder:order,terminalPairs:actions[0].map(()=>actions[1].map(()=>true)),terminalValues:actions[0].map(()=>actions[1].map(()=>0)),
    terminalRows:actions[0].map(()=>true),terminalColumns:actions[1].map(()=>true),rowCounts:actions[0].map(()=>0),columnCounts:actions[1].map(()=>0)};
   if(actions.every(a=>a.length===1))entry.policy={actions,probabilities:[[1],[1]],matrix:null,actionFlags};
   putCached(cache,key,entry,2048);
@@ -86,17 +91,20 @@ export function nativeContinuationPolicy(state,cache,options={}){
   if(end!==null)entry.terminalValues[i][j]+=end*weight;
   entry.terminalRows[i]&&=end===1;entry.terminalColumns[j]&&=end===0;
   entry.rowCounts[i]++;entry.columnCounts[j]++;
-  // An anchor KO for the player asks for the rest of that row first. An
-  // anchor loss already follows column order. Seeds remain pair-specific.
-  if(entry.scan===entry.samples&&entry.terminalRows[0])entry.scanOrder.sort((a,b)=>Number(b%entry.actions[0].length===0)-Number(a%entry.actions[0].length===0));
+  // Complete a promising anchor's row or column before unrelated pairs.
+  // Keep the evaluated anchor first and preserve each pair's original seed.
+  if(entry.scan===entry.samples&&(entry.terminalRows[i]||entry.terminalColumns[j])){
+   const anchor=entry.scanOrder[0],rank=k=>entry.terminalRows[i]?Number(k%entry.actions[0].length===i):Number(Math.floor(k/entry.actions[0].length)===j);
+   entry.scanOrder=[anchor,...entry.scanOrder.slice(1).sort((a,b)=>rank(b)-rank(a))];
+  }
   if(entry.terminalRows[i]&&entry.rowCounts[i]===entry.actions[1].length*entry.samples)return entry.policy=terminalPolicy(entry,0,i);
   if(entry.terminalColumns[j]&&entry.columnCounts[j]===entry.actions[0].length*entry.samples)return entry.policy=terminalPolicy(entry,1,j);
  }
  while(entry.cursor<count*entry.samples){
   if(options.shouldStop?.()||performance.now()>(options.deadline??Infinity))return null;
-  const index=Math.floor(entry.cursor/entry.samples),i=index%entry.actions[0].length,j=Math.floor(index/entry.actions[0].length);
+  const index=entry.evalOrder[Math.floor(entry.cursor/entry.samples)],cursor=index*entry.samples+entry.cursor%entry.samples,i=index%entry.actions[0].length,j=Math.floor(index/entry.actions[0].length);
   if(!options.npcWeights&&entry.terminalPairs[i][j]){entry.matrix[i][j]=entry.terminalValues[i][j];entry.cursor+=entry.samples;continue;}
-  const {b,weight,end}=probeTurn(state,observed,entry,entry.cursor);
+  const {b,weight,end}=probeTurn(state,observed,entry,cursor);
   let value=end??continuationValue(b,options);
   if(value===null)return null;
   if(terminal(b)===null){

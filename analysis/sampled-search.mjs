@@ -6,8 +6,9 @@ import {completeMoveDex,restoreCompleteBattle,installChanceTape,MissingInput,pac
 import {npcMoveDistribution,weightedNpcBounds} from '../run-bun/npc-ai.mjs';
 import {CONTINUATION_VERSION,continuationValue,nativeContinuationPolicy,drawContinuation,continuationPolicyValue} from './continuation-policy.mjs';
 import {BoundedCache,putCached} from './bounded-cache.mjs';
+import {strategyOrdering} from './strategy-registry.mjs';
 function rng(seed){let x=seed>>>0||1;return ()=>{x^=x<<13;x^=x>>>17;x^=x<<5;return (x>>>0)/4294967296;};}
-function choices(p){return nativeMoveChoices(p).map(m=>({slot:m.slot,move:completeMoveDex.moves.get(m.id),usable:true}));}
+function choices(p){return nativeMoveChoices(p).map(m=>({slot:m.slot,id:m.id,move:completeMoveDex.moves.get(m.id),usable:true}));}
 function terminal(b){return b.p1.active[0].hp<=0?0:b.p2.active[0].hp<=0?1:b.ended?(b.winner==='Player'?1:0):null;}
 // All caches use the native mechanics state key, including uncertainty markers.
 const keep=(map,key,value,limit=2048)=>putCached(map,key,value,limit);
@@ -190,8 +191,9 @@ export function simulateSampledMovesCore(initial,options,reasons,evaluator){
  let root=cache.roots.get(rootKey),reused=!!root;
  if(!root){
   const game=restoreCompleteBattle(initial),actions=game.sides.map(s=>{const legal=choices(s.active[0]);return legal.length?legal.map(m=>m.slot):[1];});
-  const tactical=actions.map((slots,side)=>slots.map(slot=>{const move=completeMoveDex.moves.get(game.sides[side].active[0].moveSlots[slot-1].id);return move.status?4:move.volatileStatus?2:move.boosts||move.self?.boosts?1:0;}));
-  root=keep(cache.roots,rootKey,{key:initial.key,actions,tactical,tacticalMs:0,tacticalWorkMs:0,cells:actions[0].map(()=>actions[1].map(()=>({n:0,sum:0,terminal:0,unknown:0}))),total:0,reasons:new Set()},64);
+  const hints=game.sides.map(s=>strategyOrdering(s.active[0],choices(s.active[0])));
+  const tactical=game.sides.map((s,side)=>choices(s.active[0]).map((choice,i)=>{const move=choice.move;return (move.status?4:move.volatileStatus?2:move.boosts||move.self?.boosts?1:0)+hints[side].priorities[i];}));
+  root=keep(cache.roots,rootKey,{key:initial.key,actions,tactical,strategies:hints.map(h=>h.matches),tacticalMs:0,tacticalWorkMs:0,cells:actions[0].map(()=>actions[1].map(()=>({n:0,sum:0,terminal:0,unknown:0}))),total:0,reasons:new Set()},64);
   if(options.opponentModel==='npc-ai'){
    try{root.npcPolicy=npcMoveDistribution(game,options.npcAi);}catch(error){if(!(error instanceof MissingInput))throw error;root.reasons.add(error.message);}
   }
