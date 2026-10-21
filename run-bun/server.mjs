@@ -20,7 +20,7 @@ engineFiles.push('analysis/passive-endgame.mjs','analysis/position-features.mjs'
 engineFiles.push('analysis/bounded-cache.mjs','analysis/observation-key.mjs','analysis/feature-cache.mjs','analysis/feature-probe-reuse.mjs','analysis/native-feature-probes.mjs','analysis/temporal-feature-model.mjs');
 engineFiles.push('analysis/mechanics-contract.mjs');
 engineFiles.push('analysis/result-contract.mjs','run-bun/battle-state.mjs','analysis/strategic-endgame.mjs');
-engineFiles.push('analysis/strategy-registry.mjs');
+engineFiles.push('analysis/strategy-registry.mjs','analysis/strategy-expansions.mjs','analysis/strategy-conditions.mjs');
 engineFiles.push('run-bun/battle-recorder.mjs','run-bun/battle-history.mjs','run-bun/history-view.mjs','run-bun/history-app.mjs');
 engineFiles.push('run-bun/reader-status.mjs');
 engineFiles.push('run-bun/battle-messages.mjs','run-bun/loss-explanation.mjs','run-bun/integration.mjs','run-bun/bridge.mjs');

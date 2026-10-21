@@ -1,7 +1,10 @@
 // Ordered search hints, never move legality, trainer AI, damage or probability.
 // Maps index immutable move metadata. Battle conditions are checked afresh.
 import {BoundedCache} from './bounded-cache.mjs';
-export const STRATEGY_VERSION=1;
+import {expandedStrategyPatterns} from './strategy-expansions.mjs';
+import {selfBoostChanges,inflictedStatuses,createStrategyRequirements,expandedMoveEligible} from './strategy-conditions.mjs';
+export {surveyStrategyCoverage} from './strategy-expansions.mjs';
+export const STRATEGY_VERSION=2;
 const step=(tag,...requires)=>({tag,requires});
 const plan=(id,...steps)=>({id,steps});
 export const strategyPatterns=Object.freeze([
@@ -45,10 +48,11 @@ export const strategyPatterns=Object.freeze([
  plan('endure-low-hp-attack',step('volatile:endure'),step('attack:low-hp','self:low-hp')),
  plan('stockpile-spit-up',step('volatile:stockpile'),step('move:spitup','self:stockpile')),
  plan('stockpile-swallow',step('volatile:stockpile'),step('move:swallow','self:stockpile','self:damaged')),
+ ...expandedStrategyPatterns,
 ]);
 for(const rule of strategyPatterns){for(const s of rule.steps){Object.freeze(s.requires);Object.freeze(s);}Object.freeze(rule.steps);Object.freeze(rule);}
 const byTag=new Map();
-for(const rule of strategyPatterns)for(const s of rule.steps){if(!byTag.has(s.tag))byTag.set(s.tag,new Set());byTag.get(s.tag).add(rule);}
+for(const rule of strategyPatterns)for(const s of rule.steps)for(const tag of s.tag.split('|')){if(!byTag.has(tag))byTag.set(tag,new Set());byTag.get(tag).add(rule);}
 const indexes=new WeakMap(),toId=x=>String(x||'').toLowerCase().replace(/[^a-z0-9]/g,'');
 function indexFor(dex){
  let index=indexes.get(dex);
@@ -58,14 +62,23 @@ function indexFor(dex){
 function traits(dex,id){
  const index=indexFor(dex);let tags=index.traits.get(id);if(tags)return tags;
  const m=dex.moves.get(id);tags=new Set(['move:'+m.id]);
- if(m.status&&m.target!=='self'){tags.add('inflict:'+m.status);tags.add('inflict:status');if(['psn','tox'].includes(m.status))tags.add('inflict:poison');}
- const boosts=m.target==='self'?m.boosts:m.self?.boosts;
- if(boosts&&Object.values(boosts).some(n=>n>0)){tags.add('boost:any');for(const [stat,n] of Object.entries(boosts))if(n>0)tags.add('boost:'+stat);}
- if(m.id==='bellydrum'){tags.add('boost:any');tags.add('boost:atk');}
+ for(const status of inflictedStatuses(m)){tags.add('inflict:'+status);tags.add('inflict:status');if(['psn','tox'].includes(status))tags.add('inflict:poison');}
+ // Index both signs. Current Contrary/Simple/secondary suppression is checked
+ // at lookup time, so static bindings survive ability and item changes.
+ for(const boosts of selfBoostChanges(m))for(const [stat,n]of Object.entries(boosts))if(n){tags.add('boost:any');tags.add('boost:'+stat);if(['def','spd'].includes(stat))tags.add('boost:defense');}
  if(m.id==='acupressure')tags.add('boost:any');
  if(m.target==='normal'&&m.boosts)for(const [stat,n] of Object.entries(m.boosts))if(n<0)tags.add('drop:'+stat);
  if(m.volatileStatus)tags.add('volatile:'+m.volatileStatus);
- if(m.weather){tags.add('weather:'+toId(m.weather));tags.add('weather:any');}
+ if(m.weather){tags.add('weather:'+toId(m.weather));tags.add('weather:any');tags.add('weather:speed');}
+ if(m.terrain){tags.add('terrain:'+m.terrain);tags.add('terrain:any');tags.add('terrain:seed');}
+ if(m.pseudoWeather)tags.add('field:'+m.pseudoWeather);
+ if(m.sideCondition){tags.add('side:'+m.sideCondition);if(['reflect','lightscreen','auroraveil'].includes(m.sideCondition))tags.add('side:screen');}
+ if(['trick','switcheroo'].includes(m.id))tags.add('item:transfer');
+ if(m.id!=='lastresort')tags.add('history:unused');
+ if(typeof m.accuracy==='number'&&m.accuracy<100&&!m.ohko)tags.add('accuracy:imperfect');
+ if(['counter','mirrorcoat','metalburst'].includes(m.id))tags.add('attack:retaliation');
+ if([m.secondary,...m.secondaries||[]].some(e=>e?.volatileStatus==='flinch'))tags.add('attack:flinch');
+ if([m.secondary,...m.secondaries||[]].some(e=>e?.volatileStatus==='confusion'))tags.add('volatile:confusion');
  if(m.target==='self'&&(m.heal||['rest','synthesis','morningsun','moonlight','shoreup'].includes(m.id)))tags.add('heal');
  if(['protect','detect','kingsshield','spikyshield','banefulbunker','obstruct'].includes(m.id))tags.add('protect');
  if(['lockon','mindreader'].includes(m.id))tags.add('lockon');
@@ -74,6 +87,8 @@ function traits(dex,id){
   tags.add('attack:scalable');tags.add('attack:'+toId(m.type));
   if(!m.overrideOffensivePokemon&&(!m.overrideOffensiveStat||m.overrideOffensiveStat===(m.category==='Physical'?'atk':'spa')))tags.add('attack:'+m.category.toLowerCase());
   tags.add('attack:vs-'+(m.overrideDefensiveStat||(m.category==='Physical'?'def':'spd')));
+  if(m.priority>0)tags.add('attack:priority');if(m.priority===0)tags.add('attack:ordinary');
+  if(m.flags?.sound)tags.add('attack:sound');
   if(typeof m.accuracy==='number'&&m.accuracy<100)tags.add('attack:inaccurate');
  }
  index.traits.set(id,tags);return tags;
@@ -82,7 +97,10 @@ export function compileStrategyMoveset(dex,moveIds){
  const ids=[...new Set(moveIds.map(toId))].sort(),key=STRATEGY_VERSION+'|'+ids.join(','),index=indexFor(dex);
  let bindings=index.sets.get(key);if(bindings)return bindings;
  const candidates=new Set();for(const id of ids)for(const tag of traits(dex,id))for(const rule of byTag.get(tag)||[])candidates.add(rule);
- bindings=Object.freeze([...candidates].map(rule=>Object.freeze({rule,moves:Object.freeze(rule.steps.map(s=>Object.freeze(ids.filter(id=>traits(dex,id).has(s.tag)))))})));
+ bindings=Object.freeze([...candidates].map(rule=>{
+  const moves=rule.steps.map(s=>Object.freeze(ids.filter(id=>s.tag.split('|').some(tag=>traits(dex,id).has(tag)))));
+  return Object.freeze({rule,moves:Object.freeze(moves)});
+ }));
  index.sets.set(key,bindings);return bindings;
 }
 function conditions(p){
@@ -102,23 +120,28 @@ function conditions(p){
  if(weather){facts.add('weather:any');if(['raindance','primordialsea'].includes(weather))facts.add('weather:rain');if(['sunnyday','desolateland'].includes(weather))facts.add('weather:sun');if(['hail','snowscape'].includes(weather))facts.add('weather:hail');if(weather==='sandstorm')facts.add('weather:sand');}
  return facts;
 }
-function usableHint(p,move,tag){
+function usableHint(p,move,tag,check){
  const foe=p.side.foe.active[0],bypasses=p.hasAbility(['moldbreaker','teravolt','turboblaze']);
+ if(!expandedMoveEligible(p,move,tag,check))return false;
  if(p.status==='slp'&&p.statusState.time>(p.hasAbility('earlybird')?2:1)&&!move.sleepUsable)return false;
  if(p.volatiles.flinch)return false;
  if(tag.startsWith('inflict:')){
   if(foe.status)return false;
   if(move.flags?.powder&&(foe.hasType('Grass')||foe.hasItem('safetygoggles')||!bypasses&&foe.hasAbility('overcoat')))return false;
-  if(move.status==='slp'&&!bypasses&&foe.hasAbility(['insomnia','vitalspirit','sweetveil','comatose']))return false;
-  if(['psn','tox'].includes(move.status)&&!p.hasAbility('corrosion')&&foe.hasType(['Poison','Steel']))return false;
-  if(move.status==='par'&&foe.hasType('Electric')||move.status==='brn'&&foe.hasType('Fire'))return false;
+  const statuses=inflictedStatuses(move).filter(s=>tag==='inflict:status'||tag==='inflict:poison'?tag==='inflict:status'||['psn','tox'].includes(s):tag==='inflict:'+s);
+  if(!statuses.length||statuses.every(status=>status==='slp'&&!bypasses&&foe.hasAbility(['insomnia','vitalspirit','sweetveil','comatose'])||['psn','tox'].includes(status)&&(!p.hasAbility('corrosion')&&foe.hasType(['Poison','Steel'])||!bypasses&&check('foe:poison-ability-immune'))||status==='par'&&foe.hasType('Electric')||status==='brn'&&foe.hasType('Fire')))return false;
+  if(!move.status&&(p.hasAbility('sheerforce')||!bypasses&&foe.hasAbility('shielddust')||foe.hasItem('covertcloak')))return false;
+  if(foe.side.sideConditions.safeguard&&!p.hasAbility('infiltrator'))return false;
+  if(foe.isGrounded()&&(p.battle.field.terrain==='mistyterrain'||statuses.every(s=>s==='slp')&&p.battle.field.terrain==='electricterrain'))return false;
  }
  if(tag.startsWith('boost:')){
-  const boosts=(move.target==='self'?move.boosts:move.self?.boosts)||(move.id==='bellydrum'?{atk:12}:null),sign=p.hasAbility('contrary')?-1:1;
+  if(move.id==='curse'&&p.hasType('Ghost'))return false;
+  const changes=selfBoostChanges(move).filter((_,i)=>!p.hasAbility('sheerforce')||i===0&&(move.boosts||move.self?.boosts||move.selfBoost)),sign=p.hasAbility('contrary')?-1:1;
+  const stat=tag.slice(6),matches=s=>stat==='any'||stat==='defense'?stat==='any'||['def','spd'].includes(s):s===stat;
   if(move.id==='acupressure'){if(sign<0||!Object.values(p.boosts).some(n=>n<6))return false;}
-  else if(!boosts||!Object.entries(boosts).some(([s,n])=>n*sign>0&&p.boosts[s]<6))return false;
+  else if(!changes.some(boosts=>Object.entries(boosts).some(([s,n])=>matches(s)&&n*sign>0&&p.boosts[s]<6)))return false;
  }
- if(tag.startsWith('drop:')&&(foe.hasAbility('contrary')||!bypasses&&foe.hasAbility(['clearbody','whitesmoke','fullmetalbody'])||!Object.entries(move.boosts||{}).some(([s,n])=>n<0&&foe.boosts[s]>-6)))return false;
+ if(tag.startsWith('drop:')&&(foe.hasAbility(['contrary','fullmetalbody'])||!bypasses&&foe.hasAbility(['clearbody','whitesmoke'])||!Object.entries(move.boosts||{}).some(([s,n])=>s===tag.slice(5)&&n<0&&foe.boosts[s]>-6)))return false;
  if(move.id==='bellydrum'&&p.hp<=p.maxhp/2)return false;
  if(move.id==='stockpile'&&p.volatiles.stockpile?.layers>=3)return false;
  if(move.id==='rest'&&(p.hp===p.maxhp||p.status==='slp'||p.hasAbility(['insomnia','vitalspirit','comatose'])))return false;
@@ -132,16 +155,19 @@ function usableHint(p,move,tag){
  return true;
 }
 export function strategyOrdering(p,choices){
- const dex=p.battle.dex,bindings=compileStrategyMoveset(dex,p.moveSlots.map(m=>m.id)),facts=conditions(p),matches=[],priorities=choices.map(()=>0);
+ const dex=p.battle.dex,bindings=compileStrategyMoveset(dex,p.moveSlots.map(m=>m.id)),facts=conditions(p),check=createStrategyRequirements(p,facts),matches=[],priorities=choices.map(()=>0);
  const available=new Set(p.moveSlots.filter(m=>m.pp>0).map(m=>m.id));
  for(const {rule,moves} of bindings){
   if(rule.id.startsWith('poison-')&&rule.id!=='poison-venoshock'&&p.side.foe.active[0].hasAbility(['poisonheal','magicguard']))continue;
   for(let phase=rule.steps.length-1;phase>=0;phase--){
-   const s=rule.steps[phase];if(!s.requires.every(c=>facts.has(c)))continue;
+   const s=rule.steps[phase];if(!moves[phase].length)continue;
    if(moves.slice(phase+1).some(ids=>!ids.some(id=>available.has(id))))continue;
-   const next=choices.flatMap((choice,i)=>moves[phase].includes(choice.id)&&usableHint(p,dex.moves.get(choice.id),s.tag)?[i]:[]);
+   if(!s.requires.every(check))continue;
+   const next=choices.flatMap((choice,i)=>available.has(choice.id)&&moves[phase].includes(choice.id)&&s.tag.split('|').some(tag=>traits(dex,choice.id).has(tag)&&usableHint(p,dex.moves.get(choice.id),tag,check))?[i]:[]);
    if(!next.length)continue;
-   for(const i of next)priorities[i]=Math.max(priorities[i],phase>0?8:4);
+   // Specific finishers outrank a generic "attack while asleep/boosted" hint.
+   const priority=phase>0?(s.tag.startsWith('move:')?12:s.tag==='attack:scalable'?6:8):4;
+   for(const i of next)priorities[i]=Math.max(priorities[i],priority);
    matches.push({id:rule.id,phase,sequence:moves,nextSlots:next.map(i=>choices[i].slot)});break;
   }
  }

@@ -1,7 +1,15 @@
 # Broader strategy survey
 
-Research date: 2026-10-21. This is a research backlog, **not an expanded runtime
-registry**. The runtime still contains 40 ordering families. Search across
+Research date: 2026-10-21. **Implementation update:** all 72 entries below now
+map to runtime patterns through `surveyStrategyCoverage` in
+`strategy-expansions.mjs`. The registry contains 108 families: the original 40
+plus 68 new patterns. Five survey entries reuse enhanced existing patterns;
+one entry has two new patterns. Tests cover every added family, native-turn
+transitions and counterexamples. These remain candidate ordering hints, not
+certified outcome claims. Scope exclusions below are still excluded.
+
+The table's Gap/Partial labels record the **pre-implementation audit**, when
+the runtime contained 40 families. Search across
 Smogon's authored strategy analyses, articles, and set discussions covered
 sleep, disruption, residual damage, recovery, items, abilities, field effects,
 survival, retaliation, and resource exhaustion. Old-generation sources supply
@@ -10,8 +18,8 @@ rules. Native metadata presence is audited below, not complete battle behavior
 or species learnset legality. No trainer AI assumptions are required.
 
 There are 72 additional **candidate entries** below, not 72 independent new
-strategy families. `Partial` means an existing ordering family captures a piece
-of the sequence; `Gap` means the registry has no dedicated pattern for it.
+strategy families. Historically, `Partial` meant an existing ordering family
+captured a piece of the sequence; `Gap` meant no dedicated pattern existed.
 Neither label says whether the native battle simulator implements the moves.
 `P1` prioritizes general matchup coverage; `P2` covers narrower conditions.
 Sources document the combination or its components. Rows marked **inference**
@@ -173,10 +181,9 @@ Against checkout `5df9797` plus this research document:
   Stored Power, weather accuracy, Defense Curl/Rollout, Charge, and RestTalk
   were already represented. New species sets using these are not new families.
 
-## What the design needs
+## Shared design changes used for implementation
 
-The current registry describes move/effect sequences, with hand-selected state
-facts. Broadening it responsibly needs richer selectors and requirements:
+The expanded registry uses shared selectors and requirements for these needs:
 
 1. **Event producers:** item consumption, status from an Orb, secondary boosts,
    Contrary reversal, ability/weather triggers and delayed effects. A status
@@ -191,13 +198,13 @@ facts. Broadening it responsibly needs richer selectors and requirements:
    Toxic counter or weather duration changes. Hash those resources into state;
    matching an effect loop does not certify a perpetual or winning loop.
 
-Prioritize R04/R05/R07-R12/R18/R22-R25/R31/R36-R38/R43-R49/R52/R54/R55/R57.
-These expose broad blind spots in action denial, delayed effects, item/ability
-triggers, immunity removal and history. Add shared producer/condition machinery
-before registering them, with positive and counterexample native-turn tests.
-Do not implement each row as another bespoke search branch or assume a fixed
-opponent strategy. Broader candidate coverage is not evidence of reaching the
-300 ms accuracy goal; benchmark forecast timing and accuracy separately.
+The implementation shares producer/condition machinery across the whole
+catalogue rather than adding 72 search branches. Positive and counterexample
+tests validate its state requirements. Native turn simulation still decides
+actual effects and counterplay, and no fixed opponent strategy is assumed.
+Cycle hints do not replace the native search's resource accounting. Broader
+candidate coverage is not evidence of reaching the 300 ms accuracy goal;
+benchmark forecast timing and accuracy separately.
 
 ## Sources
 

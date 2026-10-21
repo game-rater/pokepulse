@@ -6,7 +6,7 @@ import {selectContinuationChoices} from './action-usefulness.mjs';
 import {putCached} from './bounded-cache.mjs';
 import {strategyOrdering} from './strategy-registry.mjs';
 
-export const CONTINUATION_VERSION=8;
+export const CONTINUATION_VERSION=9;
 export function continuationChoices(p,options){return selectContinuationChoices(p,options).choices;}
 function random(seed){let x=seed>>>0||1;return ()=>{x^=x<<13;x^=x>>>17;x^=x<<5;return (x>>>0)/4294967296;};}
 function terminal(b){const [p,q]=b.sides.map(s=>s.active[0]);return p.hp<=0?0:q.hp<=0?1:b.ended?(b.winner==='Player'?1:0):null;}

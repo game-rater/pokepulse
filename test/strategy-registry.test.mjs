@@ -4,6 +4,7 @@ import {strategyPatterns,compileStrategyMoveset,strategyOrdering} from '../analy
 import {createCompleteBattle,restoreCompleteBattle,nativeMoveChoices} from '../analysis/native-battle.mjs';
 import {nativeContinuationPolicy,continuationPolicyValue} from '../analysis/continuation-policy.mjs';
 import {referenceMon} from '../scripts/accuracy-benchmark-fixtures.mjs';
+import {expandedStrategyPatterns} from '../analysis/strategy-expansions.mjs';
 const examples=[
  ['sleep-wake-up',['Spore','Wake-Up Slap']],['sleep-dream-eater',['Hypnosis','Dream Eater']],
  ['status-hex',['Will-O-Wisp','Hex']],['poison-venoshock',['Toxic','Venoshock']],['paralysis-smelling-salts',['Thunder Wave','Smelling Salts']],
@@ -34,7 +35,7 @@ for(const [id,moves] of examples)test(`Ordered strategy index recognizes ${id} f
 });
 test('Every registered family has a unique ID and a native-metadata control',()=>{
  assert.equal(new Set(strategyPatterns.map(p=>p.id)).size,strategyPatterns.length);
- assert.deepEqual(new Set(strategyPatterns.map(p=>p.id)),new Set(examples.map(([id])=>id)));
+ assert.deepEqual(new Set(strategyPatterns.map(p=>p.id)),new Set([...examples.map(([id])=>id),...expandedStrategyPatterns.map(p=>p.id)]));
 });
 test('Moveset hash is order-independent, deduplicated, collision-safe and immutable',()=>{
  const dex=battle(['Spore','Wake-Up Slap']).dex;
