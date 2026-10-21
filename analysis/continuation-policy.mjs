@@ -5,7 +5,7 @@ import {observationKey} from './observation-key.mjs';
 import {selectContinuationChoices} from './action-usefulness.mjs';
 import {putCached} from './bounded-cache.mjs';
 
-export const CONTINUATION_VERSION=4;
+export const CONTINUATION_VERSION=5;
 export function continuationChoices(p,options){return selectContinuationChoices(p,options).choices;}
 function random(seed){let x=seed>>>0||1;return ()=>{x^=x<<13;x^=x>>>17;x^=x<<5;return (x>>>0)/4294967296;};}
 function terminal(b){const [p,q]=b.sides.map(s=>s.active[0]);return p.hp<=0?0:q.hp<=0?1:b.ended?(b.winner==='Player'?1:0):null;}
@@ -13,9 +13,18 @@ function terminal(b){const [p,q]=b.sides.map(s=>s.active[0]);return p.hp<=0?0:q.
 // One temporal evaluation model is shared by policy probes and rollout leaves.
 export {nativePositionValue as continuationValue} from './position-features.mjs';
 import {nativePositionValue as continuationValue} from './position-features.mjs';
-function strategies(matrix,weights){
+export function continuationStrategies(matrix,weights){
  const rows=matrix.length,cols=matrix[0].length;
  if(weights){const values=matrix.map(row=>row.reduce((s,v,j)=>s+v*weights[j],0)),best=Math.max(...values),ties=values.map(v=>Math.abs(v-best)<1e-9);return [ties.map(t=>t/ties.filter(Boolean).length),weights];}
+ // At a saddle point both sides have an optimal pure strategy. Starting
+ // fictitious play with pseudocounts would leak probability into losing moves,
+ // including a move that gives up a guaranteed finishing attack.
+ const rowFloors=matrix.map(row=>Math.min(...row)),columnCeilings=matrix[0].map((_,j)=>Math.max(...matrix.map(row=>row[j])));
+ const lower=Math.max(...rowFloors),upper=Math.min(...columnCeilings);
+ if(Math.abs(lower-upper)<1e-12){
+  const p=rowFloors.map(v=>Math.abs(v-lower)<1e-12),q=columnCeilings.map(v=>Math.abs(v-upper)<1e-12);
+  return [p.map(v=>Number(v)/p.filter(Boolean).length),q.map(v=>Number(v)/q.filter(Boolean).length)];
+ }
  // Fictitious play returns mixed strategies for simultaneous choices. Each
  // side optimizes against the other distribution, not the revealed move.
  if(cols===1){const best=Math.max(...matrix.map(r=>r[0])),ties=matrix.map(r=>Math.abs(r[0]-best)<1e-9),n=ties.filter(Boolean).length;return [ties.map(t=>Number(t)/n),[1]];}
@@ -35,7 +44,7 @@ export function nativeContinuationPolicy(state,cache,options={}){
  if(!entry){
   const b=restoreCompleteBattle(state),selection=b.sides.map((s,i)=>selectContinuationChoices(s.active[0],{filterUselessTurns:options.filterUselessTurns!==false&&!(i===1&&options.npcWeights)}));
   const actions=selection.map(s=>s.choices.map(m=>m.slot)),actionFlags=selection.map(s=>({flags:s.flags,filtered:s.filtered,waiting:s.waiting}));
-  entry={actions,actionFlags,cursor:0,matrix:actions[0].map(()=>actions[1].map(()=>0)),samples:2};
+  entry={actions,actionFlags,cursor:0,matrix:actions[0].map(()=>actions[1].map(()=>0)),terminalColumns:actions[1].map(()=>true),samples:2};
   if(actions.every(a=>a.length===1))entry.policy={actions,probabilities:[[1],[1]],matrix:null,actionFlags};
   putCached(cache,key,entry,2048);
  }
@@ -43,7 +52,7 @@ export function nativeContinuationPolicy(state,cache,options={}){
  const count=entry.actions[0].length*entry.actions[1].length;
  while(entry.cursor<count*entry.samples){
   if(options.shouldStop?.()||performance.now()>(options.deadline??Infinity))return null;
-  const index=Math.floor(entry.cursor/entry.samples),i=Math.floor(index/entry.actions[1].length),j=index%entry.actions[1].length;
+  const index=Math.floor(entry.cursor/entry.samples),i=index%entry.actions[0].length,j=Math.floor(index/entry.actions[0].length);
   const b=restoreCompleteBattle(state),draw=random(parseInt(observed.slice(0,8),16)^Math.imul(entry.cursor+1,0x9e3779b9));
   let first=true,weight=1/entry.samples;
   installChanceTape(b,[],state.unknownNature,state,branches=>{
@@ -52,7 +61,8 @@ export function nativeContinuationPolicy(state,cache,options={}){
    first=false;return draw();
   });
   for(let side=0;side<2;side++)if(!b.choose(`p${side+1}`,`move ${entry.actions[side][side?j:i]}`))throw Error('Native continuation move rejected: '+b.sides[side].choice.error);
-  let value=continuationValue(b,options);
+  const end=terminal(b);entry.terminalColumns[j]&&=end===0;
+  let value=end??continuationValue(b,options);
   if(value===null)return null;
   if(terminal(b)===null){
    const before=state.saved.sides.map(s=>s.pokemon[0]),after=b.sides.map(s=>s.active[0]);
@@ -62,9 +72,16 @@ export function nativeContinuationPolicy(state,cache,options={}){
    value=value*0.98+0.01+0.01*Math.max(-1,Math.min(1,progress));
   }
   entry.matrix[i][j]+=value*weight;entry.cursor++;
+  // A sampled terminal reply against every player action already determines
+  // the probe policy. Do not spend the slice evaluating unrelated replies.
+  // This is only policy selection; it does not certify battle probability.
+  if(!options.npcWeights&&entry.cursor% (entry.actions[0].length*entry.samples)===0&&entry.terminalColumns[j]){
+   entry.policy={actions:entry.actions,probabilities:[entry.actions[0].map(()=>1/entry.actions[0].length),entry.actions[1].map((_,c)=>Number(c===j))],matrix:null,actionFlags:entry.actionFlags};
+   return entry.policy;
+  }
  }
  const weights=options.npcWeights&&entry.actions[1].map(slot=>options.npcWeights.find(m=>m.slot===slot)?.probability||0);
- entry.policy={actions:entry.actions,probabilities:strategies(entry.matrix,weights),matrix:entry.matrix,actionFlags:entry.actionFlags};
+ entry.policy={actions:entry.actions,probabilities:continuationStrategies(entry.matrix,weights),matrix:entry.matrix,actionFlags:entry.actionFlags};
  return entry.policy;
 }
 export function drawContinuation(policy,draw){

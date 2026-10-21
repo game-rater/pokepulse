@@ -36,12 +36,18 @@ export function stratumMean(cell){
 // replace the displayed estimator once a new depth has broad chance coverage.
 // Until then the last covered epoch remains usable; confidence always uses the
 // newest epoch so stale samples cannot justify pruning the deeper search.
-export function recordHorizonSample(cell,horizon,value,stratum=-1){
- if(cell.confidenceStats?.horizon!==horizon)cell.confidenceStats={horizon,n:0,sum:0,strata:cell.strata?.map(s=>({probability:s.probability,n:0,sum:0}))};
- const stats=cell.confidenceStats;stats.n++;stats.sum+=value;
+export function recordHorizonSample(cell,horizon,value,stratum=-1,terminal=false){
+ if(cell.confidenceStats?.horizon!==horizon)cell.confidenceStats={horizon,n:0,sum:0,allTerminal:true,strata:cell.strata?.map(s=>({probability:s.probability,n:0,sum:0}))};
+ const stats=cell.confidenceStats;stats.n++;stats.sum+=value;stats.allTerminal&&=terminal;
  if(stratum>=0){const s=stats.strata[stratum];s.n++;s.sum+=value;}
  const covered=!stats.strata?.length||stats.strata.every(s=>s.n>0);
- if(covered&&(!cell.estimateStats||horizon>=cell.estimateStats.horizon&&stats.n>=4))cell.estimateStats=stats;
+ // Completed terminal trajectories need no heuristic-depth stabilization.
+ // This remains a sampled estimator, never a certificate of a forced result.
+ const decisive=stats.allTerminal&&(stats.sum===0||stats.sum===stats.n);
+ if(covered&&(!cell.estimateStats||horizon>=cell.estimateStats.horizon&&(stats.n>=4||decisive)))cell.estimateStats=stats;
+}
+export function rolloutHorizon(samples,branching,turnLimit,longHorizon=false){
+ return branching&&samples<1?1:branching&&samples<8?Math.min(2,turnLimit):branching&&samples<16?Math.min(4,turnLimit):longHorizon?turnLimit*2:turnLimit;
 }
 function rollout(initial,a,b,seed,turnLimit,options,cell,cache,evaluator){
  const game=restoreCompleteBattle(initial),random=rng(seed);
@@ -53,7 +59,7 @@ function rollout(initial,a,b,seed,turnLimit,options,cell,cache,evaluator){
  };
  installChanceTape(game,[],initial.unknownNature,uncertain,branches=>{
   const first=draws++===0;
-  if(nativeTurn===0&&first&&branches.length===2){
+  if(nativeTurn===0&&first&&branches.length>1&&branches.length<=4){
    cell.strata??=branches.map(c=>({probability:c.probability,n:0,sum:0}));
    // Allocate equally across strata, then combine their means with the actual
    // native probabilities. Rare outcomes are never counted as common ones.
@@ -141,7 +147,8 @@ export function allocation(cells,target,options={}){
   if(c.n>=needed)continue;
   remaining++;
   const crossing=thresholdDecision(low[i][j],high[i][j],threshold)==='unresolved';
-  const priority=c.n<floor?1000-c.n:(irrelevant?0.01:1)*intervals[i][j].radius*(crossing?2:1)/(1+c.n/floor);
+  const tactical=options.tacticalCoverage&&(c.estimateStats?.horizon??0)<2?((options.tacticalRows?.[i]??0)+(options.tacticalColumns?.[j]??0)):0;
+  const priority=100*tactical+(c.n<floor?1000-c.n:(irrelevant?0.01:1)*intervals[i][j].radius*(crossing?2:1)/(1+c.n/floor));
   if(priority>best){best=priority;selected={r:i,c:j,close:!irrelevant};}
  }
  return {selected,remaining,pruned:active.pruned,threshold};
@@ -156,7 +163,8 @@ export function simulateSampledMovesCore(initial,options,reasons,evaluator){
  let root=cache.roots.get(rootKey),reused=!!root;
  if(!root){
   const game=restoreCompleteBattle(initial),actions=game.sides.map(s=>{const legal=choices(s.active[0]);return legal.length?legal.map(m=>m.slot):[1];});
-  root=keep(cache.roots,rootKey,{key:initial.key,actions,cells:actions[0].map(()=>actions[1].map(()=>({n:0,sum:0,terminal:0,unknown:0}))),total:0,reasons:new Set()},64);
+  const tactical=actions.map((slots,side)=>slots.map(slot=>{const move=completeMoveDex.moves.get(game.sides[side].active[0].moveSlots[slot-1].id);return move.status?4:move.volatileStatus?2:move.boosts||move.self?.boosts?1:0;}));
+  root=keep(cache.roots,rootKey,{key:initial.key,actions,tactical,cells:actions[0].map(()=>actions[1].map(()=>({n:0,sum:0,terminal:0,unknown:0}))),total:0,reasons:new Set()},64);
   if(options.opponentModel==='npc-ai'){
    try{root.npcPolicy=npcMoveDistribution(game,options.npcAi);}catch(error){if(!(error instanceof MissingInput))throw error;root.reasons.add(error.message);}
   }
@@ -167,7 +175,8 @@ export function simulateSampledMovesCore(initial,options,reasons,evaluator){
  if(root.npcPolicy)options={...options,npcProbabilities:root.actions[1].map(slot=>root.npcPolicy.find(p=>p.slot===slot)?.probability||0)};
  Object.assign(session,root);
  const start=performance.now();options={...options,deadline:start+Math.max(1,options.timeMs??150)};let added=0,work;
- while(!options.warmOnly&&(work=allocation(root.cells,target,options)).selected&&(added===0||performance.now()-start<(options.timeMs??150))&&!options.shouldStop?.()){
+ const covered=()=>root.cells.every(row=>row.every((c,j)=>options.npcProbabilities?.[j]===0||c.n>0&&(!c.strata||c.strata.every(s=>s.n>0))));
+ while(!options.warmOnly&&(work=allocation(root.cells,target,{...options,tacticalCoverage:covered(),tacticalRows:root.tactical?.[0],tacticalColumns:root.tactical?.[1]})).selected&&(added===0||performance.now()-start<(options.timeMs??150))&&!options.shouldStop?.()){
   const {r,c,close}=work.selected,cell=root.cells[r][c],index=r*root.actions[1].length+c;
   const seed=(parseInt(initial.key.slice(0,8),16)^Math.imul(cell.n+1,0x9e3779b9)^Math.imul(index+1,0x85ebca6b))>>>0;
   try{
@@ -176,11 +185,12 @@ export function simulateSampledMovesCore(initial,options,reasons,evaluator){
    // Publish broad first-turn coverage before constructing deep policies for
    // one pair. Later observations progressively replace the short forecast.
    const branching=root.actions[0].length*root.actions[1].length>1;
-   const horizon=branching&&cell.n<4?1:branching&&cell.n<16?Math.min(4,turnLimit):cell.longHorizon?turnLimit*2:turnLimit;
+   const initialCoverage=covered();
+   const horizon=branching&&!initialCoverage?1:rolloutHorizon(cell.n,branching,turnLimit,cell.longHorizon);
    const value=rollout(initial,root.actions[0][r],root.actions[1][c],seed,horizon,options,cell,cache,evaluator);
    if(value===null)break;
    cell.sum+=value.value;if(value.terminal)cell.terminal++;
-   recordHorizonSample(cell,horizon,value.value,value.stratum);
+   recordHorizonSample(cell,horizon,value.value,value.stratum,value.terminal);
    if(value.stratum>=0){const s=cell.strata[value.stratum];s.n++;s.sum+=value.value;}
   }catch(error){if(!(error instanceof MissingInput))throw error;reasons.add(error.message);root.reasons.add(error.message);cell.unknown++;}
   cell.n++;root.total++;added++;
