@@ -1,8 +1,10 @@
 import {parentPort,workerData} from 'node:worker_threads';
-import {scoreBattle} from './profile.mjs';
+import {scoreBattle,pack,defaultField,defaultBuild} from './profile.mjs';
 import {refineUntilResolved,LIVE_SEARCH_DEPTH_LIMIT} from './refinement.mjs';
 import {searchArguments} from './battle-state.mjs';
 import {createFeatureCaches} from '../analysis/feature-cache.mjs';
+import {createCompleteBattle} from '../analysis/native-battle.mjs';
+import {nativeContinuationPolicy} from '../analysis/continuation-policy.mjs';
 const generation=new Int32Array(workerData.generation);
 const engineMode=workerData.engineMode||'auto';
 const halt=workerData.halt?new Int32Array(workerData.halt):null;
@@ -68,4 +70,20 @@ parentPort.on('message',async({version,request,budgets,modelContext})=>{
   }});
 });
 
+// Readiness includes one bounded, generic mechanics warmup. Use separate
+// caches and no live state: first battle timing must not include initializing
+// native turn execution only after an otherwise "ready" worker receives it.
+function warmRuntime(){
+ const warmSpecies=pack.species.find(s=>s.id==='mew');
+ const warmMon=(moves,speed)=>({species:'Mew',current_hp:100,actual_stats:{hp:100,atk:60,def:60,spa:60,spd:60,spe:speed},
+  build:{...defaultBuild(warmSpecies),level:30,nature:'Serious',ability:'',item:'',moves},effects:{first_turn:false,move_history_known:true}});
+ const warmPlayer=warmMon(['Tackle','Swords Dance'],60),warmOpponent=warmMon(['Tackle','Growl'],50);
+ const warmSession={featureCaches:createFeatureCaches({owner:'worker-warmup'})};
+ scoreBattle(warmSpecies,warmSpecies,{generation:8},{player_hp:100,opponent_hp:100},{player:warmPlayer.build,opponent:warmOpponent.build},defaultField(),
+  {player:warmPlayer.effects,opponent:warmOpponent.effects},{player:{actual_stats:warmPlayer.actual_stats,current_hp:100},opponent:{actual_stats:warmOpponent.actual_stats,current_hp:100}},
+  {session:warmSession,forceNativeForecast:true,approximateCompleteMoves:true,warmOnly:true,timeMs:0});
+ nativeContinuationPolicy(createCompleteBattle({player:warmPlayer,opponent:warmOpponent,field:{}}),new Map(),
+  {deadline:performance.now()+150,featureCaches:warmSession.featureCaches});
+}
+warmRuntime();
 parentPort.postMessage({type:'ready'});

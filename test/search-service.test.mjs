@@ -148,7 +148,7 @@ test('A broad unresolved exact matchup falls back to retained native estimates',
  }finally{service.cancel();}
 });
 
-test('Preloading imports the worker without publishing a prediction and reuses it',async()=>{
+test('Preloading warms the worker without publishing or retaining a live prediction and reuses it',async()=>{
  const service=new SearchService({parallel:false});let published=0;
  service.onResult=()=>published++;
  try{
@@ -156,6 +156,7 @@ test('Preloading imports the worker without publishing a prediction and reuses i
   await service.preload();assert.equal(service.worker,worker);
   service.cancel({keepWorkers:true});assert.equal(service.worker,worker);
   const result=await run(service,winningArgs());assert.ok(Number.isFinite(result.display_score));assert.equal(service.worker,worker);
+  assert.equal(result.outlook.root_reused,false,'warmup work must not seed the first live forecast');
  }finally{service.cancel();}
  assert.equal(service.worker,null);
 });
